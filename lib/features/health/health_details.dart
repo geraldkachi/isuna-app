@@ -1,8 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/page/health/record_expense_payment.dart';
-import 'package:misau/page/health/record_inflow_payment.dart';
+import 'package:misau/features/health/record_expense_payment.dart';
+import 'package:misau/features/health/record_inflow_payment.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
 

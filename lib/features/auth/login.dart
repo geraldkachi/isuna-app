@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:misau/page/home/homepage.dart';
-import 'package:misau/page/home/main_page.dart';
+import 'package:misau/features/home/homepage.dart';
+import 'package:misau/features/home/main_page.dart';
 import 'package:misau/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 

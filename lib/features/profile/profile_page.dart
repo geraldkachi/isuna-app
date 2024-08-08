@@ -1,22 +1,24 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/page/admin/add_admin.dart';
-import 'package:misau/page/health/health_details.dart';
-import 'package:misau/page/home/homepage.dart';
+import 'package:misau/features/admin/add_admin.dart';
+import 'package:misau/features/health/health_details.dart';
+import 'package:misau/features/home/homepage.dart';
+import 'package:misau/features/profile/personal_info.dart';
+import 'package:misau/features/profile/preferences.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
 
-class AdminHomePage extends StatefulWidget {
-  const AdminHomePage({
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({
     super.key,
   });
 
   @override
-  State<AdminHomePage> createState() => _AdminHomePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _AdminHomePageState extends State<AdminHomePage>
+class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   List<String> options = ['Monthly', 'Weekly', 'Daily'];
@@ -120,7 +122,7 @@ class _AdminHomePageState extends State<AdminHomePage>
                   height: 26,
                 ),
                 const Text(
-                  "Admins",
+                  "Profile",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 23,
@@ -131,113 +133,162 @@ class _AdminHomePageState extends State<AdminHomePage>
                 const SizedBox(
                   height: 20,
                 ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 200,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'Search admin',
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.all(11.5),
-                            child: SvgPicture.asset(
-                              'assets/search.svg',
-                              color: Colors.black,
-                              width: 16,
-                              height: 16,
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 14.0),
-                        ),
-                        style: const TextStyle(
-                          fontSize: 15.0,
-                          letterSpacing: -.5,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      width: 50.0,
-                      height: 50.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xff313131),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: SvgPicture.asset(
-                        'assets/export.svg',
-                        height: 19,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                  child: Column(children: [
                     InkWell(
                       child: Container(
-                        width: 50.0,
-                        height: 50.0,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xffDC1D3C),
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        width: double.infinity,
+                        height: 65,
+                        decoration: BoxDecoration(
+                          color: const Color(0xffDC1D3D),
+                          borderRadius: BorderRadius.circular(14),
                         ),
-                        padding: const EdgeInsets.all(13),
-                        child: SvgPicture.asset(
-                          'assets/add.svg',
-                          height: 10,
-                          width: 10,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 35,
+                              height: 35,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              padding: const EdgeInsets.all(9),
+                              child: SvgPicture.asset(
+                                'assets/user.svg',
+                                height: 24,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            const Text(
+                              "Personal Information",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 17,
+                                color: Colors.white,
+                                letterSpacing: -.5,
+                              ),
+                            ),
+                            Spacer(),
+                            SvgPicture.asset(
+                              'assets/arrow-right.svg',
+                              height: 20,
+                            )
+                          ],
                         ),
                       ),
                       onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddAdminPage()));
+                                builder: (context) =>
+                                    const PersonalInfoPage()));
                       },
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 50),
-                      child: Column(
+                    SizedBox(
+                      height: 30,
+                    ),
+                    InkWell(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 35,
+                              height: 35,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffECF1F3),
+                              ),
+                              padding: const EdgeInsets.all(9),
+                              child: SvgPicture.asset(
+                                'assets/devices.svg',
+                                height: 24,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            const Text(
+                              "Preferences",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17,
+                                color: Color(0xff1B1C1E),
+                                letterSpacing: -.5,
+                              ),
+                            ),
+                            Spacer(),
+                            SvgPicture.asset(
+                              'assets/arrow-right.svg',
+                              height: 20,
+                              color: const Color(0xffABB5BC),
+                            )
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PreferencesPage()));
+                      },
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
                         children: [
                           Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14),
+                            width: 35,
+                            height: 35,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xffECF1F3),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                            child: ListView.separated(
-                              physics: const NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(
-                                height: 25,
-                              ),
-                              itemCount: 6,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) =>
-                                  FacilityCardItem(),
+                            padding: const EdgeInsets.all(9),
+                            child: SvgPicture.asset(
+                              'assets/lock.svg',
+                              height: 24,
                             ),
                           ),
                           const SizedBox(
-                            height: 13,
+                            width: 12,
                           ),
+                          const Text(
+                            "Change Password",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 17,
+                              color: Color(0xff1B1C1E),
+                              letterSpacing: -.5,
+                            ),
+                          ),
+                          Spacer(),
+                          SvgPicture.asset(
+                            'assets/arrow-right.svg',
+                            height: 20,
+                            color: const Color(0xffABB5BC),
+                          )
                         ],
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                  ]),
                 ),
               ],
             ),

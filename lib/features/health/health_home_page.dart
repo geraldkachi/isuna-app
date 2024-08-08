@@ -1,8 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/page/health/health_details.dart';
-import 'package:misau/page/home/homepage.dart';
+import 'package:misau/features/health/health_details.dart';
+import 'package:misau/features/home/homepage.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
 

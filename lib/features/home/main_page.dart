@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/page/admin/admin_homepage.dart';
-import 'package:misau/page/health/health_home_page.dart';
-import 'package:misau/page/home/homepage.dart';
-import 'package:misau/page/profile/profile_page.dart';
+import 'package:misau/features/admin/admin_homepage.dart';
+import 'package:misau/features/health/health_home_page.dart';
+import 'package:misau/features/home/homepage.dart';
+import 'package:misau/features/profile/profile_page.dart';
 
 class MainScreen extends StatefulWidget {
   @override
