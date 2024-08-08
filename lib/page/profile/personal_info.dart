@@ -231,8 +231,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               borderRadius:
                                   BorderRadius.circular(12.0), // border radius
                             ),
-                            primary:
-                                const Color(0xffDC1C3D), // background color
+                            // primary:  const Color(0xffDC1C3D), // background color
                           ),
                           child: const Text(
                             "Save",

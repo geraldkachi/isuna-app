@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/page/home/homepage.dart';
 import 'package:misau/page/home/main_page.dart';
 import 'package:misau/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -180,25 +181,26 @@ class _LoginPageState extends State<LoginPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    primary: const Color(0xffDC1C3D),
+                    // primary: const Color(0xffDC1C3D),
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2.0,
-                          ),
-                        )
-                      : const Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                  // child: _isLoading
+                  //     ? const SizedBox(
+                  //         width: 24,
+                  //         height: 24,
+                  //         child: CircularProgressIndicator(
+                  //           color: Colors.white,
+                  //           strokeWidth: 2.0,
+                  //         ),
+                  //       )
+                  //     :
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -209,28 +211,30 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> onLoginPressed(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      try {
-        await Provider.of<AuthProvider>(context, listen: false).login(
-          _emailController.text,
-          _passController.text,
-          'qwerty',
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
-        );
-      } catch (error) {
-        log(error.toString());
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Invalid login credentials'),
-          ),
-        );
-      } finally {
-        setState(() => _isLoading = false);
-      }
-    }
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomePage()));
+    // if (_formKey.currentState!.validate()) {
+    //   setState(() => _isLoading = true);
+    //   try {
+    //     await Provider.of<AuthProvider>(context, listen: false).login(
+    //       _emailController.text,
+    //       _passController.text,
+    //       'qwerty',
+    //     );
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => MainScreen()),
+    //     );
+    //   } catch (error) {
+    //     log(error.toString());
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(
+    //         content: Text('Invalid login credentials'),
+    //       ),
+    //     );
+    //   } finally {
+    //     setState(() => _isLoading = false);
+    //   }
+    // }
   }
 }
