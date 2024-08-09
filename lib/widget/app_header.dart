@@ -56,7 +56,7 @@ class AppHeader extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
-                  'assets/search.svg',
+                  'assets/svg/search.svg',
                   height: 20,
                 ),
               ),
@@ -75,7 +75,7 @@ class AppHeader extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
-                  'assets/notification.svg',
+                  'assets/svg/notification.svg',
                   height: 20,
                 ),
               ),
@@ -94,7 +94,7 @@ class AppHeader extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
-                  'assets/filter.svg',
+                  'assets/svg/filter.svg',
                   height: 20,
                 ),
               ),

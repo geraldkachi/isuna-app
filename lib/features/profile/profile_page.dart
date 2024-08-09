@@ -5,7 +5,6 @@ import 'package:misau/features/profile/personal_info.dart';
 import 'package:misau/features/profile/preferences.dart';
 import 'package:misau/utils/utils.dart';
 
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
     super.key,
@@ -72,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                       padding: const EdgeInsets.all(10),
                       child: SvgPicture.asset(
-                        'assets/search.svg',
+                        'assets/svg/search.svg',
                         height: 20,
                       ),
                     ),
@@ -88,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                       padding: const EdgeInsets.all(10),
                       child: SvgPicture.asset(
-                        'assets/notification.svg',
+                        'assets/svg/notification.svg',
                         height: 20,
                       ),
                     ),
@@ -105,12 +104,12 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                         padding: const EdgeInsets.all(10),
                         child: SvgPicture.asset(
-                          'assets/filter.svg',
+                          'assets/svg/filter.svg',
                           height: 20,
                         ),
                       ),
                       onTap: () {
-                         Utils.showFilterBottomSheet(context);
+                        Utils.showFilterBottomSheet(context);
                       },
                     ),
                   ],
@@ -160,7 +159,7 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                               padding: const EdgeInsets.all(9),
                               child: SvgPicture.asset(
-                                'assets/user.svg',
+                                'assets/svg/user.svg',
                                 height: 24,
                               ),
                             ),
@@ -178,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                             const Spacer(),
                             SvgPicture.asset(
-                              'assets/arrow-right.svg',
+                              'assets/svg/arrow-right.svg',
                               height: 20,
                             )
                           ],
@@ -209,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                               padding: const EdgeInsets.all(9),
                               child: SvgPicture.asset(
-                                'assets/devices.svg',
+                                'assets/svg/devices.svg',
                                 height: 24,
                               ),
                             ),
@@ -227,7 +226,7 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                             const Spacer(),
                             SvgPicture.asset(
-                              'assets/arrow-right.svg',
+                              'assets/svg/arrow-right.svg',
                               height: 20,
                               color: const Color(0xffABB5BC),
                             )
@@ -257,7 +256,7 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                             padding: const EdgeInsets.all(9),
                             child: SvgPicture.asset(
-                              'assets/lock.svg',
+                              'assets/svg/lock.svg',
                               height: 24,
                             ),
                           ),
@@ -275,7 +274,7 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                           const Spacer(),
                           SvgPicture.asset(
-                            'assets/arrow-right.svg',
+                            'assets/svg/arrow-right.svg',
                             height: 20,
                             color: const Color(0xffABB5BC),
                           )

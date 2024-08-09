@@ -49,7 +49,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 child: Row(
                   children: [
                     SvgPicture.asset(
-                      'assets/back.svg',
+                      'assets/svg/back.svg',
                       height: 16,
                       color: const Color(0xff1B1C1E),
                     ),
@@ -119,7 +119,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       ),
                       padding: const EdgeInsets.all(12),
                       child: SvgPicture.asset(
-                        'assets/trash.svg',
+                        'assets/svg/trash.svg',
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -231,7 +231,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               borderRadius:
                                   BorderRadius.circular(12.0), // border radius
                             ),
-                            // primary:  const Color(0xffDC1C3D), // background color
+                            // primary:  const red, // background color
                           ),
                           child: const Text(
                             "Save",

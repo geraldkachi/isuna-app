@@ -6,14 +6,15 @@ import 'package:misau/service/network_service.dart';
 import 'package:misau/service/secure_storage_service.dart';
 import 'package:misau/service/toast_service.dart';
 
-
 final getIt = GetIt.instance;
 
 void setup() {
-  getIt.registerSingleton<AuthService>(AuthService());
-  getIt.registerSingleton<NetworkService>(NetworkService());
-  getIt.registerSingleton<DashboardService>(DashboardService());
-  getIt.registerSingleton<ToastService>(ToastService());
-  getIt.registerSingleton<EncryptionService>(EncryptionService());
-  getIt.registerSingleton<SecureStorageService>(SecureStorageService());
+  getIt.registerLazySingleton<AuthService>(() => AuthService());
+  getIt.registerLazySingleton<NetworkService>(() => NetworkService());
+  getIt.registerLazySingleton<DashboardService>(() => DashboardService());
+  getIt.registerLazySingleton<ToastService>(() => ToastService());
+  getIt.registerLazySingleton<EncryptionService>(() => EncryptionService());
+  getIt.registerLazySingleton<SecureStorageService>(
+      () => SecureStorageService());
+  print('get it setup successful');
 }

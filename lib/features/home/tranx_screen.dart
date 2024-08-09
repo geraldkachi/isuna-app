@@ -25,7 +25,6 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final homeWatch = ref.watch(homeViemodelProvider);
     final homeRead = ref.read(homeViemodelProvider.notifier);
 
@@ -45,7 +44,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(11.5),
                       child: SvgPicture.asset(
-                        'assets/search.svg',
+                        'assets/svg/search.svg',
                         color: Colors.black,
                         width: 16,
                         height: 16,
@@ -73,7 +72,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
-                  'assets/export.svg',
+                  'assets/svg/export.svg',
                   height: 19,
                 ),
               ),
@@ -87,7 +86,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                 ),
                 padding: const EdgeInsets.all(13),
                 child: SvgPicture.asset(
-                  'assets/add.svg',
+                  'assets/svg/add.svg',
                   height: 10,
                   width: 10,
                 ),
@@ -112,7 +111,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                     itemCount: homeWatch.filteredTransactions!.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      final transaction = homeWatch.filteredTransactions![index];
+                      final transaction =
+                          homeWatch.filteredTransactions![index];
                       final isIncome = transaction.income != null;
                       final amount = isIncome
                           ? "+NGN${transaction.income!.amount}"
@@ -143,8 +143,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                             margin: const EdgeInsets.only(right: 13),
                             child: SvgPicture.asset(
                               isIncome
-                                  ? 'assets/direction_up.svg'
-                                  : 'assets/direction_down.svg',
+                                  ? 'assets/svg/direction_up.svg'
+                                  : 'assets/svg/direction_down.svg',
                               height: 19,
                             ),
                           ),
@@ -177,14 +177,27 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(
-                                amount,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17,
-                                  color: Color(0xff1B1C1E),
-                                  letterSpacing: -.5,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    '₦',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 17,
+                                      color: Color(0xff1B1C1E),
+                                      fontFamily: 'AreaNeu',
+                                    ),
+                                  ),
+                                  Text(
+                                    amount,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 17,
+                                      color: Color(0xff1B1C1E),
+                                      letterSpacing: -.5,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 3),
                               Text(

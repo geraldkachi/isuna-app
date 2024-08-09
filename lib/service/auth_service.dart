@@ -15,25 +15,19 @@ class AuthService {
       getIt<SecureStorageService>();
 
   AdminModel? _userData;
-  // Balances? _balances;
-  // IncomeAnalysis? _incomeAnalysis;
-  // ExpenseAnalysis? _expenseAnalysis;
-  // ExpenseCategory? _expenseCategory;
-  // TransactionList? _transactionList;
   AdminModel? get userData => _userData;
-  // Balances? get balances => _balances;
-  // IncomeAnalysis? get incomeAnalysis => _incomeAnalysis;
-  // ExpenseAnalysis? get expenseAnalysis => _expenseAnalysis;
-  // ExpenseCategory? get expenseCategory => _expenseCategory;
-  // TransactionList? get transactionList => _transactionList;
 
   // final ApiService _apiService = ApiService();
 
   Future<void> login(String email, String password) async {
     try {
       // Create the payload
-      final payload =
-          jsonEncode({'email': email, 'password': password, 'fcmToken': ''});
+      final payload = jsonEncode({
+        'email': email.trim(),
+        'password': password.trim(),
+      });
+
+      debugPrint('Raw payload $payload');
 
       // Encrypt the payload
       final encryptedPayload = _encryptionService.encrypt(payload);
@@ -44,71 +38,19 @@ class AuthService {
         data: {'payload': encryptedPayload},
       );
       final encryptedResponsePayload = response['data'];
-      debugPrint('encrypted response: ${encryptedResponsePayload}');
+      final token = response['meta']['token'];
+      debugPrint('token: $token');
+      debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
       debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
       _userData =
           AdminModel.fromJson(json.decode(decryptedResponsePayload.toString()));
-      _secureStorageService.writeAccessToken(token: _userData?.token);
+      _secureStorageService.writeAccessToken(token: token);
     } on MisauException {
       rethrow;
     } catch (e) {
       rethrow;
     }
   }
-
-  // void fetchWalletData() {
-  //   fetchWalletOverview();
-  //   fetchIncomeAnalysis();
-  //   fetchExpenseAnalysis();
-  //   fetchExpenseCategory();
-  //   fetchTranxList();
-  //   // fetchFacilities();
-  // }
-
-  // Future<void> fetchWalletOverview() async {
-  //   _balances = await _apiService.fetchBalances(_userData!.token!);
-  //   notifyListeners();
-  // }
-
-  // Future<void> fetchIncomeAnalysis() async {
-  //   _incomeAnalysis = await _apiService.fetchIncome(_userData!.token!);
-  //   notifyListeners();
-  // }
-
-  // Future<void> fetchExpenseAnalysis() async {
-  //   _expenseAnalysis =
-  //       await _apiService.fetchExpenseAnalysis(_userData!.token!);
-  //   notifyListeners();
-  // }
-
-  // Future<void> fetchSummary() async {
-  //   // _expenseAnalysis =
-  //   await _apiService.fetchSummary(_userData!.token!);
-  //   notifyListeners();
-  // }
-
-  // Future<void> fetchFacilities() async {
-  //   // _expenseAnalysis =
-  //   await _apiService.fetchFacilities(_userData!.token!);
-  //   notifyListeners();
-  // }
-
-  // Future<void> fetchAuditTrails() async {
-  //   // _expenseAnalysis =
-  //   await _apiService.fetchAuditTrails(_userData!.token!);
-  //   notifyListeners();
-  // }
-
-  // Future<void> fetchTranxList() async {
-  //   _transactionList = await _apiService.fetchTranxList(_userData!.token!);
-  //   notifyListeners();
-  // }
-
-  // Future<void> fetchExpenseCategory() async {
-  //   _expenseCategory =
-  //       await _apiService.fetchExpenseCategory(_userData!.token!);
-  //   notifyListeners();
-  // }
 }

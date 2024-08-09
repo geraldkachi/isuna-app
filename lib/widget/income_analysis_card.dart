@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/features/home/home_viemodel.dart';
+import 'package:misau/utils/string_utils.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 
-class IncomeAnalysisCard extends StatelessWidget {
+class IncomeAnalysisCard extends ConsumerWidget {
   final int? currentMonthIncome;
   final int? lastMonthIncome;
   final List<String> options;
@@ -15,7 +18,10 @@ class IncomeAnalysisCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeWatch = ref.watch(homeViemodelProvider);
+    final homeRead = ref.read(homeViemodelProvider.notifier);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -38,7 +44,7 @@ class IncomeAnalysisCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 3),
-              SvgPicture.asset('assets/info_circle.svg'),
+              SvgPicture.asset('assets/svg/info_circle.svg'),
               const Spacer(),
               CustomDropdown(options),
             ],
@@ -47,19 +53,29 @@ class IncomeAnalysisCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              currentMonthIncome == null
-                  ? const CircularProgressIndicator()
-                  : Text(
-                      "NGN $currentMonthIncome",
-                      style: const TextStyle(
+              Row(
+                children: [
+                  Text(
+                    '₦',
+                    style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 34,
                         color: Color(0xff1B1C1E),
-                        letterSpacing: -.5,
-                      ),
+                        fontFamily: 'AreaNeu'),
+                  ),
+                  Text(
+                    "${StringUtils.currencyConverter(homeWatch.incomeAnalysis.currentMonthIncome ?? 0).trim()} ",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 34,
+                      color: Color(0xff1B1C1E),
+                      letterSpacing: -.5,
                     ),
+                  ),
+                ],
+              ),
               const SizedBox(width: 7),
-              SvgPicture.asset('assets/eye.svg'),
+              SvgPicture.asset('assets/svg/eye.svg'),
             ],
           ),
           const SizedBox(height: 13),
@@ -73,17 +89,16 @@ class IncomeAnalysisCard extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 14),
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 child: Row(children: [
-                  SvgPicture.asset('assets/arrow_up.svg'),
-                  if (currentMonthIncome != null && lastMonthIncome != null)
-                    Text(
-                      "${calculatePercentageIncrease(lastMonthIncome!, currentMonthIncome!)}%",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        color: Color(0xff31AF99),
-                        letterSpacing: -.5,
-                      ),
+                  SvgPicture.asset('assets/svg/arrow_up.svg'),
+                  Text(
+                    "+${homeRead.calculatePercentageIncrease().trim()}%",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xff31AF99),
+                      letterSpacing: -.5,
                     ),
+                  ),
                 ]),
               ),
               const Text(
@@ -101,10 +116,5 @@ class IncomeAnalysisCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String calculatePercentageIncrease(int lastMonth, int currentMonth) {
-    final percentageIncrease = (currentMonth - lastMonth) / lastMonth * 100;
-    return percentageIncrease.abs().toStringAsFixed(1);
   }
 }

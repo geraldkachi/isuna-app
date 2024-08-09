@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/auth/login/login_view_model.dart';
 import 'package:misau/features/home/homepage.dart';
 import 'package:misau/features/home/main_page.dart';
@@ -31,7 +33,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset('assets/logo.svg'),
+              SvgPicture.asset('assets/svg/logo.svg'),
               const SizedBox(height: 26),
               const Text(
                 "Welcome Back!",
@@ -150,7 +152,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   ),
                   suffixIcon: IconButton(
                     icon: SvgPicture.asset(
-                      'assets/eye_icon.svg',
+                      'assets/svg/eye_icon.svg',
                       width: 21.0,
                       height: 21.0,
                     ),
@@ -166,6 +168,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 child: TextButton(
                   onPressed: () async {
                     loginRead.login(context);
+                    // context.go('/home_page');
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -175,9 +178,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    backgroundColor: const Color(0xffDC1C3D),
+                    backgroundColor: red,
                   ),
-                  child:loginWatch. isLoading
+                  child: loginWatch.isLoading
                       ? const SizedBox(
                           width: 24,
                           height: 24,
@@ -186,15 +189,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             strokeWidth: 2.0,
                           ),
                         )
-                      :
-                  const Text(
-                    "Login",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                      : const Text(
+                          "Login",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                 ),
               ),
             ],

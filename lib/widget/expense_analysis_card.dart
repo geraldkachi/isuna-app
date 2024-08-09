@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 
-class ExpenseAnalysisCard extends StatelessWidget {
+class ExpenseAnalysisCard extends ConsumerWidget {
   final int? currentMonthExpense;
   final int? lastMonthExpense;
   final List<String> options;
@@ -15,7 +17,10 @@ class ExpenseAnalysisCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeWatch = ref.watch(homeViemodelProvider);
+    final homeRead = ref.read(homeViemodelProvider.notifier);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -38,7 +43,7 @@ class ExpenseAnalysisCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 3),
-              SvgPicture.asset('assets/info_circle.svg'),
+              SvgPicture.asset('assets/svg/info_circle.svg'),
               const Spacer(),
               CustomDropdown(options),
             ],
@@ -47,19 +52,29 @@ class ExpenseAnalysisCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              currentMonthExpense == null
-                  ? const CircularProgressIndicator()
-                  : Text(
-                      "NGN $currentMonthExpense",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 34,
-                        color: Color(0xff1B1C1E),
-                        letterSpacing: -.5,
-                      ),
+             Row(
+                      children: [
+                        Text(
+                          '₦',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 34,
+                              color: Color(0xff1B1C1E),
+                              fontFamily: 'AreaNeu'),
+                        ),
+                        Text(
+                          "${homeRead.expenseAnalysis.currentMonthExpense ?? 0}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 34,
+                            color: Color(0xff1B1C1E),
+                            letterSpacing: -.5,
+                          ),
+                        ),
+                      ],
                     ),
               const SizedBox(width: 7),
-              SvgPicture.asset('assets/eye.svg'),
+              SvgPicture.asset('assets/svg/eye.svg'),
             ],
           ),
           const SizedBox(height: 13),
@@ -73,9 +88,9 @@ class ExpenseAnalysisCard extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 14),
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 child: Row(children: [
-                  SvgPicture.asset('assets/arrow_down.svg'),
+                  SvgPicture.asset('assets/svg/arrow_down.svg'),
                   Text(
-                    "${calculatePercentageIncrease(currentMonthExpense ?? 0, lastMonthExpense ?? 0)}%",
+                    "${homeRead.calculatePercentageDecrease()}%",
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,

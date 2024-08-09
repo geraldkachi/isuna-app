@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,7 +45,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 child: Row(
                   children: [
                     SvgPicture.asset(
-                      'assets/back.svg',
+                      'assets/svg/back.svg',
                       height: 16,
                       color: const Color(0xff1B1C1E),
                     ),
@@ -261,7 +260,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               borderRadius:
                                   BorderRadius.circular(12.0), // border radius
                             ),
-                            // primary:  const Color(0xffDC1C3D), // background color
+                            // primary:  const red, // background color
                           ),
                           child: const Text(
                             "Save",

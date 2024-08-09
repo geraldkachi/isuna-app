@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/health/record_expense_payment.dart';
 import 'package:misau/features/health/record_inflow_payment.dart';
 import 'package:misau/widget/custom_dropdown.dart';
@@ -48,7 +49,7 @@ class _HealthDetailsState extends State<HealthDetails>
                   child: Row(
                     children: [
                       SvgPicture.asset(
-                        'assets/back.svg',
+                        'assets/svg/back.svg',
                         height: 16,
                       ),
                       const SizedBox(
@@ -104,7 +105,7 @@ class _HealthDetailsState extends State<HealthDetails>
                   indicator: UnderlineTabIndicator(
                     borderSide: BorderSide(
                       width: 1.0,
-                      color: const Color(0xffDC1C3D).withOpacity(0.7),
+                      color: red.withOpacity(0.7),
                     ),
                     insets: EdgeInsets.zero,
                   ),
@@ -149,7 +150,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                           width: 3,
                                         ),
                                         SvgPicture.asset(
-                                            'assets/info_circle.svg'),
+                                            'assets/svg/info_circle.svg'),
                                         const Spacer(),
                                       ],
                                     ),
@@ -172,7 +173,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                         const SizedBox(
                                           width: 7,
                                         ),
-                                        SvgPicture.asset('assets/eye.svg')
+                                        SvgPicture.asset('assets/svg/eye.svg')
                                       ],
                                     ),
                                     const SizedBox(
@@ -192,7 +193,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                               horizontal: 4, vertical: 4),
                                           child: Row(children: [
                                             SvgPicture.asset(
-                                                'assets/arrow_up.svg'),
+                                                'assets/svg/arrow_up.svg'),
                                             const Text(
                                               "+3.1%",
                                               style: TextStyle(
@@ -238,7 +239,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   SvgPicture.asset(
-                                                      'assets/expense.svg'),
+                                                      'assets/svg/expense.svg'),
                                                   const SizedBox(
                                                     width: 8,
                                                   ),
@@ -279,7 +280,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   SvgPicture.asset(
-                                                      'assets/inflow.svg'),
+                                                      'assets/svg/inflow.svg'),
                                                   const SizedBox(
                                                     width: 8,
                                                   ),
@@ -338,7 +339,8 @@ class _HealthDetailsState extends State<HealthDetails>
                                       const SizedBox(
                                         width: 3,
                                       ),
-                                      SvgPicture.asset('assets/info_circle.svg')
+                                      SvgPicture.asset(
+                                          'assets/svg/info_circle.svg')
                                     ],
                                   ),
                                   const SizedBox(
@@ -357,7 +359,8 @@ class _HealthDetailsState extends State<HealthDetails>
                                                 showGreenLine = value;
                                               });
                                             },
-                                            activeColor: const Color(0xFF34B77F),
+                                            activeColor:
+                                                const Color(0xFF34B77F),
                                             trackOutlineColor:
                                                 MaterialStateProperty
                                                     .resolveWith(
@@ -365,7 +368,8 @@ class _HealthDetailsState extends State<HealthDetails>
                                                   states) {
                                                 if (states.contains(
                                                     MaterialState.selected)) {
-                                                  return const Color(0xFF34B77F);
+                                                  return const Color(
+                                                      0xFF34B77F);
                                                 }
 
                                                 return const Color(0xff6C7278);
@@ -401,7 +405,8 @@ class _HealthDetailsState extends State<HealthDetails>
                                                 showOrangeLine = value;
                                               });
                                             },
-                                            activeColor: const Color(0xFFE7844E),
+                                            activeColor:
+                                                const Color(0xFFE7844E),
                                             trackOutlineColor:
                                                 MaterialStateProperty
                                                     .resolveWith(
@@ -409,7 +414,8 @@ class _HealthDetailsState extends State<HealthDetails>
                                                   states) {
                                                 if (states.contains(
                                                     MaterialState.selected)) {
-                                                  return const Color(0xFFE7844E);
+                                                  return const Color(
+                                                      0xFFE7844E);
                                                 }
 
                                                 return const Color(0xff6C7278);
@@ -642,7 +648,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                           width: 3,
                                         ),
                                         SvgPicture.asset(
-                                            'assets/info_circle.svg'),
+                                            'assets/svg/info_circle.svg'),
                                         const Spacer(),
                                         CustomDropdown(options)
                                       ],
@@ -735,7 +741,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                           height: 13,
                                           decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: Color(0xffC65468),
+                                            color: red700,
                                           ),
                                           margin:
                                               const EdgeInsets.only(right: 5),
@@ -823,7 +829,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                       prefixIcon: Padding(
                                         padding: const EdgeInsets.all(11.5),
                                         child: SvgPicture.asset(
-                                          'assets/search.svg',
+                                          'assets/svg/search.svg',
                                           color: Colors.black,
                                           width: 16,
                                           height: 16,
@@ -835,7 +841,8 @@ class _HealthDetailsState extends State<HealthDetails>
                                         borderSide: BorderSide.none,
                                       ),
                                       contentPadding:
-                                          const EdgeInsets.symmetric(vertical: 14.0),
+                                          const EdgeInsets.symmetric(
+                                              vertical: 14.0),
                                     ),
                                     style: const TextStyle(
                                       fontSize: 15.0,
@@ -853,7 +860,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                   ),
                                   padding: const EdgeInsets.all(10),
                                   child: SvgPicture.asset(
-                                    'assets/export.svg',
+                                    'assets/svg/export.svg',
                                     height: 19,
                                   ),
                                 ),
@@ -869,7 +876,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                   ),
                                   padding: const EdgeInsets.all(13),
                                   child: SvgPicture.asset(
-                                    'assets/add.svg',
+                                    'assets/svg/add.svg',
                                     height: 10,
                                     width: 10,
                                   ),
@@ -907,7 +914,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                       padding: const EdgeInsets.all(11),
                                       margin: const EdgeInsets.only(right: 13),
                                       child: SvgPicture.asset(
-                                        'assets/direction_up.svg',
+                                        'assets/svg/direction_up.svg',
                                         height: 19,
                                       ),
                                     ),

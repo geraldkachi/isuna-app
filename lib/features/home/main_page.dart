@@ -46,32 +46,32 @@ class _MainScreenState extends State<MainScreen> {
         items: [
           BottomNavigationBarItem(
             icon: _getIcon(
-              'assets/selected_dashboard.svg',
-              'assets/unselected_dashboard.svg',
+              'assets/svg/selected_dashboard.svg',
+              'assets/svg/unselected_dashboard.svg',
               0,
             ),
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
             icon: _getIcon(
-              'assets/selected_facilities.svg',
-              'assets/unselected_facilities.svg',
+              'assets/svg/selected_facilities.svg',
+              'assets/svg/unselected_facilities.svg',
               1,
             ),
             label: 'Facilities',
           ),
           BottomNavigationBarItem(
             icon: _getIcon(
-              'assets/selected_admin.svg',
-              'assets/unselected_admin.svg',
+              'assets/svg/selected_admin.svg',
+              'assets/svg/unselected_admin.svg',
               2,
             ),
             label: 'Admin',
           ),
           BottomNavigationBarItem(
             icon: _getIcon(
-              'assets/selected_profile.svg',
-              'assets/unselected_profile.svg',
+              'assets/svg/selected_profile.svg',
+              'assets/svg/unselected_profile.svg',
               3,
             ),
             label: 'Profile',

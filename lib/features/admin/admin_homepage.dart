@@ -74,7 +74,7 @@ class _AdminHomePageState extends State<AdminHomePage>
                       ),
                       padding: const EdgeInsets.all(10),
                       child: SvgPicture.asset(
-                        'assets/search.svg',
+                        'assets/svg/search.svg',
                         height: 20,
                       ),
                     ),
@@ -90,7 +90,7 @@ class _AdminHomePageState extends State<AdminHomePage>
                       ),
                       padding: const EdgeInsets.all(10),
                       child: SvgPicture.asset(
-                        'assets/notification.svg',
+                        'assets/svg/notification.svg',
                         height: 20,
                       ),
                     ),
@@ -107,12 +107,12 @@ class _AdminHomePageState extends State<AdminHomePage>
                         ),
                         padding: const EdgeInsets.all(10),
                         child: SvgPicture.asset(
-                          'assets/filter.svg',
+                          'assets/svg/filter.svg',
                           height: 20,
                         ),
                       ),
                       onTap: () {
-                        Utils. showFilterBottomSheet(context);
+                        Utils.showFilterBottomSheet(context);
                       },
                     ),
                   ],
@@ -144,7 +144,7 @@ class _AdminHomePageState extends State<AdminHomePage>
                           prefixIcon: Padding(
                             padding: const EdgeInsets.all(11.5),
                             child: SvgPicture.asset(
-                              'assets/search.svg',
+                              'assets/svg/search.svg',
                               color: Colors.black,
                               width: 16,
                               height: 16,
@@ -172,7 +172,7 @@ class _AdminHomePageState extends State<AdminHomePage>
                       ),
                       padding: const EdgeInsets.all(10),
                       child: SvgPicture.asset(
-                        'assets/export.svg',
+                        'assets/svg/export.svg',
                         height: 19,
                       ),
                     ),
@@ -189,7 +189,7 @@ class _AdminHomePageState extends State<AdminHomePage>
                         ),
                         padding: const EdgeInsets.all(13),
                         child: SvgPicture.asset(
-                          'assets/add.svg',
+                          'assets/svg/add.svg',
                           height: 10,
                           width: 10,
                         ),

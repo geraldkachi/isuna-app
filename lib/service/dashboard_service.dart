@@ -57,10 +57,11 @@ class DashboardService {
       debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
-      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
+      debugPrint('decrypted response: $decryptedResponsePayload');
+      final Map<String, dynamic> jsonDecodedPayload =
+          json.decode(decryptedResponsePayload);
       _incomeAnalysis = IncomeAnalysis.fromJson(
-          json.decode(decryptedResponsePayload.toString())['incomeAnalysis']);
-      ['total'];
+          jsonDecodedPayload['incomeAnalysis']['total']);
     } on MisauException {
       rethrow;
     } catch (e) {
@@ -79,11 +80,11 @@ class DashboardService {
       debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
-      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
-      _incomeAnalysis = IncomeAnalysis.fromJson(
-          json.decode(decryptedResponsePayload.toString())['expenseAnalysis']
-              ['total']);
-      ['total'];
+      debugPrint('decrypted response: $decryptedResponsePayload');
+      final Map<String, dynamic> jsonDecodedPayload =
+          json.decode(decryptedResponsePayload);
+      _expenseAnalysis = ExpenseAnalysis.fromJson(
+          jsonDecodedPayload['expenseAnalysis']['total']);
     } on MisauException {
       rethrow;
     } catch (e) {
@@ -110,93 +111,90 @@ class DashboardService {
     } catch (e) {
       rethrow;
     }
+  }
 
-    Future<void> fetchExpenseCategory() async {
-      // Send the request to the backend
-      try {
-        final response = await _networkService.get(
-          '/wallet/v1/health-institute/overview?state=&lga=&facility=&section=expenseCategory',
-        );
+  Future<void> fetchExpenseCategory() async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/wallet/v1/health-institute/overview?state=&lga=&facility=&section=expenseCategory',
+      );
 
-        final encryptedResponsePayload = response['data'];
-        debugPrint('encrypted response: ${encryptedResponsePayload}');
-        final decryptedResponsePayload =
-            _encryptionService.decrypt(encryptedResponsePayload);
-        debugPrint(
-            'decrypted response: ${decryptedResponsePayload.toString()}');
-        _expenseCategory = ExpenseCategory.fromJson(json
-            .decode(decryptedResponsePayload.toString())['expenseCategory']);
-      } on MisauException {
-        rethrow;
-      } catch (e) {
-        rethrow;
-      }
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: ${encryptedResponsePayload}');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload}');
+      _expenseCategory = ExpenseCategory.fromJson(
+          json.decode(decryptedResponsePayload.toString())['expenseCategory']);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
     }
+  }
 
-    Future<void> fetchSummary() async {
-      // Send the request to the backend
-      try {
-        final response = await _networkService.get(
-          '/user/v1/admin/summary',
-        );
+  Future<void> fetchSummary() async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/user/v1/admin/summary',
+      );
 
-        final encryptedResponsePayload = response['data'];
-        debugPrint('encrypted response: $encryptedResponsePayload');
-        final decryptedResponsePayload =
-            _encryptionService.decrypt(encryptedResponsePayload);
-        debugPrint(
-            'decrypted response: ${decryptedResponsePayload.toString()}');
-        _expenseCategory = ExpenseCategory.fromJson(json
-            .decode(decryptedResponsePayload.toString())['expenseCategory']);
-      } on MisauException {
-        rethrow;
-      } catch (e) {
-        rethrow;
-      }
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: $decryptedResponsePayload');
+      final jsonDecodedPayload = json.decode(decryptedResponsePayload);
+      _expenseCategory =
+          ExpenseCategory.fromJson(jsonDecodedPayload['expenseCategory']);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
     }
+  }
 
-    Future<void> fetchFacilities() async {
-      // Send the request to the backend
-      try {
-        final response = await _networkService.get(
-          '/user/v1/facilities?lga=&state=Plateau',
-        );
+  Future<void> fetchFacilities() async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/user/v1/facilities?lga=&state=Plateau',
+      );
 
-        final encryptedResponsePayload = response['data'];
-        debugPrint('encrypted response: $encryptedResponsePayload');
-        final decryptedResponsePayload =
-            _encryptionService.decrypt(encryptedResponsePayload);
-        debugPrint(
-            'decrypted response: ${decryptedResponsePayload.toString()}');
-        _expenseCategory = ExpenseCategory.fromJson(json
-            .decode(decryptedResponsePayload.toString())['expenseCategory']);
-      } on MisauException {
-        rethrow;
-      } catch (e) {
-        rethrow;
-      }
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
+      _expenseCategory = ExpenseCategory.fromJson(
+          json.decode(decryptedResponsePayload.toString())['expenseCategory']);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
     }
+  }
 
-    Future<void> fetchAuditTrails() async {
-      // Send the request to the backend
-      try {
-        final response = await _networkService.get(
-          '/user/v1/audit-trails?state=&lga=&facility=',
-        );
+  Future<void> fetchAuditTrails() async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/user/v1/audit-trails?state=&lga=&facility=',
+      );
 
-        final encryptedResponsePayload = response['data'];
-        debugPrint('encrypted response: $encryptedResponsePayload');
-        final decryptedResponsePayload =
-            _encryptionService.decrypt(encryptedResponsePayload);
-        debugPrint(
-            'decrypted response: ${decryptedResponsePayload.toString()}');
-        _expenseCategory = ExpenseCategory.fromJson(json
-            .decode(decryptedResponsePayload.toString())['expenseCategory']);
-      } on MisauException {
-        rethrow;
-      } catch (e) {
-        rethrow;
-      }
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
+      _expenseCategory = ExpenseCategory.fromJson(
+          json.decode(decryptedResponsePayload.toString())['expenseCategory']);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
     }
   }
 }

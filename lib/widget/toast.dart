@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:misau/app/theme/colors.dart';
 
 class Toast extends StatelessWidget {
   final String title;
@@ -14,37 +16,34 @@ class Toast extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-          color: Colors.red, borderRadius: BorderRadius.circular(14.0)),
+      decoration:
+          BoxDecoration(color: red, borderRadius: BorderRadius.circular(10.0)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                // style: context.textTheme.bodyLarge?.copyWith(
-                //   fontWeight: FontWeight.w600,
-                //   color: Colors.white,
-                // )
-              ),
+              Text(title,
+                  style: TextStyle(color: Colors.white, fontSize: 14.0)),
               const SizedBox(
                 height: 8,
               ),
               SizedBox(
                 width: 200.0,
-                child: Text(
-                  subTitle,
-                  // style: context.textTheme.bodySmall?.copyWith(
-                  //   fontWeight: FontWeight.w600,
-                  //   color: Colors.white,
-                  // ),
-                ),
+                child: Text(subTitle,
+                    style: TextStyle(color: Colors.white, fontSize: 12.0)),
               ),
             ],
           ),
-          const Icon(Icons.close)
+          InkWell(
+              onTap: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+              child: const Icon(
+                Icons.close,
+                color: Colors.white,
+              ))
         ],
       ),
     );

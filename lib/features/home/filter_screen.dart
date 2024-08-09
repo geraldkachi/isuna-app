@@ -232,7 +232,7 @@ class _FilterScreenState extends State<FilterScreen>
                                   borderRadius: BorderRadius.circular(
                                       12.0), // border radius
                                 ),
-                                // primary:           const Color(0xffDC1C3D), // background color
+                                // primary:           const red, // background color
                               ),
                               child: const Text(
                                 "Filter",

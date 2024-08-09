@@ -32,7 +32,7 @@ class _AddAdminPageState extends State<AddAdminPage> {
                 child: Row(
                   children: [
                     SvgPicture.asset(
-                      'assets/back.svg',
+                      'assets/svg/back.svg',
                       height: 16,
                       color: Color(0xff1B1C1E),
                     ),
@@ -122,7 +122,7 @@ class _AddAdminPageState extends State<AddAdminPage> {
                         borderRadius:
                             BorderRadius.circular(12.0), // border radius
                       ),
-                      // primary: const Color(0xffDC1C3D), // background color
+                      // primary: const red, // background color
                     ),
                     child: const Text(
                       "Record Payment",

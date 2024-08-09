@@ -23,7 +23,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
       child: DropdownButton<String>(
         value: selectedValue,
         icon: SvgPicture.asset(
-          'assets/arrow_dropdown.svg',
+          'assets/svg/arrow_dropdown.svg',
           width: 13,
           height: 13,
         ),

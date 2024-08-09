@@ -19,7 +19,6 @@ class AppInterceptor extends Interceptor {
     }
         
     options.headers.addAll({
-      HttpHeaders.connectionHeader: 'keep-alive',
       HttpHeaders.contentTypeHeader: 'application/json',
       'User-Agent': 'insomnia/2023.5.8'
     });

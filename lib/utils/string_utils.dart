@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 class StringUtils {
-  static String currencyConverter(num amount, [int decimalDigits = 0]) {
+  static String currencyConverter(int amount, [int decimalDigits = 0]) {
     String formattedAmount =
         NumberFormat.currency(symbol: '', decimalDigits: decimalDigits)
             .format(amount);
