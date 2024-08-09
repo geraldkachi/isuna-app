@@ -300,7 +300,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        RecordInflowPayment()));
+                                                        const RecordInflowPayment()));
                                           },
                                         )
                                       ],
@@ -357,7 +357,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                                 showGreenLine = value;
                                               });
                                             },
-                                            activeColor: Color(0xFF34B77F),
+                                            activeColor: const Color(0xFF34B77F),
                                             trackOutlineColor:
                                                 MaterialStateProperty
                                                     .resolveWith(
@@ -365,7 +365,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                                   states) {
                                                 if (states.contains(
                                                     MaterialState.selected)) {
-                                                  return Color(0xFF34B77F);
+                                                  return const Color(0xFF34B77F);
                                                 }
 
                                                 return const Color(0xff6C7278);
@@ -374,7 +374,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                             activeTrackColor: Colors.white,
                                             inactiveTrackColor: Colors.white,
                                             inactiveThumbColor:
-                                                Color(0xff6C7278),
+                                                const Color(0xff6C7278),
                                           ),
                                           const SizedBox(
                                             width: 10,
@@ -401,7 +401,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                                 showOrangeLine = value;
                                               });
                                             },
-                                            activeColor: Color(0xFFE7844E),
+                                            activeColor: const Color(0xFFE7844E),
                                             trackOutlineColor:
                                                 MaterialStateProperty
                                                     .resolveWith(
@@ -409,7 +409,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                                   states) {
                                                 if (states.contains(
                                                     MaterialState.selected)) {
-                                                  return Color(0xFFE7844E);
+                                                  return const Color(0xFFE7844E);
                                                 }
 
                                                 return const Color(0xff6C7278);
@@ -418,7 +418,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                             activeTrackColor: Colors.white,
                                             inactiveTrackColor: Colors.white,
                                             inactiveThumbColor:
-                                                Color(0xff6C7278),
+                                                const Color(0xff6C7278),
                                           ),
                                           const SizedBox(
                                             width: 10,
@@ -462,27 +462,27 @@ class _HealthDetailsState extends State<HealthDetails>
                                                   Widget text;
                                                   switch (value.toInt()) {
                                                     case 0:
-                                                      text = Text('Jan',
+                                                      text = const Text('Jan',
                                                           style: style);
                                                       break;
                                                     case 1:
-                                                      text = Text('Feb',
+                                                      text = const Text('Feb',
                                                           style: style);
                                                       break;
                                                     case 2:
-                                                      text = Text('Mar',
+                                                      text = const Text('Mar',
                                                           style: style);
                                                       break;
                                                     case 3:
-                                                      text = Text('Apr',
+                                                      text = const Text('Apr',
                                                           style: style);
                                                       break;
                                                     case 4:
-                                                      text = Text('May',
+                                                      text = const Text('May',
                                                           style: style);
                                                       break;
                                                     default:
-                                                      text = Text('',
+                                                      text = const Text('',
                                                           style: style);
                                                       break;
                                                   }
@@ -508,27 +508,27 @@ class _HealthDetailsState extends State<HealthDetails>
                                                   Widget text;
                                                   switch (value.toInt()) {
                                                     case 1:
-                                                      text = Text('\$1k',
+                                                      text = const Text('\$1k',
                                                           style: style);
                                                       break;
                                                     case 5:
-                                                      text = Text('\$5k',
+                                                      text = const Text('\$5k',
                                                           style: style);
                                                       break;
                                                     case 10:
-                                                      text = Text('\$10k',
+                                                      text = const Text('\$10k',
                                                           style: style);
                                                       break;
                                                     case 15:
-                                                      text = Text('\$15k',
+                                                      text = const Text('\$15k',
                                                           style: style);
                                                       break;
                                                     case 20:
-                                                      text = Text('\$20k',
+                                                      text = const Text('\$20k',
                                                           style: style);
                                                       break;
                                                     default:
-                                                      text = Text('',
+                                                      text = const Text('',
                                                           style: style);
                                                       break;
                                                   }
@@ -540,11 +540,11 @@ class _HealthDetailsState extends State<HealthDetails>
                                                 },
                                               ),
                                             ),
-                                            rightTitles: AxisTitles(
+                                            rightTitles: const AxisTitles(
                                               sideTitles:
                                                   SideTitles(showTitles: false),
                                             ),
-                                            topTitles: AxisTitles(
+                                            topTitles: const AxisTitles(
                                               sideTitles:
                                                   SideTitles(showTitles: false),
                                             ),
@@ -554,7 +554,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                             drawHorizontalLine: true,
                                             horizontalInterval: 5,
                                             getDrawingHorizontalLine: (value) {
-                                              return FlLine(
+                                              return const FlLine(
                                                 color: Color(0xffE5EAED),
                                                 strokeWidth: 1,
                                               );
@@ -568,42 +568,42 @@ class _HealthDetailsState extends State<HealthDetails>
                                             if (showGreenLine)
                                               LineChartBarData(
                                                 spots: [
-                                                  FlSpot(0, 8),
-                                                  FlSpot(1, 10),
-                                                  FlSpot(2, 14),
-                                                  FlSpot(3, 15),
-                                                  FlSpot(4, 13),
+                                                  const FlSpot(0, 8),
+                                                  const FlSpot(1, 10),
+                                                  const FlSpot(2, 14),
+                                                  const FlSpot(3, 15),
+                                                  const FlSpot(4, 13),
                                                 ],
                                                 isCurved: true,
-                                                color: Color(0xFF34B77F),
+                                                color: const Color(0xFF34B77F),
                                                 barWidth: 4,
                                                 belowBarData: BarAreaData(
                                                   show: true,
-                                                  color: Color(0xFF34B77F)
+                                                  color: const Color(0xFF34B77F)
                                                       .withOpacity(0.3),
                                                 ),
-                                                dotData: FlDotData(
+                                                dotData: const FlDotData(
                                                   show: false,
                                                 ),
                                               ),
                                             if (showOrangeLine)
                                               LineChartBarData(
                                                 spots: [
-                                                  FlSpot(0, 12),
-                                                  FlSpot(1, 14),
-                                                  FlSpot(2, 18),
-                                                  FlSpot(3, 19),
-                                                  FlSpot(4, 17),
+                                                  const FlSpot(0, 12),
+                                                  const FlSpot(1, 14),
+                                                  const FlSpot(2, 18),
+                                                  const FlSpot(3, 19),
+                                                  const FlSpot(4, 17),
                                                 ],
                                                 isCurved: true,
-                                                color: Color(0xFFE7844E),
+                                                color: const Color(0xFFE7844E),
                                                 barWidth: 4,
                                                 belowBarData: BarAreaData(
                                                   show: true,
-                                                  color: Color(0xFFE7844E)
+                                                  color: const Color(0xFFE7844E)
                                                       .withOpacity(0.3),
                                                 ),
-                                                dotData: FlDotData(
+                                                dotData: const FlDotData(
                                                   show: false,
                                                 ),
                                               ),
@@ -835,7 +835,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                         borderSide: BorderSide.none,
                                       ),
                                       contentPadding:
-                                          EdgeInsets.symmetric(vertical: 14.0),
+                                          const EdgeInsets.symmetric(vertical: 14.0),
                                     ),
                                     style: const TextStyle(
                                       fontSize: 15.0,

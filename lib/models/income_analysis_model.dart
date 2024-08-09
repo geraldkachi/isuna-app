@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 class IncomeAnalysis {
-  final int lastMonthIncome;
-  final int currentMonthIncome;
-  final int incomeDiff;
+  final int? lastMonthIncome;
+  final int? currentMonthIncome;
+  final int? incomeDiff;
 
   IncomeAnalysis({
-    required this.lastMonthIncome,
-    required this.currentMonthIncome,
-    required this.incomeDiff,
+    this.lastMonthIncome,
+    this.currentMonthIncome,
+    this.incomeDiff,
   });
 
   // Convert JSON to Total object

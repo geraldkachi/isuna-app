@@ -1,10 +1,7 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:misau/features/health/health_details.dart';
-import 'package:misau/features/home/homepage.dart';
-import 'package:misau/widget/custom_dropdown.dart';
-import 'package:misau/widget/custom_pie_chart.dart';
+import 'package:misau/utils/utils.dart';
 
 class HealthHomePage extends StatefulWidget {
   const HealthHomePage({
@@ -110,7 +107,7 @@ class _HealthHomePageState extends State<HealthHomePage>
                         ),
                       ),
                       onTap: () {
-                        showFilterBottomSheet(context);
+                        Utils.showFilterBottomSheet(context);
                       },
                     ),
                   ],

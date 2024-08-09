@@ -51,7 +51,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     SvgPicture.asset(
                       'assets/back.svg',
                       height: 16,
-                      color: Color(0xff1B1C1E),
+                      color: const Color(0xff1B1C1E),
                     ),
                     const SizedBox(width: 15),
                     const Text(
@@ -77,7 +77,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       backgroundImage: FileImage(File(_imageFile!.path)),
                     )
                   else
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 35,
                       backgroundColor: Color(0xffE9EAEB),
                       child: Icon(Icons.person,
@@ -112,12 +112,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Color(0xffDEE5E8),
+                          color: const Color(0xffDEE5E8),
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       child: SvgPicture.asset(
                         'assets/trash.svg',
                         fit: BoxFit.cover,
@@ -152,7 +152,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 hintText: 'Enter Role',
               ),
               const SizedBox(height: 12),
-              Text(
+              const Text(
                 "Permissions",
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
@@ -175,13 +175,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildLabelWithAsterisk("State"),
-                    OutlineDropdown(['Osun', 'Justin']),
+                    const OutlineDropdown(['Osun', 'Justin']),
                     const SizedBox(height: 12),
                     _buildLabel("LGA"),
-                    OutlineDropdown(['Boluwaduro']),
+                    const OutlineDropdown(['Boluwaduro']),
                     const SizedBox(height: 12),
                     _buildLabel("Facility"),
-                    OutlineDropdown(['Afao Primary Health Clinic']),
+                    const OutlineDropdown(['Afao Primary Health Clinic']),
                   ],
                 ),
               ),

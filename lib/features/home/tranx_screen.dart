@@ -1,52 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/provider/auth_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:misau/models/tranx_list_model.dart';
 
-class TransactionsScreen extends StatefulWidget {
+class TransactionsScreen extends ConsumerStatefulWidget {
   @override
   _TransactionsScreenState createState() => _TransactionsScreenState();
 }
 
-class _TransactionsScreenState extends State<TransactionsScreen> {
-  late TextEditingController _searchController;
-  late List<Transaction> _filteredTransactions;
-  late AuthProvider _authProvider;
-
+class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController();
-    _searchController.addListener(_filterTransactions);
-    _authProvider = Provider.of<AuthProvider>(context, listen: false);
-    _filteredTransactions = _authProvider.transactionList?.edges ?? [];
+    ref.read(homeViemodelProvider.notifier).initListener();
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    ref.watch(homeViemodelProvider).searchController?.dispose();
     super.dispose();
-  }
-
-  void _filterTransactions() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredTransactions = _authProvider.transactionList?.edges
-              .where((transaction) {
-                final category = transaction.income != null
-                    ? 'Income'
-                    : transaction.expense?.category ?? '';
-                final facility = transaction.facility.toLowerCase();
-                return category.toLowerCase().contains(query) ||
-                       facility.contains(query);
-              }).toList() ?? [];
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
+
+    final homeWatch = ref.watch(homeViemodelProvider);
+    final homeRead = ref.read(homeViemodelProvider.notifier);
 
     return SingleChildScrollView(
       child: Column(
@@ -56,7 +37,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               SizedBox(
                 width: 200,
                 child: TextField(
-                  controller: _searchController,
+                  controller: homeWatch.searchController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -74,7 +55,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: EdgeInsets.symmetric(vertical: 14.0),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14.0),
                   ),
                   style: const TextStyle(
                     fontSize: 15.0,
@@ -115,33 +96,38 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           ),
           Container(
             margin: const EdgeInsets.only(top: 20),
-            height: _filteredTransactions.length * 120.0,
+            height: homeWatch.filteredTransactions!.length * 120.0,
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(14),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: _filteredTransactions.isEmpty
-                ? Center(child: Text('No transactions found'))
+            child: homeWatch.filteredTransactions!.isEmpty
+                ? const Center(child: Text('No transactions found'))
                 : ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) =>
                         const SizedBox(height: 25),
-                    itemCount: _filteredTransactions.length,
+                    itemCount: homeWatch.filteredTransactions!.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      final transaction = _filteredTransactions[index];
+                      final transaction = homeWatch.filteredTransactions![index];
                       final isIncome = transaction.income != null;
                       final amount = isIncome
                           ? "+NGN${transaction.income!.amount}"
                           : "-NGN${transaction.expense!.amount}";
                       final date = isIncome
-                          ? transaction.income!.date.toLocal().toString().split(' ')[0]
-                          : transaction.expense!.date.toLocal().toString().split(' ')[0];
-                      final category = isIncome
-                          ? "Income"
-                          : transaction.expense!.category;
+                          ? transaction.income!.date
+                              .toLocal()
+                              .toString()
+                              .split(' ')[0]
+                          : transaction.expense!.date
+                              .toLocal()
+                              .toString()
+                              .split(' ')[0];
+                      final category =
+                          isIncome ? "Income" : transaction.expense!.category;
 
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +135,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                           Container(
                             width: 56.0,
                             height: 56.0,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Color(0xffF4F4F7),
                             ),

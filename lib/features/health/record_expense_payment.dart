@@ -46,7 +46,7 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                         SvgPicture.asset(
                           'assets/back.svg',
                           height: 16,
-                          color: Color(0xff1B1C1E),
+                          color: const Color(0xff1B1C1E),
                         ),
                         const SizedBox(
                           width: 15,
@@ -67,7 +67,7 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                   const SizedBox(
                     height: 26,
                   ),
-                  Row(
+                  const Row(
                     children: [
                       Text(
                         "State ",
@@ -89,14 +89,14 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
-                  OutlineDropdown(['Osun', 'Justin']),
-                  SizedBox(
+                  const OutlineDropdown(['Osun', 'Justin']),
+                  const SizedBox(
                     height: 12,
                   ),
-                  Text(
+                  const Text(
                     "LGA ",
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -105,14 +105,14 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                       letterSpacing: -.5,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
-                  OutlineDropdown(['Boluwaduro']),
-                  SizedBox(
+                  const OutlineDropdown(['Boluwaduro']),
+                  const SizedBox(
                     height: 12,
                   ),
-                  Text(
+                  const Text(
                     "Facility ",
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -121,14 +121,14 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                       letterSpacing: -.5,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
-                  OutlineDropdown(['Afao Primary Health Clinic']),
-                  SizedBox(
+                  const OutlineDropdown(['Afao Primary Health Clinic']),
+                  const SizedBox(
                     height: 13,
                   ),
-                  Text(
+                  const Text(
                     "Expense",
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
@@ -137,7 +137,7 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                       letterSpacing: -.5,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
                   Container(
@@ -152,7 +152,7 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Category",
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
@@ -161,14 +161,14 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                               letterSpacing: -.5,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
-                          OutlineDropdown(['Training - General']),
-                          SizedBox(
+                          const OutlineDropdown(['Training - General']),
+                          const SizedBox(
                             height: 7,
                           ),
-                          Text(
+                          const Text(
                             "Sub Category",
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
@@ -177,14 +177,14 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                               letterSpacing: -.5,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
-                          OutlineDropdown(['Local Training']),
-                          SizedBox(
+                          const OutlineDropdown(['Local Training']),
+                          const SizedBox(
                             height: 7,
                           ),
-                          Row(
+                          const Row(
                             children: [
                               Text(
                                 "Title ",
@@ -206,16 +206,16 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
                           OutlineTextField(
                               controller: titleController,
                               hintText: 'Enter Title'),
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
-                          Row(
+                          const Row(
                             children: [
                               Text(
                                 "Date ",
@@ -237,18 +237,18 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
-                          OutlineDatePicker(),
-                          SizedBox(
+                          const OutlineDatePicker(),
+                          const SizedBox(
                             height: 7,
                           ),
-                          Row(
+                          const Row(
                             children: [
                               Text(
                                 "Amount ",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 15,
                                   color: Color(0xff1B1C1E),
@@ -266,14 +266,14 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
                           OutlineTextField(
                               controller: titleController,
                               hintText: 'Enter Amount',
                               isNumeric: true),
-                          SizedBox(
+                          const SizedBox(
                             height: 13,
                           ),
                           Container(
@@ -288,7 +288,7 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Total Balance",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
@@ -297,7 +297,7 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                                       letterSpacing: -.5,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5,
                                   ),
                                   Text(

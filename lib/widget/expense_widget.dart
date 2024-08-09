@@ -35,7 +35,7 @@ class ExpenseWidget extends StatelessWidget {
               const SizedBox(width: 3),
               SvgPicture.asset('assets/info_circle.svg'),
               const Spacer(),
-              CustomDropdown([]), // Replace with actual options
+              const CustomDropdown([]), // Replace with actual options
             ],
           ),
           const SizedBox(height: 13),
@@ -82,10 +82,10 @@ class ExpenseWidget extends StatelessWidget {
 
 Color getColorForCategory(String category) {
   return category.contains("UTILITIES")
-      ? Color(0xffE6844D)
+      ? const Color(0xffE6844D)
       : category.contains("FUEL & LUBRICANTS")
-          ? Color(0xff4D81E7)
+          ? const Color(0xff4D81E7)
           : category.contains("Other")
-              ? Color(0xffC65468)
+              ? const Color(0xffC65468)
               : Colors.grey;
 }

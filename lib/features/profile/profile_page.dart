@@ -1,13 +1,10 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/features/admin/add_admin.dart';
 import 'package:misau/features/health/health_details.dart';
-import 'package:misau/features/home/homepage.dart';
 import 'package:misau/features/profile/personal_info.dart';
 import 'package:misau/features/profile/preferences.dart';
-import 'package:misau/widget/custom_dropdown.dart';
-import 'package:misau/widget/custom_pie_chart.dart';
+import 'package:misau/utils/utils.dart';
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
@@ -113,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                       ),
                       onTap: () {
-                        showFilterBottomSheet(context);
+                         Utils.showFilterBottomSheet(context);
                       },
                     ),
                   ],
@@ -179,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 letterSpacing: -.5,
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             SvgPicture.asset(
                               'assets/arrow-right.svg',
                               height: 20,
@@ -195,12 +192,12 @@ class _ProfilePageState extends State<ProfilePage>
                                     const PersonalInfoPage()));
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     InkWell(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
                             Container(
@@ -228,7 +225,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 letterSpacing: -.5,
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             SvgPicture.asset(
                               'assets/arrow-right.svg',
                               height: 20,
@@ -244,11 +241,11 @@ class _ProfilePageState extends State<ProfilePage>
                                 builder: (context) => const PreferencesPage()));
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         children: [
                           Container(
@@ -276,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage>
                               letterSpacing: -.5,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           SvgPicture.asset(
                             'assets/arrow-right.svg',
                             height: 20,
@@ -285,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage>
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                   ]),
@@ -361,7 +358,7 @@ class FacilityCardItem extends StatelessWidget {
               ),
               Container(
                   decoration: BoxDecoration(
-                    color: Color(0xffF0F9F3),
+                    color: const Color(0xffF0F9F3),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   padding:
@@ -382,7 +379,7 @@ class FacilityCardItem extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HealthDetails()),
+          MaterialPageRoute(builder: (context) => const HealthDetails()),
         );
       },
     );

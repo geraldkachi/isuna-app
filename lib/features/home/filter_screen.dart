@@ -1,12 +1,6 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:misau/utils/utils.dart';
-import 'package:misau/widget/custom_dropdown.dart';
-import 'package:misau/widget/custom_pie_chart.dart';
 import 'package:misau/widget/outline_datepicker.dart';
 import 'package:misau/widget/outline_dropdown.dart';
-import 'package:misau/widget/outline_textfield.dart';
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({
@@ -40,10 +34,10 @@ class _FilterScreenState extends State<FilterScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
-                  Text(
+                  const Text(
                     "Filter",
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
@@ -55,7 +49,7 @@ class _FilterScreenState extends State<FilterScreen>
                   const SizedBox(
                     height: 26,
                   ),
-                  Row(
+                  const Row(
                     children: [
                       Text(
                         "State ",
@@ -77,14 +71,14 @@ class _FilterScreenState extends State<FilterScreen>
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
-                  OutlineDropdown(['Osun', 'Justin']),
-                  SizedBox(
+                  const OutlineDropdown(['Osun', 'Justin']),
+                  const SizedBox(
                     height: 12,
                   ),
-                  Text(
+                  const Text(
                     "LGA ",
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -93,14 +87,14 @@ class _FilterScreenState extends State<FilterScreen>
                       letterSpacing: -.5,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
-                  OutlineDropdown(['Boluwaduro']),
-                  SizedBox(
+                  const OutlineDropdown(['Boluwaduro']),
+                  const SizedBox(
                     height: 12,
                   ),
-                  Text(
+                  const Text(
                     "Facility ",
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -109,11 +103,11 @@ class _FilterScreenState extends State<FilterScreen>
                       letterSpacing: -.5,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
-                  OutlineDropdown(['Afao Primary Health Clinic']),
-                  SizedBox(
+                  const OutlineDropdown(['Afao Primary Health Clinic']),
+                  const SizedBox(
                     height: 12,
                   ),
                   Row(
@@ -187,7 +181,7 @@ class _FilterScreenState extends State<FilterScreen>
                       )
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
                   const SizedBox(

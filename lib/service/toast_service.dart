@@ -1,0 +1,24 @@
+import 'package:flutter/material.dart';
+import 'package:misau/widget/toast.dart';
+
+enum ToastType { error, warning, success, defaultType }
+
+class ToastService {
+  void showToast(context,
+      {
+      required String title,
+      required String subTitle}) {
+    final snackBar = SnackBar(
+        backgroundColor: Colors.transparent,
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        elevation: 0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+        duration: const Duration(seconds: 10),
+        content: Toast(
+          title: title,
+          subTitle: subTitle,
+        ));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+}

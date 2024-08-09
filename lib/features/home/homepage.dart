@@ -1,28 +1,24 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:misau/features/home/filter_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/features/home/tranx_screen.dart';
-import 'package:misau/provider/auth_provider.dart';
+import 'package:misau/utils/utils.dart';
 import 'package:misau/widget/app_header.dart';
-import 'package:misau/widget/custom_dropdown.dart';
-import 'package:misau/widget/custom_pie_chart.dart';
 import 'package:misau/widget/expense_analysis_card.dart';
 import 'package:misau/widget/expense_widget.dart';
 import 'package:misau/widget/income_analysis_card.dart';
 import 'package:misau/widget/total_balance_card.dart';
-import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({
     super.key,
   });
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
+class _HomePageState extends  ConsumerState<HomePage>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   List<String> options = ['Monthly', 'Weekly', 'Daily'];
@@ -31,16 +27,19 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    Provider.of<AuthProvider>(context, listen: false).fetchWalletData();
+    ref.read(homeViemodelProvider.notifier).fetchWalletData();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final homeWatch = ref.watch(homeViemodelProvider);
+    final homeRead = ref.read(homeViemodelProvider.notifier);
+
     final appSize = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color(0xffF4F4F7),
-        body: Consumer<AuthProvider>(builder: (context, auth, child) {
-          return Stack(
+        body: Stack(
             children: [
               Container(
                 width: double.infinity,
@@ -53,10 +52,10 @@ class _HomePageState extends State<HomePage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppHeader(
-                      firstName: auth.userData?.firstName ?? 'User',
-                      lastName: auth.userData?.lastName ?? 'User',
+                      firstName: homeWatch.userData.firstName ?? 'User',
+                      lastName: homeWatch.userData.lastName ?? 'User',
                       onNotification: () {},
-                      onFilter: () => showFilterBottomSheet(context),
+                      onFilter: () =>  Utils.showFilterBottomSheet(context),
                       onSearch: () {},
                     ),
                     TabBar(
@@ -90,30 +89,29 @@ class _HomePageState extends State<HomePage>
                           child: Column(
                             children: [
                               TotalBalanceCard(
-                                totalBalance: auth.balances?.totalBalance,
-                                actualBalance: auth.balances?.actualBalance,
-                                pendingBalance: auth.balances?.pendingBalance,
+                                totalBalance: homeWatch.balances.totalBalance,
+                                actualBalance: homeWatch.balances.actualBalance,
+                                pendingBalance: homeWatch.balances.pendingBalance,
                               ),
                               const SizedBox(height: 20),
                               IncomeAnalysisCard(
                                 currentMonthIncome:
-                                    auth.incomeAnalysis?.currentMonthIncome,
+                                    homeWatch.incomeAnalysis.currentMonthIncome,
                                 lastMonthIncome:
-                                    auth.incomeAnalysis?.lastMonthIncome,
+                                    homeWatch.incomeAnalysis.lastMonthIncome,
                                 options: options,
                               ),
                               const SizedBox(height: 20),
                               ExpenseAnalysisCard(
                                 currentMonthExpense:
-                                    auth.expenseAnalysis?.currentMonthExpense,
+                                    homeWatch.expenseAnalysis.currentMonthExpense,
                                 lastMonthExpense:
-                                    auth.expenseAnalysis?.lastMonthExpense,
+                                    homeWatch.expenseAnalysis.lastMonthExpense,
                                 options: options,
                               ),
                               const SizedBox(height: 20),
-                              if (auth.expenseCategory != null)
                                 ExpenseWidget(
-                                  expenseCategory: auth.expenseCategory!,
+                                  expenseCategory: homeWatch.expenseCategory,
                                 ),
                               const SizedBox(height: 13),
                             ],
@@ -364,23 +362,22 @@ class _HomePageState extends State<HomePage>
                               // ),
                              IncomeAnalysisCard(
                                 currentMonthIncome:
-                                    auth.incomeAnalysis?.currentMonthIncome,
+                                    homeWatch.incomeAnalysis.currentMonthIncome,
                                 lastMonthIncome:
-                                    auth.incomeAnalysis?.lastMonthIncome,
+                                    homeWatch.incomeAnalysis.lastMonthIncome,
                                 options: options,
                               ),
                               const SizedBox(height: 20),
                               ExpenseAnalysisCard(
                                 currentMonthExpense:
-                                    auth.expenseAnalysis?.currentMonthExpense,
+                                    homeWatch.expenseAnalysis.currentMonthExpense,
                                 lastMonthExpense:
-                                    auth.expenseAnalysis?.lastMonthExpense,
+                                    homeWatch.expenseAnalysis.lastMonthExpense,
                                 options: options,
                               ),
                               const SizedBox(height: 20),
-                              if (auth.expenseCategory != null)
                                 ExpenseWidget(
-                                  expenseCategory: auth.expenseCategory!,
+                                  expenseCategory: homeWatch.expenseCategory!,
                                 ),
                               const SizedBox(height: 13),
                               ],
@@ -392,8 +389,8 @@ class _HomePageState extends State<HomePage>
                 ),
               )
             ],
-          );
-        }));
+          )
+        );
   }
 
   Widget _buildTab(String text) {
@@ -404,32 +401,3 @@ class _HomePageState extends State<HomePage>
   }
 }
 
-void showFilterBottomSheet(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(20.0),
-      ),
-    ),
-    builder: (context) {
-      return FilterScreen();
-    },
-  );
-}
-
-double calculatePercentageIncrease(int oldValue, int newValue) {
-  if (oldValue == 0) {
-    if (newValue > 0) {
-      // If oldValue is 0 and newValue is greater than 0, percentage increase is 100%
-      return 100.0;
-    } else {
-      // If both oldValue and newValue are 0, percentage increase is 0%
-      return 0.0;
-    }
-  }
-
-  double increase = newValue.toDouble() - oldValue.toDouble();
-  double percentageIncrease = (increase / oldValue) * 100;
-  return percentageIncrease;
-}

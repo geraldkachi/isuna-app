@@ -1,12 +1,12 @@
 class Balances {
-  final int actualBalance;
-  final int pendingBalance;
-  final int totalBalance;
+  final int? actualBalance;
+  final int? pendingBalance;
+  final int? totalBalance;
 
   Balances({
-    required this.actualBalance,
-    required this.pendingBalance,
-    required this.totalBalance,
+     this.actualBalance,
+     this.pendingBalance,
+     this.totalBalance,
   });
 
   // Convert JSON to Balances object

@@ -1,35 +1,33 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/features/auth/login/login_view_model.dart';
 import 'package:misau/features/home/homepage.dart';
 import 'package:misau/features/home/main_page.dart';
 import 'package:misau/provider/auth_provider.dart';
-import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({
     super.key,
   });
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  bool _obscureText = true;
-  bool _isLoading = false;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey();
-
+class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
+    final loginWatch = ref.watch(loginViewModelProvider);
+    final loginRead = ref.read(loginViewModelProvider.notifier);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 60, left: 20, right: 20),
         child: Form(
-          key: _formKey,
+          key: loginWatch.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -59,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 7),
               TextFormField(
-                controller: _emailController,
+                controller: loginWatch.emailController,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 18.0,
@@ -117,8 +115,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 7),
               TextFormField(
-                controller: _passController,
-                obscureText: _obscureText,
+                controller: loginWatch.passController,
+                obscureText: loginWatch.obscureText,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 18.0,
@@ -157,9 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 21.0,
                     ),
                     onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
+                      loginRead.togglePassword();
                     },
                   ),
                 ),
@@ -167,11 +163,9 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () async {
-                    if (!_isLoading) {
-                      await onLoginPressed(context);
-                    }
+                    loginRead.login(context);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -181,19 +175,19 @@ class _LoginPageState extends State<LoginPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    // primary: const Color(0xffDC1C3D),
+                    backgroundColor: const Color(0xffDC1C3D),
                   ),
-                  // child: _isLoading
-                  //     ? const SizedBox(
-                  //         width: 24,
-                  //         height: 24,
-                  //         child: CircularProgressIndicator(
-                  //           color: Colors.white,
-                  //           strokeWidth: 2.0,
-                  //         ),
-                  //       )
-                  //     :
-                  child: const Text(
+                  child:loginWatch. isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.0,
+                          ),
+                        )
+                      :
+                  const Text(
                     "Login",
                     style: TextStyle(
                       color: Colors.white,
@@ -208,33 +202,5 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-
-  Future<void> onLoginPressed(BuildContext context) async {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomePage()));
-    // if (_formKey.currentState!.validate()) {
-    //   setState(() => _isLoading = true);
-    //   try {
-    //     await Provider.of<AuthProvider>(context, listen: false).login(
-    //       _emailController.text,
-    //       _passController.text,
-    //       'qwerty',
-    //     );
-    //     Navigator.push(
-    //       context,
-    //       MaterialPageRoute(builder: (context) => MainScreen()),
-    //     );
-    //   } catch (error) {
-    //     log(error.toString());
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(
-    //         content: Text('Invalid login credentials'),
-    //       ),
-    //     );
-    //   } finally {
-    //     setState(() => _isLoading = false);
-    //   }
-    // }
   }
 }

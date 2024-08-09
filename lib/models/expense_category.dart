@@ -1,26 +1,27 @@
 import 'dart:convert';
 
 class ExpenseCategory {
-  final String name;
-  final List<String> categories;
-  final List<int> records;
+  final String? name;
+  final List<String>? categories;
+  final List<int>? records;
 
   ExpenseCategory({
-    required this.name,
-    required this.categories,
-    required this.records,
+    this.name,
+    this.categories,
+    this.records,
   });
 
   // Method to calculate the total expense
-  int get total => records.reduce((a, b) => a + b);
+  int get total => records!.reduce((a, b) => a + b);
 
   // Method to get category data with percentages
   List<CategoryData> get categoriesWithPercentages {
-    return categories.asMap().entries.map((entry) {
+    return categories!.asMap().entries.map((entry) {
       final index = entry.key;
       final category = entry.value;
-      final amount = records[index];
-      final percentage = total > 0 ? (amount / total * 100).toStringAsFixed(1) : '0.0';
+      final amount = records![index];
+      final percentage =
+          total > 0 ? (amount / total * 100).toStringAsFixed(1) : '0.0';
       return CategoryData(
         category: category,
         amount: amount,

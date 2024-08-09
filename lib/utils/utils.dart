@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:misau/features/home/filter_screen.dart';
 
 class Utils {
   static String formatNumber(String numberString) {
@@ -14,4 +16,19 @@ class Utils {
     return numberString; // Return the original string if parsing fails
   }
 }
+
+  static void showFilterBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(20.0),
+      ),
+    ),
+    builder: (context) {
+      return const FilterScreen();
+    },
+  );
+}
+
 }

@@ -1,10 +1,7 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:misau/widget/outline_dropdown.dart';
-import 'package:misau/widget/outline_textfield.dart';
 
 class PreferencesPage extends StatefulWidget {
   const PreferencesPage({super.key});
@@ -51,7 +48,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                     SvgPicture.asset(
                       'assets/back.svg',
                       height: 16,
-                      color: Color(0xff1B1C1E),
+                      color: const Color(0xff1B1C1E),
                     ),
                     const SizedBox(width: 15),
                     const Text(
@@ -70,7 +67,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
               const SizedBox(height: 26),
               Row(
                 children: [
-                  Column(
+                  const Column(
                     children: [
                       Text(
                         "Update Systems",
@@ -96,15 +93,15 @@ class _PreferencesPageState extends State<PreferencesPage> {
                       ),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Switch(
                     value: true,
                     onChanged: (value) {},
-                    activeColor: Color(0xFF34B77F),
+                    activeColor: const Color(0xFF34B77F),
                     trackOutlineColor: MaterialStateProperty.resolveWith(
                       (final Set<MaterialState> states) {
                         if (states.contains(MaterialState.selected)) {
-                          return Color(0xFF34B77F);
+                          return const Color(0xFF34B77F);
                         }
 
                         return const Color(0xff6C7278);
@@ -112,14 +109,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
                     ),
                     activeTrackColor: Colors.white,
                     inactiveTrackColor: Colors.white,
-                    inactiveThumbColor: Color(0xff6C7278),
+                    inactiveThumbColor: const Color(0xff6C7278),
                   )
                 ],
               ),
               const SizedBox(height: 26),
               Row(
                 children: [
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -146,15 +143,15 @@ class _PreferencesPageState extends State<PreferencesPage> {
                       ),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Switch(
                     value: true,
                     onChanged: (value) {},
-                    activeColor: Color(0xFF34B77F),
+                    activeColor: const Color(0xFF34B77F),
                     trackOutlineColor: MaterialStateProperty.resolveWith(
                       (final Set<MaterialState> states) {
                         if (states.contains(MaterialState.selected)) {
-                          return Color(0xFF34B77F);
+                          return const Color(0xFF34B77F);
                         }
 
                         return const Color(0xff6C7278);
@@ -162,14 +159,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
                     ),
                     activeTrackColor: Colors.white,
                     inactiveTrackColor: Colors.white,
-                    inactiveThumbColor: Color(0xff6C7278),
+                    inactiveThumbColor: const Color(0xff6C7278),
                   )
                 ],
               ),
               const SizedBox(height: 26),
               Row(
                 children: [
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -196,15 +193,15 @@ class _PreferencesPageState extends State<PreferencesPage> {
                       ),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Switch(
                     value: true,
                     onChanged: (value) {},
-                    activeColor: Color(0xFF34B77F),
+                    activeColor: const Color(0xFF34B77F),
                     trackOutlineColor: MaterialStateProperty.resolveWith(
                       (final Set<MaterialState> states) {
                         if (states.contains(MaterialState.selected)) {
-                          return Color(0xFF34B77F);
+                          return const Color(0xFF34B77F);
                         }
 
                         return const Color(0xff6C7278);
@@ -212,11 +209,11 @@ class _PreferencesPageState extends State<PreferencesPage> {
                     ),
                     activeTrackColor: Colors.white,
                     inactiveTrackColor: Colors.white,
-                    inactiveThumbColor: Color(0xff6C7278),
+                    inactiveThumbColor: const Color(0xff6C7278),
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 200,
               ),
               Row(
