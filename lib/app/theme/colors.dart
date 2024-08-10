@@ -4,7 +4,6 @@ const Color red = Color(0xFFDC1C3D);
 const Color red700 = Color(0xFFC65468);
 const Color red500 = Color(0xFFF9C6BF);
 const Color green = Color(0xFF2AAC95);
-const Color green500 = Color(0xFF2AAC95);
 const Color green400 = Color(0xFFD6FBE6);
 const Color green300 = Color(0xFF31B099);
 const Color green200 = Color(0xFF1C8C6E);

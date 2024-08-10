@@ -46,13 +46,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               const SizedBox(height: 10),
               const Text(
                 "Let's login to your Misua account",
-                style: TextStyle(color: Color(0xff6A7187), fontSize: 15),
+                style: TextStyle(color: black500, fontSize: 15),
               ),
               const SizedBox(height: 30),
               const Text(
                 "Email",
                 style: TextStyle(
-                  color: Color(0xff6A7187),
+                  color: black500,
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                 ),
@@ -99,7 +99,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   Text(
                     "Password",
                     style: TextStyle(
-                      color: Color(0xff6A7187),
+                      color: black500,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                     ),

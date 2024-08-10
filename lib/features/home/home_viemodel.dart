@@ -33,6 +33,7 @@ class HomeViemodel extends ChangeNotifier {
   List<Transaction>? filteredTransactions = [];
 
   bool isLoading = false;
+  bool onInit = false;
 
   void initListener() {
     searchController?.addListener(filterTransactions);
@@ -53,39 +54,37 @@ class HomeViemodel extends ChangeNotifier {
             [];
   }
 
-  void fetchWalletData(context) {
-    fetchBalances(context);
-    fetchIncome(context);
-    fetchTranxList(context);
-    fetchExpenseAnalysis(context);
-    fetchExpenseCategory(context);
+  Future<void> fetchWalletData(context) async {
+    // isLoading = true;
+    // notifyListeners();
+    // Future.wait([
+    //   fetchBalances(context),
+    //   fetchIncome(context),
+    //   fetchTranxList(context),
+    //   fetchExpenseAnalysis(context),
+    //   fetchExpenseCategory(context),
+    // ]).then((value) {
+    //   isLoading = false;
+    //   onInit = true;
+
+    //   notifyListeners();
+    // });
+
+    await fetchBalances(context);
+    await fetchIncome(context);
+    await fetchTranxList(context);
+    await fetchExpenseAnalysis(context);
+    await fetchExpenseCategory(context);
+    onInit = true;
   }
 
-  void fetchBalances(context) {
+  Future<void> fetchBalances(context) async {
     try {
       isLoading = true;
       notifyListeners();
-
-      _dashboardService.fetchBalances().then((_) {
-        isLoading = false;
-      });
-    } on MisauException catch (e) {
-      _toastService.showToast(context,
-          title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
-      _toastService.showToast(context,
-          title: 'Error', subTitle: 'Something went wrong.');
-    }
-  }
-
-  void fetchIncome(context) {
-    try {
-      isLoading = true;
-      notifyListeners();
-      _dashboardService.fetchIncome().then((_) {
-        isLoading = false;
+    await  _dashboardService.fetchBalances();
+           isLoading = false;
         notifyListeners();
-      });
     } on MisauException catch (e) {
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
@@ -95,14 +94,13 @@ class HomeViemodel extends ChangeNotifier {
     }
   }
 
-  void fetchTranxList(context) {
+  Future<void> fetchIncome(context) async {
     try {
       isLoading = true;
       notifyListeners();
-      _dashboardService.fetchTranxList().then((_) {
-        isLoading = false;
-        notifyListeners();
-      });
+     await _dashboardService.fetchIncome();
+      isLoading = false;
+      notifyListeners();
     } on MisauException catch (e) {
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
@@ -112,14 +110,13 @@ class HomeViemodel extends ChangeNotifier {
     }
   }
 
-  void fetchExpenseAnalysis(context) {
+  Future<void> fetchTranxList(context) async {
     try {
       isLoading = true;
       notifyListeners();
-      _dashboardService.fetchExpenseAnalysis().then((_) {
-        isLoading = false;
-        notifyListeners();
-      });
+    await  _dashboardService.fetchTranxList();
+      isLoading = false;
+      notifyListeners();
     } on MisauException catch (e) {
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
@@ -129,13 +126,29 @@ class HomeViemodel extends ChangeNotifier {
     }
   }
 
-  void fetchExpenseCategory(context) {
+  Future<void> fetchExpenseAnalysis(context) async {
     try {
       isLoading = true;
       notifyListeners();
-      _dashboardService.fetchExpenseCategory().then((_) {
-        isLoading = false;
-      });
+    await  _dashboardService.fetchExpenseAnalysis();
+      isLoading = false;
+      notifyListeners();
+    } on MisauException catch (e) {
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e) {
+      _toastService.showToast(context,
+          title: 'Error', subTitle: 'Something went wrong.');
+    }
+  }
+
+  Future<void> fetchExpenseCategory(context) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+   await   _dashboardService.fetchExpenseCategory();
+      isLoading = false;
+      notifyListeners();
     } on MisauException catch (e) {
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
@@ -162,16 +175,16 @@ class HomeViemodel extends ChangeNotifier {
   // }
 
   String calculatePercentageIncrease() {
-    final percentageIncrease =
-        (incomeAnalysis.currentMonthIncome ?? 0 - incomeAnalysis.lastMonthIncome!) /
-            incomeAnalysis.lastMonthIncome! *
-            100;
+    final percentageIncrease = (incomeAnalysis.currentMonthIncome ??
+            0 - incomeAnalysis.lastMonthIncome!) /
+        incomeAnalysis.lastMonthIncome! *
+        100;
     return percentageIncrease.abs().toStringAsFixed(1);
   }
 
   String calculatePercentageDecrease() {
-    final percentageDecrease = (expenseAnalysis.currentMonthExpense ?? 0 -
-            expenseAnalysis.lastMonthExpense!) /
+    final percentageDecrease = (expenseAnalysis.currentMonthExpense ??
+            0 - expenseAnalysis.lastMonthExpense!) /
         expenseAnalysis.lastMonthExpense! *
         100;
     return percentageDecrease.abs().toStringAsFixed(1);

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/provider/auth_provider.dart';
 import 'package:misau/models/tranx_list_model.dart';
+import 'package:misau/utils/string_utils.dart';
 
 class TransactionsScreen extends ConsumerStatefulWidget {
   @override
@@ -114,9 +115,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                       final transaction =
                           homeWatch.filteredTransactions![index];
                       final isIncome = transaction.income != null;
-                      final amount = isIncome
-                          ? "+NGN${transaction.income!.amount}"
-                          : "-NGN${transaction.expense!.amount}";
+                      // final amount = isIncome
+                      //     ? "+NGN${transaction.income!.amount}"
+                      //     : "-NGN${transaction.expense!.amount}";
                       final date = isIncome
                           ? transaction.income!.date
                               .toLocal()
@@ -177,28 +178,55 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    '₦',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 17,
-                                      color: Color(0xff1B1C1E),
-                                      fontFamily: 'AreaNeu',
+                              isIncome
+                                  ? Row(
+                                      children: [
+                                        Text(
+                                          '+₦',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 17,
+                                            color: Color(0xff1B1C1E),
+                                            fontFamily: 'AreaNeu',
+                                          ),
+                                        ),
+                                        Text(
+                                          StringUtils.currencyConverter(
+                                              int.parse(
+                                                  transaction.income!.amount)),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 17,
+                                            color: Color(0xff1B1C1E),
+                                            letterSpacing: -.5,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Row(
+                                      children: [
+                                        const Text(
+                                          '-₦',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 17,
+                                            color: Color(0xff1B1C1E),
+                                            fontFamily: 'AreaNeu',
+                                          ),
+                                        ),
+                                        Text(
+                                          StringUtils.currencyConverter(
+                                              int.parse(
+                                                  transaction.expense!.amount)),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 17,
+                                            color: Color(0xff1B1C1E),
+                                            letterSpacing: -.5,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  Text(
-                                    amount,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 17,
-                                      color: Color(0xff1B1C1E),
-                                      letterSpacing: -.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
                               const SizedBox(height: 3),
                               Text(
                                 date,

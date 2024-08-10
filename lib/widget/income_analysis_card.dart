@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/utils/string_utils.dart';
 import 'package:misau/widget/custom_dropdown.dart';
@@ -83,7 +84,7 @@ class IncomeAnalysisCard extends ConsumerWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xffD6FBE6),
+                  color:  green400,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 margin: const EdgeInsets.only(right: 14),

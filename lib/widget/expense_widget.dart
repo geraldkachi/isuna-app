@@ -85,7 +85,7 @@ Color getColorForCategory(String category) {
   return category.contains("UTILITIES")
       ? const Color(0xffE6844D)
       : category.contains("FUEL & LUBRICANTS")
-          ? const Color(0xff4D81E7)
+          ?  blue
           : category.contains("Other")
               ?  red700
               : Colors.grey;

@@ -183,7 +183,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
-                                            color: const Color(0xffD6FBE6),
+                                            color:  green400,
                                             borderRadius:
                                                 BorderRadius.circular(5),
                                           ),
@@ -777,7 +777,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                           height: 13,
                                           decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: Color(0xff4D81E7),
+                                            color: blue,
                                           ),
                                           margin:
                                               const EdgeInsets.only(right: 5),

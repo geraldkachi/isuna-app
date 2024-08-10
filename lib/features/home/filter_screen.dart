@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/widget/outline_datepicker.dart';
 import 'package:misau/widget/outline_dropdown.dart';
 
@@ -26,9 +27,14 @@ class _FilterScreenState extends State<FilterScreen>
   @override
   Widget build(BuildContext context) {
     final appSize = MediaQuery.of(context).size;
-    return Scaffold(
-        backgroundColor: const Color(0xffF4F4F7),
-        body: Padding(
+    return Container(
+        height: appSize.height * 0.7,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.0),
+                topRight: Radius.circular(12.0))),
+        child: Padding(
             padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
             child: SingleChildScrollView(
               child: Column(
@@ -191,7 +197,7 @@ class _FilterScreenState extends State<FilterScreen>
                     children: [
                       SizedBox(
                           width: MediaQuery.of(context).size.width * .4,
-                          height: 55,
+                          height: 48,
                           child: OutlinedButton(
                               onPressed: () {
                                 Navigator.pop(context);
@@ -218,21 +224,21 @@ class _FilterScreenState extends State<FilterScreen>
                       const Spacer(),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .4,
-                        height: 55,
+                        height: 48,
                         child: SizedBox(
                             width: double.infinity, // Make button full width
-                            child: ElevatedButton(
+                            child: TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(
+                                backgroundColor: red,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
                                       12.0), // border radius
                                 ),
-                                // primary:           const red, // background color
                               ),
                               child: const Text(
                                 "Filter",

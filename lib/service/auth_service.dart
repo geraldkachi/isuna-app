@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:misau/app/locator.dart';
 import 'package:misau/exceptions/smart_pay_exception.dart';
 import 'package:misau/models/admin_model.dart';
+import 'package:misau/models/error_model.dart';
 import 'package:misau/service/encryption_service.dart';
 import 'package:misau/service/network_service.dart';
 import 'package:misau/service/secure_storage_service.dart';
@@ -16,6 +17,8 @@ class AuthService {
 
   AdminModel? _userData;
   AdminModel? get userData => _userData;
+
+  ErrorModel? errorModel;
 
   // final ApiService _apiService = ApiService();
 
