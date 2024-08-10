@@ -1,15 +1,14 @@
-import 'dart:convert';
 
 // Define the ExpenseAnalysis model
 class ExpenseAnalysis {
-  final int lastMonthExpense;
-  final int currentMonthExpense;
-  final int expenseDiff;
+  final int? lastMonthExpense;
+  final int? currentMonthExpense;
+  final int? expenseDiff;
 
   ExpenseAnalysis({
-    required this.lastMonthExpense,
-    required this.currentMonthExpense,
-    required this.expenseDiff,
+     this.lastMonthExpense,
+     this.currentMonthExpense,
+     this.expenseDiff,
   });
 
   // Convert JSON to ExpenseAnalysis object

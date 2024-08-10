@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class AppHeader extends StatelessWidget {
   final String firstName;
@@ -25,21 +26,26 @@ class AppHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            Container(
-              width: 43.0,
-              height: 43.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xffE7FCF0),
-              ),
-              child: Center(
-                child: Text(
-                  (firstName.isNotEmpty ? firstName[0] : '') +
-                      (lastName.isNotEmpty ? lastName[0] : ''),
-                  style: TextStyle(
-                    color: Color(0xff2AAC95),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0, // Adjust size if necessary
+            InkWell(
+              onTap: () {
+                context.go('/profile');
+              },
+              child: Container(
+                width: 43.0,
+                height: 43.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xffE7FCF0),
+                ),
+                child: Center(
+                  child: Text(
+                    (firstName.isNotEmpty ? firstName[0] : '') +
+                        (lastName.isNotEmpty ? lastName[0] : ''),
+                    style: TextStyle(
+                      color: Color(0xff2AAC95),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0, // Adjust size if necessary
+                    ),
                   ),
                 ),
               ),
@@ -56,7 +62,7 @@ class AppHeader extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
-                  'assets/search.svg',
+                  'assets/svg/search.svg',
                   height: 20,
                 ),
               ),
@@ -75,7 +81,7 @@ class AppHeader extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
-                  'assets/notification.svg',
+                  'assets/svg/notification.svg',
                   height: 20,
                 ),
               ),
@@ -94,7 +100,7 @@ class AppHeader extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
-                  'assets/filter.svg',
+                  'assets/svg/filter.svg',
                   height: 20,
                 ),
               ),

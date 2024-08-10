@@ -30,7 +30,7 @@ class _OutlineDropdownState extends State<OutlineDropdown> {
         child: DropdownButton<String>(
           value: selectedValue,
           icon: SvgPicture.asset(
-            'assets/arrow_dropdown.svg',
+            'assets/svg/arrow_dropdown.svg',
             width: 13,
             height: 13,
             color: const Color(0xff121827),

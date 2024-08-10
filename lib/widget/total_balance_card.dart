@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/features/home/home_viemodel.dart';
+import 'package:misau/utils/string_utils.dart';
 
-class TotalBalanceCard extends StatelessWidget {
+class TotalBalanceCard extends ConsumerWidget {
   final int? totalBalance;
   final int? actualBalance;
   final int? pendingBalance;
@@ -14,7 +17,10 @@ class TotalBalanceCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeWatch = ref.watch(homeViemodelProvider);
+    final homeRead = ref.read(homeViemodelProvider.notifier);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -37,26 +43,36 @@ class TotalBalanceCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 3),
-              SvgPicture.asset('assets/info_circle.svg'),
+              SvgPicture.asset('assets/svg/info_circle.svg'),
             ],
           ),
           const SizedBox(height: 13),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              totalBalance == null
-                  ? const CircularProgressIndicator()
-                  : Text(
-                      "NGN $totalBalance",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 34,
-                        color: Color(0xff1B1C1E),
-                        letterSpacing: -.5,
-                      ),
+             Row(
+                      children: [
+                        Text(
+                          '₦',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 34,
+                              color: Color(0xff1B1C1E),
+                              fontFamily: 'AreaNeu'),
+                        ),
+                        Text(
+                          "${StringUtils.currencyConverter(totalBalance ?? 0)} ",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 34,
+                            color: Color(0xff1B1C1E),
+                            letterSpacing: -.5,
+                          ),
+                        ),
+                      ],
                     ),
               const SizedBox(width: 7),
-              SvgPicture.asset('assets/eye.svg'),
+              SvgPicture.asset('assets/svg/eye.svg'),
             ],
           ),
           const SizedBox(height: 13),
@@ -74,14 +90,28 @@ class TotalBalanceCard extends StatelessWidget {
                       letterSpacing: -.5,
                     ),
                   ),
-                  Text(
-                    "NGN ${actualBalance ?? 0}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20,
-                      color: Color(0xff29AB95),
-                      letterSpacing: -.5,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        '₦',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                            color: Color(0xff29AB95),
+                            fontFamily: 'AreaNeu'),
+                      ),
+                      Text(
+                        homeWatch.isLoading
+                            ? '0'
+                            : "${StringUtils.currencyConverter(actualBalance ?? 0)}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
+                          color: Color(0xff29AB95),
+                          letterSpacing: -.5,
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),
@@ -98,14 +128,28 @@ class TotalBalanceCard extends StatelessWidget {
                       letterSpacing: -.5,
                     ),
                   ),
-                  Text(
-                    "NGN ${pendingBalance ?? 0}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20,
-                      color: Color(0xffDC1D3C),
-                      letterSpacing: -.5,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        '₦',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                            color: Color(0xffDC1D3C),
+                            fontFamily: 'AreaNeu'),
+                      ),
+                      Text(
+                        homeWatch.isLoading
+                            ? '0'
+                            : "${StringUtils.currencyConverter(pendingBalance ?? 0)}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
+                          color: Color(0xffDC1D3C),
+                          letterSpacing: -.5,
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),

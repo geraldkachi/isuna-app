@@ -51,7 +51,7 @@ class _OutlineDatePickerState extends State<OutlineDatePicker> {
               ),
             ),
             SvgPicture.asset(
-              'assets/calendar.svg',
+              'assets/svg/calendar.svg',
               // width: 13,
               height: 23,
             ),

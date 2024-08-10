@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/models/expense_category.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
@@ -33,15 +34,15 @@ class ExpenseWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 3),
-              SvgPicture.asset('assets/info_circle.svg'),
+              SvgPicture.asset('assets/svg/info_circle.svg'),
               const Spacer(),
-              CustomDropdown([]), // Replace with actual options
+              const CustomDropdown([]), // Replace with actual options
             ],
           ),
           const SizedBox(height: 13),
           Center(
               child: CustomPieChart(expenseCategory
-                  .categoriesWithPercentages)), // Replace with actual data
+                  .categoriesWithPercentages )), // Replace with actual data
           const SizedBox(height: 35),
           ...expenseCategory.categoriesWithPercentages.map((entry) {
             final color = getColorForCategory(entry.category);
@@ -82,10 +83,10 @@ class ExpenseWidget extends StatelessWidget {
 
 Color getColorForCategory(String category) {
   return category.contains("UTILITIES")
-      ? Color(0xffE6844D)
+      ? const Color(0xffE6844D)
       : category.contains("FUEL & LUBRICANTS")
-          ? Color(0xff4D81E7)
+          ?  blue
           : category.contains("Other")
-              ? Color(0xffC65468)
+              ?  red700
               : Colors.grey;
 }
