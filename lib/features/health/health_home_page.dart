@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/health/health_details.dart';
 import 'package:misau/features/health/health_facilities_view_model.dart';
 import 'package:misau/utils/utils.dart';
 import 'package:misau/widget/shimmer.dart';
+import 'package:misau/widget/user_avarta.dart';
 
 class HealthHomePage extends ConsumerStatefulWidget {
   const HealthHomePage({
@@ -52,23 +54,9 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xff313131), // Border color
-                          width: 5, // Border width
-                        ),
-                        image: const DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                            'https://gravatar.com/avatar/0d6eff6c107827ccf1a5dd478d540700?s=400&d=robohash&r=x', // Replace with your image URL
-                          ),
-                        ),
-                      ),
-                    ),
+                    UserAvarta(
+                        firstName: facilitiesRead.userData.firstName ?? '-',
+                        lastName: facilitiesRead.userData.lastName ?? '-'),
                     const Spacer(),
                     Container(
                       width: 43.0,
@@ -140,12 +128,17 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                 Row(
                   children: [
                     SizedBox(
-                      width: 200,
+                      height: 48.0,
+                      width: 230,
                       child: TextField(
+                        controller: facilitiesWatch.searchController,
+                        onChanged: (value) {
+                          facilitiesRead.getFilteredFacilities();
+                        },
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
-                          hintText: 'Search transactions',
+                          hintText: 'Search Facilities',
                           prefixIcon: Padding(
                             padding: const EdgeInsets.all(11.5),
                             child: SvgPicture.asset(
@@ -169,8 +162,8 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                     ),
                     const Spacer(),
                     Container(
-                      width: 50.0,
-                      height: 50.0,
+                      width: 48.0,
+                      height: 48.0,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0xff313131),
@@ -185,8 +178,8 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                       width: 15,
                     ),
                     Container(
-                      width: 50.0,
-                      height: 50.0,
+                      width: 48.0,
+                      height: 48.0,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0xffDC1D3C),
@@ -231,19 +224,26 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                                         const SizedBox(
                                       height: 25,
                                     ),
-                                    itemCount:
-                                        facilitiesWatch.facilitiesModel.length,
+                                    itemCount: facilitiesWatch
+                                        .searchFacilities!.length,
                                     shrinkWrap: true,
                                     itemBuilder: (context, index) =>
                                         FacilityCardItem(
+                                      onTap: () {
+                                        facilitiesWatch.selectedFacility =
+                                            facilitiesWatch
+                                                .searchFacilities![index];
+                                        context
+                                            .go('/main_screen/health_details');
+                                      },
                                       facilityName: facilitiesWatch
-                                          .facilitiesModel[index].name,
+                                          .searchFacilities![index].name,
                                       lga: facilitiesWatch
-                                          .facilitiesModel[index].lga,
+                                          .searchFacilities![index].lga,
                                       state: facilitiesWatch
-                                          .facilitiesModel[index].state,
+                                          .searchFacilities![index].state,
                                       isActive: facilitiesWatch
-                                          .facilitiesModel[index].isActive,
+                                          .searchFacilities![index].isActive,
                                     ),
                                   ),
                                 ),
@@ -276,18 +276,19 @@ class FacilityCardItem extends StatelessWidget {
   final String? lga;
   final String? state;
   final String? isActive;
-
-  const FacilityCardItem({
-    super.key,
-    this.facilityName,
-    this.lga,
-    this.state,
-    this.isActive,
-  });
+  final VoidCallback? onTap;
+  const FacilityCardItem(
+      {super.key,
+      this.facilityName,
+      this.lga,
+      this.state,
+      this.isActive,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTap: onTap,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -374,12 +375,6 @@ class FacilityCardItem extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HealthDetails()),
-        );
-      },
     );
   }
 }

@@ -1,22 +1,25 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:misau/app/theme/colors.dart';
+import 'package:misau/features/health/health_facilities_view_model.dart';
 import 'package:misau/features/health/record_expense_payment.dart';
 import 'package:misau/features/health/record_inflow_payment.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
 
-class HealthDetails extends StatefulWidget {
+class HealthDetails extends ConsumerStatefulWidget {
   const HealthDetails({
     super.key,
   });
 
   @override
-  State<HealthDetails> createState() => _HealthDetailsState();
+  ConsumerState<HealthDetails> createState() => _HealthDetailsState();
 }
 
-class _HealthDetailsState extends State<HealthDetails>
+class _HealthDetailsState extends ConsumerState<HealthDetails>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   List<String> options = ['Monthly', 'Weekly', 'Daily'];
@@ -27,10 +30,15 @@ class _HealthDetailsState extends State<HealthDetails>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+
+    ref.read(healthFacilitiesViemodelProvider.notifier).getAuditTrails(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final facilitiesWatch = ref.watch(healthFacilitiesViemodelProvider);
+    final facilitiesRead = ref.read(healthFacilitiesViemodelProvider.notifier);
+
     final appSize = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color(0xffF4F4F7),
@@ -66,16 +74,16 @@ class _HealthDetailsState extends State<HealthDetails>
                       )
                     ],
                   ),
-                  onTap: () => Navigator.pop(context),
+                  onTap: () => context.pop(),
                 ),
                 const SizedBox(
                   height: 26,
                 ),
-                const Text(
-                  "Ayodele General Hosital",
+                Text(
+                  facilitiesWatch.selectedFacility!.name ?? '--',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 23,
+                    fontSize: 20.0,
                     color: Colors.white,
                     letterSpacing: -.5,
                   ),
@@ -83,14 +91,32 @@ class _HealthDetailsState extends State<HealthDetails>
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
-                  "Ori-Ade . Osun State",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: Color(0xffA1A6A9),
-                    letterSpacing: -.5,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      "${facilitiesWatch.selectedFacility!.lga}  ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.0,
+                        color: black400,
+                        letterSpacing: -.5,
+                      ),
+                    ),
+                    Icon(
+                      Icons.circle,
+                      size: 6.0,
+                      color: grey100,
+                    ),
+                    Text(
+                      "  ${facilitiesWatch.selectedFacility!.state}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.0,
+                        color: black400,
+                        letterSpacing: -.5,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 20,
@@ -183,7 +209,7 @@ class _HealthDetailsState extends State<HealthDetails>
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
-                                            color:  green400,
+                                            color: green400,
                                             borderRadius:
                                                 BorderRadius.circular(5),
                                           ),
@@ -264,17 +290,20 @@ class _HealthDetailsState extends State<HealthDetails>
                                           },
                                         ),
                                         const Spacer(),
-                                        InkWell(
-                                          child: Container(
-                                            width: 135,
-                                            height: 45,
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xff30B099),
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 4, vertical: 4),
+                                        SizedBox(
+                                          height: 45.0,
+                                          width: 135.0,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              context.go(
+                                                  '/main_screen/health_details/record_inflow_payment');
+                                            },
+                                            style: TextButton.styleFrom(
+                                                backgroundColor: green300,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12.0))),
                                             child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -296,14 +325,47 @@ class _HealthDetailsState extends State<HealthDetails>
                                                   )
                                                 ]),
                                           ),
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const RecordInflowPayment()));
-                                          },
-                                        )
+                                        ),
+                                        // InkWell(
+                                        //   child: Container(
+                                        //     width: 135,
+                                        //     height: 45,
+                                        //     decoration: BoxDecoration(
+                                        //       color: const Color(0xff30B099),
+                                        //       borderRadius:
+                                        //           BorderRadius.circular(12),
+                                        //     ),
+                                        //     padding: const EdgeInsets.symmetric(
+                                        //         horizontal: 4, vertical: 4),
+                                        //     child: Row(
+                                        //         mainAxisAlignment:
+                                        //             MainAxisAlignment.center,
+                                        //         children: [
+                                        //           SvgPicture.asset(
+                                        //               'assets/svg/inflow.svg'),
+                                        //           const SizedBox(
+                                        //             width: 8,
+                                        //           ),
+                                        //           const Text(
+                                        //             "Inflow",
+                                        //             style: TextStyle(
+                                        //               fontWeight:
+                                        //                   FontWeight.w600,
+                                        //               fontSize: 16,
+                                        //               color: Colors.white,
+                                        //               letterSpacing: -.5,
+                                        //             ),
+                                        //           )
+                                        //         ]),
+                                        //   ),
+                                        //   onTap: () {
+                                        //     Navigator.push(
+                                        //         context,
+                                        //         MaterialPageRoute(
+                                        //             builder: (context) =>
+                                        //                 const RecordInflowPayment()));
+                                        //   },
+                                        // )
                                       ],
                                     ),
                                     const SizedBox(

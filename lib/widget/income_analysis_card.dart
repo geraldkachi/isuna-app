@@ -60,7 +60,7 @@ class IncomeAnalysisCard extends ConsumerWidget {
                     '₦',
                     style: TextStyle(
                         fontWeight: FontWeight.w900,
-                        fontSize: 34,
+                        fontSize: 28,
                         color: Color(0xff1B1C1E),
                         fontFamily: 'AreaNeu'),
                   ),
@@ -84,7 +84,7 @@ class IncomeAnalysisCard extends ConsumerWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color:  green400,
+                  color: green400,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 margin: const EdgeInsets.only(right: 14),

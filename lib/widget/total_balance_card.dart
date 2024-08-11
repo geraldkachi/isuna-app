@@ -50,27 +50,27 @@ class TotalBalanceCard extends ConsumerWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-             Row(
-                      children: [
-                        Text(
-                          '₦',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 34,
-                              color: Color(0xff1B1C1E),
-                              fontFamily: 'AreaNeu'),
-                        ),
-                        Text(
-                          "${StringUtils.currencyConverter(totalBalance ?? 0)} ",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 34,
-                            color: Color(0xff1B1C1E),
-                            letterSpacing: -.5,
-                          ),
-                        ),
-                      ],
+              Row(
+                children: [
+                  Text(
+                    '₦',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 28,
+                        color: Color(0xff1B1C1E),
+                        fontFamily: 'AreaNeu'),
+                  ),
+                  Text(
+                    "${StringUtils.currencyConverter(totalBalance ?? 0)} ",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 34,
+                      color: Color(0xff1B1C1E),
+                      letterSpacing: -.5,
                     ),
+                  ),
+                ],
+              ),
               const SizedBox(width: 7),
               SvgPicture.asset('assets/svg/eye.svg'),
             ],
@@ -96,7 +96,7 @@ class TotalBalanceCard extends ConsumerWidget {
                         '₦',
                         style: const TextStyle(
                             fontWeight: FontWeight.w900,
-                            fontSize: 20,
+                            fontSize: 17.0,
                             color: Color(0xff29AB95),
                             fontFamily: 'AreaNeu'),
                       ),
@@ -134,7 +134,7 @@ class TotalBalanceCard extends ConsumerWidget {
                         '₦',
                         style: const TextStyle(
                             fontWeight: FontWeight.w900,
-                            fontSize: 20,
+                            fontSize: 17.0,
                             color: Color(0xffDC1D3C),
                             fontFamily: 'AreaNeu'),
                       ),
