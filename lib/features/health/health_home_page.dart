@@ -27,9 +27,13 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    final facilitiesRead = ref.read(healthFacilitiesViemodelProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // This will run after the build method is completed
+      final facilitiesRead =
+          ref.read(healthFacilitiesViemodelProvider.notifier);
 
-    facilitiesRead.onInit ? null : facilitiesRead.fetchFacilities(context);
+      facilitiesRead.onInit ? null : facilitiesRead.fetchFacilities(context);
+    });
   }
 
   @override
@@ -117,7 +121,7 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                   "Health Facilities",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 23,
+                    fontSize: 20,
                     color: Colors.white,
                     letterSpacing: -.5,
                   ),
@@ -129,7 +133,7 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                   children: [
                     SizedBox(
                       height: 48.0,
-                      width: 230,
+                      width: 230.0,
                       child: TextField(
                         controller: facilitiesWatch.searchController,
                         onChanged: (value) {

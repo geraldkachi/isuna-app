@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:misau/app/locator.dart';
-import 'package:misau/exceptions/smart_pay_exception.dart';
+import 'package:misau/exceptions/misau_exception.dart';
 import 'package:misau/models/admin_model.dart';
 import 'package:misau/models/balances_model.dart';
 import 'package:misau/models/expense_analysis_model.dart';
@@ -29,29 +29,28 @@ class HomeViemodel extends ChangeNotifier {
   ExpenseCategory get expenseCategory =>
       _dashboardService.expenseCategory ?? ExpenseCategory();
 
-  TextEditingController? searchController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
   List<Transaction>? filteredTransactions = [];
 
   bool isLoading = false;
   bool onInit = false;
 
-  void initListener() {
-    searchController?.addListener(filterTransactions);
-    filteredTransactions = _dashboardService.transactionList?.edges ?? [];
-  }
-
   void filterTransactions() {
-    final query = searchController?.text.toLowerCase();
+    final query = searchController.text.toLowerCase().trim();
+    if (searchController.text.isEmpty) {
+      filteredTransactions = _dashboardService.transactionList?.edges ?? [];
+    }
     filteredTransactions =
         _dashboardService.transactionList?.edges.where((transaction) {
               final category = transaction.income != null
                   ? 'Income'
                   : transaction.expense?.category ?? '';
               final facility = transaction.facility.toLowerCase();
-              return category.toLowerCase().contains(query!) ||
+              return category.toLowerCase().contains(query) ||
                   facility.contains(query);
             }).toList() ??
             [];
+    notifyListeners();
   }
 
   Future<void> fetchWalletData(context) async {
@@ -108,6 +107,7 @@ class HomeViemodel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await _dashboardService.fetchTranxList();
+      filteredTransactions = _dashboardService.transactionList?.edges ?? [];
       isLoading = false;
       notifyListeners();
     } on MisauException catch (e) {

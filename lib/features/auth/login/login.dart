@@ -1,14 +1,10 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/auth/login/login_view_model.dart';
-import 'package:misau/features/home/homepage.dart';
-import 'package:misau/features/home/main_page.dart';
-import 'package:misau/provider/auth_provider.dart';
+
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({

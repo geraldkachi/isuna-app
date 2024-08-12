@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:misau/app/locator.dart';
-import 'package:misau/exceptions/smart_pay_exception.dart';
+import 'package:misau/exceptions/misau_exception.dart';
 import 'package:misau/models/admin_model.dart';
 import 'package:misau/models/error_model.dart';
 import 'package:misau/service/encryption_service.dart';
