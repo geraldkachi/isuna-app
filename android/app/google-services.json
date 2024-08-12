@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1043812735518",
+    "project_id": "misau-2a340",
+    "storage_bucket": "misau-2a340.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043812735518:android:ea3184b811a817d2906c0f",
+        "android_client_info": {
+          "package_name": "com.misau.misau"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2gYzioF0Qm-b5mX8UImHxXOfH-0QgbkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
