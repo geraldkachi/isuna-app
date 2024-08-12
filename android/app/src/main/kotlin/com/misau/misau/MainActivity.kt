@@ -1,4 +1,4 @@
-package com.example.misau
+package com.misau.misau
 
 import io.flutter.embedding.android.FlutterActivity
 
