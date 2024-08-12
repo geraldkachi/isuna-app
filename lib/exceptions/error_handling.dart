@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:misau/exceptions/smart_pay_exception.dart';
+import 'package:misau/exceptions/misau_exception.dart';
 
 mixin ErrorHandling {
   void handleError(DioException e) {

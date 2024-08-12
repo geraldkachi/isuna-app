@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:misau/app/locator.dart';
 import 'package:misau/app/router.dart';
-import 'package:misau/exceptions/smart_pay_exception.dart';
+import 'package:misau/exceptions/misau_exception.dart';
 import 'package:misau/models/error_model.dart';
 import 'package:misau/service/auth_service.dart';
 import 'package:misau/service/toast_service.dart';

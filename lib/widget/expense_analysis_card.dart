@@ -90,7 +90,7 @@ class ExpenseAnalysisCard extends ConsumerWidget {
                 child: Row(children: [
                   SvgPicture.asset('assets/svg/arrow_down.svg'),
                   Text(
-                    "${homeRead.calculatePercentageDecrease()}%",
+                    "11%",
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,

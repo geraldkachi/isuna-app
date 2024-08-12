@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:misau/features/home/home_viemodel.dart';
-import 'package:misau/provider/auth_provider.dart';
-import 'package:misau/models/tranx_list_model.dart';
 import 'package:misau/utils/string_utils.dart';
 
 class TransactionsScreen extends ConsumerStatefulWidget {
@@ -15,12 +13,10 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(homeViemodelProvider.notifier).initListener();
   }
 
   @override
   void dispose() {
-    ref.watch(homeViemodelProvider).searchController?.dispose();
     super.dispose();
   }
 
@@ -35,9 +31,13 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
           Row(
             children: [
               SizedBox(
-                width: 200,
+                height: 48.0,
+                width: 230.0,
                 child: TextField(
                   controller: homeWatch.searchController,
+                  onChanged: (value) {
+                    homeRead.filterTransactions();
+                  },
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -115,9 +115,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                       final transaction =
                           homeWatch.filteredTransactions![index];
                       final isIncome = transaction.income != null;
-                      // final amount = isIncome
-                      //     ? "+NGN${transaction.income!.amount}"
-                      //     : "-NGN${transaction.expense!.amount}";
+
                       final date = isIncome
                           ? transaction.income!.date
                               .toLocal()

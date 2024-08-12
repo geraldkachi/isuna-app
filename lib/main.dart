@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:misau/app/locator.dart';
 import 'package:misau/app/router.dart';
 import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/auth/login/login.dart';
-import 'package:misau/provider/auth_provider.dart';
 import 'package:misau/utils/env_utils.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 

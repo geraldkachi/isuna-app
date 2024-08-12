@@ -1,23 +1,27 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:misau/features/admin/add_admin.dart';
+import 'package:misau/features/admin/admin_view_model.dart';
 import 'package:misau/features/health/health_details.dart';
 import 'package:misau/features/home/homepage.dart';
 import 'package:misau/utils/utils.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
+import 'package:misau/widget/shimmer.dart';
+import 'package:misau/widget/user_avarta.dart';
 
-class AdminHomePage extends StatefulWidget {
+class AdminHomePage extends ConsumerStatefulWidget {
   const AdminHomePage({
     super.key,
   });
 
   @override
-  State<AdminHomePage> createState() => _AdminHomePageState();
+  ConsumerState<AdminHomePage> createState() => _AdminHomePageState();
 }
 
-class _AdminHomePageState extends State<AdminHomePage>
+class _AdminHomePageState extends ConsumerState<AdminHomePage>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   List<String> options = ['Monthly', 'Weekly', 'Daily'];
@@ -26,10 +30,17 @@ class _AdminHomePageState extends State<AdminHomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    final adminRead = ref.read(adminViewModelProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // This will run after the build method is completed
+      adminRead.onInit ? null : adminRead.fetchAdmins(context);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final adminWatch = ref.watch(adminViewModelProvider);
+    final adminRead = ref.read(adminViewModelProvider.notifier);
     final appSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xffF4F4F7),
@@ -47,23 +58,9 @@ class _AdminHomePageState extends State<AdminHomePage>
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xff313131), // Border color
-                          width: 5, // Border width
-                        ),
-                        image: const DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                            'https://gravatar.com/avatar/0d6eff6c107827ccf1a5dd478d540700?s=400&d=robohash&r=x', // Replace with your image URL
-                          ),
-                        ),
-                      ),
-                    ),
+                    UserAvarta(
+                        firstName: adminWatch.userData?.firstName ?? '',
+                        lastName: adminWatch.userData?.lastName ?? ''),
                     const Spacer(),
                     Container(
                       width: 43.0,
@@ -124,7 +121,7 @@ class _AdminHomePageState extends State<AdminHomePage>
                   "Admins",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 23,
+                    fontSize: 20,
                     color: Colors.white,
                     letterSpacing: -.5,
                   ),
@@ -135,8 +132,13 @@ class _AdminHomePageState extends State<AdminHomePage>
                 Row(
                   children: [
                     SizedBox(
-                      width: 200,
+                      height: 48.0,
+                      width: 230,
                       child: TextField(
+                        controller: adminWatch.searchController,
+                        onChanged: (value) {
+                          adminRead.getFilteredAdmins();
+                        },
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
@@ -164,8 +166,8 @@ class _AdminHomePageState extends State<AdminHomePage>
                     ),
                     const Spacer(),
                     Container(
-                      width: 50.0,
-                      height: 50.0,
+                      width: 48.0,
+                      height: 48.0,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0xff313131),
@@ -181,8 +183,8 @@ class _AdminHomePageState extends State<AdminHomePage>
                     ),
                     InkWell(
                       child: Container(
-                        width: 50.0,
-                        height: 50.0,
+                        width: 48.0,
+                        height: 48.0,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color(0xffDC1D3C),
@@ -212,26 +214,45 @@ class _AdminHomePageState extends State<AdminHomePage>
                       padding: const EdgeInsets.only(bottom: 50),
                       child: Column(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                            child: ListView.separated(
-                              physics: const NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(
-                                height: 25,
-                              ),
-                              itemCount: 6,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) =>
-                                  FacilityCardItem(),
-                            ),
-                          ),
+                          adminWatch.isLoading
+                              ? const ShimmerScreenLoading(
+                                  height: 600.0,
+                                  width: double.infinity,
+                                  radius: 14.0,
+                                )
+                              : Container(
+                                  margin: const EdgeInsets.only(top: 20),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 18),
+                                  child: ListView.separated(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(
+                                      height: 25,
+                                    ),
+                                    itemCount: adminWatch.searchAdmins!.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) =>
+                                        AdminCardItem(
+                                      title:
+                                          '${adminWatch.searchAdmins![index].firstName ?? ''} ${adminWatch.searchAdmins![index].lastName ?? ''}',
+                                      role:
+                                          adminWatch.searchAdmins![index].role,
+                                      phoneNumber: adminWatch
+                                          .searchAdmins![index].phoneNumber,
+                                      isActive: adminWatch
+                                              .searchAdmins![index].isActive!
+                                          ? 'Active'
+                                          : 'Inactive',
+                                    ),
+                                  ),
+                                ),
                           const SizedBox(
                             height: 13,
                           ),
@@ -256,10 +277,19 @@ class _AdminHomePageState extends State<AdminHomePage>
   }
 }
 
-class FacilityCardItem extends StatelessWidget {
-  const FacilityCardItem({
-    super.key,
-  });
+class AdminCardItem extends StatelessWidget {
+  final String? title;
+  final String? role;
+  final String? phoneNumber;
+  final String? isActive;
+  final VoidCallback? onTap;
+  const AdminCardItem(
+      {super.key,
+      this.title,
+      this.role,
+      this.isActive,
+      this.phoneNumber,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -267,14 +297,14 @@ class FacilityCardItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Ayodele General Hos.",
+                title ?? 'N/A',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: 17,
+                  fontSize: 16,
                   color: Color(0xff1B1C1E),
                   letterSpacing: -.5,
                 ),
@@ -283,10 +313,10 @@ class FacilityCardItem extends StatelessWidget {
                 height: 3,
               ),
               Text(
-                "Ori-Ade . Osun State",
+                role ?? 'N/A',
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
-                  fontSize: 16,
+                  fontSize: 14,
                   color: Color(0xffABB5BC),
                   letterSpacing: -.5,
                 ),
@@ -297,11 +327,11 @@ class FacilityCardItem extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Text(
-                "100,000.00",
+              Text(
+                phoneNumber ?? 'N/A',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: 17,
+                  fontSize: 16,
                   color: Color(0xff1B1C1E),
                   letterSpacing: -.5,
                 ),
@@ -316,8 +346,8 @@ class FacilityCardItem extends StatelessWidget {
                   ),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  child: const Text(
-                    "ACTIVE",
+                  child: Text(
+                    isActive ?? 'N/A',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -329,12 +359,7 @@ class FacilityCardItem extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HealthDetails()),
-        );
-      },
+      onTap: onTap,
     );
   }
 }

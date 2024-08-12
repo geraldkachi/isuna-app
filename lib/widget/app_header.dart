@@ -92,7 +92,7 @@ class AppHeader extends StatelessWidget {
           "Welcome, $firstName 👏🏻",
           style: const TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 23,
+            fontSize: 20,
             color: Colors.white,
             letterSpacing: -.5,
           ),
@@ -104,5 +104,3 @@ class AppHeader extends StatelessWidget {
     );
   }
 }
-
-

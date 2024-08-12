@@ -33,9 +33,10 @@ class _HomePageState extends ConsumerState<HomePage>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     final homeRead = ref.read(homeViemodelProvider.notifier);
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // This will run after the build method is completed
       homeRead.onInit ? null : homeRead.fetchWalletData(context);
-  
+    });
   }
 
   @override

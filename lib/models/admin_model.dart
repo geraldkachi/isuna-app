@@ -1,204 +1,69 @@
+// To parse this JSON data, do
+//
+//     final adminModel = adminModelFromJson(jsonString);
+
 import 'dart:convert';
 
+AdminModel adminModelFromJson(String str) => AdminModel.fromJson(json.decode(str));
+
+String adminModelToJson(AdminModel data) => json.encode(data.toJson());
+
 class AdminModel {
-  final String? id;
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final String? role;
-  final DateTime? createdAt;
-  final bool? isActive;
-  final Permissions? permissions;
-  final String? token;
+    final String? id;
+    final String? firstName;
+    final String? lastName;
+    final String? email;
+    final String? phoneNumber;
+    final String? password;
+    final bool? isActive;
+    final String? role;
+    final bool? emailNotification;
+    final DateTime? createdAt;
+    final DateTime? updatedAt;
+    final dynamic deletedAt;
 
-  AdminModel({
-     this.id,
-     this.firstName,
-     this.lastName,
-     this.email,
-     this.role,
-     this.createdAt,
-     this.isActive,
-     this.permissions,
-     this.token,
-  });
+    AdminModel({
+        this.id,
+        this.firstName,
+        this.lastName,
+        this.email,
+        this.phoneNumber,
+        this.password,
+        this.isActive,
+        this.role,
+        this.emailNotification,
+        this.createdAt,
+        this.updatedAt,
+        this.deletedAt,
+    });
 
-  factory AdminModel.fromJson(Map<String, dynamic> json) {
-    return AdminModel(
-      id: json['id'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      email: json['email'],
-      role: json['role'],
-      createdAt: DateTime.parse(json['createdAt']),
-      isActive: json['isActive'],
-      token: json['token'],
+    factory AdminModel.fromJson(Map<String, dynamic> json) => AdminModel(
+        id: json["id"],
+        firstName: json["firstName"],
+        lastName: json["lastName"],
+        email: json["email"],
+        phoneNumber: json["phoneNumber"],
+        password: json["password"],
+        isActive: json["isActive"],
+        role: json["role"],
+        emailNotification: json["emailNotification"],
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        deletedAt: json["deletedAt"],
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'firstName': firstName,
-      'lastName': lastName,
-      'email': email,
-      'role': role,
-      'createdAt': createdAt?.toIso8601String(),
-      'isActive': isActive,
-      'token': token,
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "phoneNumber": phoneNumber,
+        "password": password,
+        "isActive": isActive,
+        "role": role,
+        "emailNotification": emailNotification,
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
+        "deletedAt": deletedAt,
     };
-  }
-
-  AdminModel copyWith({
-    String? id,
-    String? firstName,
-    String? lastName,
-    String? email,
-    String? role,
-    DateTime? createdAt,
-    bool? isActive,
-    Permissions? permissions,
-    String? token,
-  }) {
-    return AdminModel(
-      id: id ?? this.id,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      email: email ?? this.email,
-      role: role ?? this.role,
-      createdAt: createdAt ?? this.createdAt,
-      isActive: isActive ?? this.isActive,
-      permissions: permissions ?? this.permissions,
-      token: token ?? this.token,
-    );
-  }
-}
-
-class Permissions {
-  final List<Permission> permissions;
-  final List<String> state;
-  final List<String> lga;
-  final List<String> facility;
-
-  Permissions({
-    required this.permissions,
-    required this.state,
-    required this.lga,
-    required this.facility,
-  });
-
-  factory Permissions.fromJson(Map<String, dynamic> json) {
-    var permissionsList = json['permissions'] as List;
-    return Permissions(
-      permissions: permissionsList
-          .map((item) => Permission.fromJson(item))
-          .toList(),
-      state: List<String>.from(json['state']),
-      lga: List<String>.from(json['lga']),
-      facility: List<String>.from(json['facility']),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'permissions': permissions.map((e) => e.toJson()).toList(),
-      'state': state,
-      'lga': lga,
-      'facility': facility,
-    };
-  }
-
-  Permissions copyWith({
-    List<Permission>? permissions,
-    List<String>? state,
-    List<String>? lga,
-    List<String>? facility,
-  }) {
-    return Permissions(
-      permissions: permissions ?? this.permissions,
-      state: state ?? this.state,
-      lga: lga ?? this.lga,
-      facility: facility ?? this.facility,
-    );
-  }
-}
-
-class Permission {
-  final String module;
-  final PermissionDetail permission;
-
-  Permission({
-    required this.module,
-    required this.permission,
-  });
-
-  factory Permission.fromJson(Map<String, dynamic> json) {
-    return Permission(
-      module: json['module'],
-      permission: PermissionDetail.fromJson(json['permission']),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'module': module,
-      'permission': permission.toJson(),
-    };
-  }
-
-  Permission copyWith({
-    String? module,
-    PermissionDetail? permission,
-  }) {
-    return Permission(
-      module: module ?? this.module,
-      permission: permission ?? this.permission,
-    );
-  }
-}
-
-class PermissionDetail {
-  final bool canCreate;
-  final bool canView;
-  final bool canUpdate;
-  final bool canDelete;
-
-  PermissionDetail({
-    required this.canCreate,
-    required this.canView,
-    required this.canUpdate,
-    required this.canDelete,
-  });
-
-  factory PermissionDetail.fromJson(Map<String, dynamic> json) {
-    return PermissionDetail(
-      canCreate: json['canCreate'],
-      canView: json['canView'],
-      canUpdate: json['canUpdate'],
-      canDelete: json['canDelete'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'canCreate': canCreate,
-      'canView': canView,
-      'canUpdate': canUpdate,
-      'canDelete': canDelete,
-    };
-  }
-
-  PermissionDetail copyWith({
-    bool? canCreate,
-    bool? canView,
-    bool? canUpdate,
-    bool? canDelete,
-  }) {
-    return PermissionDetail(
-      canCreate: canCreate ?? this.canCreate,
-      canView: canView ?? this.canView,
-      canUpdate: canUpdate ?? this.canUpdate,
-      canDelete: canDelete ?? this.canDelete,
-    );
-  }
 }
