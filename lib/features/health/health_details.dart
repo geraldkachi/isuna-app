@@ -214,8 +214,9 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                 Text(
                                                   StringUtils.currencyConverter(
                                                       facilitiesWatch
-                                                          .facilityBalancesModel
-                                                          .actualBalance!),
+                                                              .facilityBalancesModel
+                                                              .actualBalance ??
+                                                          0),
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w900,
                                                     fontSize: 34,
