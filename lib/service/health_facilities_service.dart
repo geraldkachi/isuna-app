@@ -19,14 +19,12 @@ class HealthFacilitiesService {
   FacilityBalancesModel? _facilityBalances;
   TransactionList? _transactionList;
 
-
   List<FacilitiesModel>? get facilitiesModel => _facilitiesModel;
   List<AuditTrailsModel>? get auditTrailsModel => _auditTrailsModel;
   FacilityBalancesModel? get facilityBalancesModel => _facilityBalances!;
   TransactionList? get transactionList => _transactionList;
 
-
-  Future<void> fetchFacilities() async {
+  Future<void> fetchFacilitiesPagnated() async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
@@ -39,6 +37,28 @@ class HealthFacilitiesService {
       debugPrint('decrypted response: $decryptedResponsePayload');
       final List jsonDecodedPayload =
           json.decode(decryptedResponsePayload)['edges'];
+      _facilitiesModel = jsonDecodedPayload
+          .map((value) => FacilitiesModel.fromJson(value))
+          .toList();
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchFacilities() async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/user/v1/facilities?lga=&state=',
+      );
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: $decryptedResponsePayload');
+      final List jsonDecodedPayload = json.decode(decryptedResponsePayload);
       _facilitiesModel = jsonDecodedPayload
           .map((value) => FacilitiesModel.fromJson(value))
           .toList();

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 class IncomeAnalysis {
-  final int? lastMonthIncome;
-  final int? currentMonthIncome;
-  final int? incomeDiff;
+  final dynamic lastMonthIncome;
+  final dynamic currentMonthIncome;
+  final dynamic incomeDiff;
 
   IncomeAnalysis({
     this.lastMonthIncome,

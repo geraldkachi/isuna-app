@@ -3,12 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:misau/exceptions/error_handling.dart';
 import 'package:misau/interceptors/app_interceptors.dart';
 
-
 class NetworkService with ErrorHandling {
   late final Dio dio;
 
-  final String url =
-      "https://misau-gateway.fly.dev";
+  late final Dio? altDio;
+
+  final String url = "https://misau-gateway.fly.dev";
 
   NetworkService() {
     dio = Dio(
@@ -31,6 +31,24 @@ class NetworkService with ErrorHandling {
       ]);
     }
     dio.interceptors.add(AppInterceptor());
+
+    altDio = Dio();
+  }
+
+  Future getAlt(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      Response response = await altDio!.get(
+        path,
+        queryParameters: queryParameters,
+      );
+
+      return response.data;
+    } on DioException catch (e) {
+      handleError(e);
+    }
   }
 
   Future get(

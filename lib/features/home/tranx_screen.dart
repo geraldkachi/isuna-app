@@ -96,8 +96,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
           ),
           Container(
             margin: const EdgeInsets.only(top: 20),
-            height: homeWatch.filteredTransactions!.length * 120.0,
-            width: double.infinity,
+            // width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(14),
@@ -125,8 +124,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                               .toLocal()
                               .toString()
                               .split(' ')[0];
-                      final category =
-                          isIncome ? "Income" : transaction.expense!.category;
+                      final category = isIncome
+                          ? "Income"
+                          : transaction.expense?.category;
 
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +152,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  category,
+                                  category ?? '--',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 17,
@@ -190,8 +190,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                         ),
                                         Text(
                                           StringUtils.currencyConverter(
-                                              int.parse(
-                                                  transaction.income!.amount)),
+                                              transaction.income!.amount
+                                                  .toInt()),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 17,
@@ -214,8 +214,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                         ),
                                         Text(
                                           StringUtils.currencyConverter(
-                                              int.parse(
-                                                  transaction.expense!.amount)),
+                                              transaction.expense!.amount
+                                                  .toInt()),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 17,

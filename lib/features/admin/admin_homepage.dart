@@ -33,7 +33,8 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
     final adminRead = ref.read(adminViewModelProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // This will run after the build method is completed
-      adminRead.onInit ? null : adminRead.fetchAdmins(context);
+      adminRead.fetchAdmins(context);
+      adminRead.getRoles(context);
     });
   }
 
@@ -62,35 +63,35 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
                         firstName: adminWatch.userData?.firstName ?? '',
                         lastName: adminWatch.userData?.lastName ?? ''),
                     const Spacer(),
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xff313131),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: SvgPicture.asset(
-                        'assets/svg/search.svg',
-                        height: 20,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xff313131),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: SvgPicture.asset(
-                        'assets/svg/notification.svg',
-                        height: 20,
-                      ),
-                    ),
+                    // Container(
+                    //   width: 43.0,
+                    //   height: 43.0,
+                    //   decoration: const BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //     color: Color(0xff313131),
+                    //   ),
+                    //   padding: const EdgeInsets.all(10),
+                    //   child: SvgPicture.asset(
+                    //     'assets/svg/search.svg',
+                    //     height: 20,
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   width: 10,
+                    // ),
+                    // Container(
+                    //   width: 43.0,
+                    //   height: 43.0,
+                    //   decoration: const BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //     color: Color(0xff313131),
+                    //   ),
+                    //   padding: const EdgeInsets.all(10),
+                    //   child: SvgPicture.asset(
+                    //     'assets/svg/notification.svg',
+                    //     height: 20,
+                    //   ),
+                    // ),
                     const SizedBox(
                       width: 10,
                     ),

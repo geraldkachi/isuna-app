@@ -23,7 +23,7 @@ mixin ErrorHandling {
       throw MisauException(message: "Service is unavailable at this time.");
     }
 
-    if (e.response?.statusCode == 404 || e.response?.statusCode == 400) {
+    if (e.response!.statusCode! >= 400) {
       throw MisauException(message: e.response?.data['message']);
     }
   }

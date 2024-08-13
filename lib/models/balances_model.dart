@@ -1,7 +1,7 @@
 class Balances {
-  final int? actualBalance;
-  final int? pendingBalance;
-  final int? totalBalance;
+  final dynamic actualBalance;
+  final dynamic pendingBalance;
+  final dynamic totalBalance;
 
   Balances({
      this.actualBalance,

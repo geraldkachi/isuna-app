@@ -1,18 +1,23 @@
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:misau/app/theme/colors.dart';
+import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/widget/outline_datepicker.dart';
 import 'package:misau/widget/outline_dropdown.dart';
 
-class FilterScreen extends StatefulWidget {
+class FilterScreen extends ConsumerStatefulWidget {
   const FilterScreen({
     super.key,
   });
 
   @override
-  State<FilterScreen> createState() => _FilterScreenState();
+  ConsumerState<FilterScreen> createState() => _FilterScreenState();
 }
 
-class _FilterScreenState extends State<FilterScreen>
+class _FilterScreenState extends ConsumerState<FilterScreen>
     with SingleTickerProviderStateMixin {
   // List<String> options = ['Monthly', 'Weekly', 'Daily'];
   bool showGreenLine = true;
@@ -26,6 +31,9 @@ class _FilterScreenState extends State<FilterScreen>
 
   @override
   Widget build(BuildContext context) {
+    final homeWatch = ref.watch(homeViemodelProvider);
+    final homeRead = ref.read(homeViemodelProvider.notifier);
+
     final appSize = MediaQuery.of(context).size;
     return Container(
         height: appSize.height * 0.7,
@@ -80,7 +88,43 @@ class _FilterScreenState extends State<FilterScreen>
                   const SizedBox(
                     height: 7,
                   ),
-                  const OutlineDropdown(['Osun', 'Justin']),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: const Color(0xffE9EAEB), width: 1.5),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 4.0),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: homeWatch.selectedState,
+                        icon: SvgPicture.asset(
+                          'assets/svg/arrow_dropdown.svg',
+                          width: 13,
+                          height: 13,
+                          color: const Color(0xff121827),
+                        ),
+                        items: homeRead.stateModel?.map((value) {
+                          return DropdownMenuItem(
+                            value: value.stateCode,
+                            child: Text(
+                              value.name!,
+                              style: const TextStyle(
+                                  color: Color(0xff121827),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          homeWatch.selectedState = value;
+                          homeRead.getLga(context, value!);
+                        },
+                      ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 12,
                   ),
@@ -96,7 +140,49 @@ class _FilterScreenState extends State<FilterScreen>
                   const SizedBox(
                     height: 7,
                   ),
-                  const OutlineDropdown(['Boluwaduro']),
+                  Container(
+                    height: 54.0,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: const Color(0xffE9EAEB), width: 1.5),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 4.0),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: homeWatch.selectedLga,
+                        icon: SvgPicture.asset(
+                          'assets/svg/arrow_dropdown.svg',
+                          width: 13,
+                          height: 13,
+                          color: const Color(0xff121827),
+                        ),
+                        items:
+                            homeRead.lgaList?.asMap().entries.map((mapValue) {
+                          return DropdownMenuItem(
+                            value: mapValue.key.toString(),
+                            child: Text(
+                              mapValue.value,
+                              style: const TextStyle(
+                                  color: Color(0xff121827),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            onTap: () {
+                              // homeWatch.selectedLga = mapValue.value;
+                              setState(() {});
+                            },
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          homeWatch.selectedLga = value;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 12,
                   ),
@@ -112,7 +198,48 @@ class _FilterScreenState extends State<FilterScreen>
                   const SizedBox(
                     height: 7,
                   ),
-                  const OutlineDropdown(['Afao Primary Health Clinic']),
+                  DropDownTextField(
+                    controller: homeRead.searchfacilityController,
+                    clearOption: true,
+                    enableSearch: true,
+                    clearIconProperty: IconProperty(color: black, size: 15.0),
+                    searchTextStyle:
+                        const TextStyle(color: black, fontSize: 15.0),
+                    textFieldDecoration: InputDecoration(
+                        suffixIcon: SvgPicture.asset(
+                          'assets/svg/arrow_dropdown.svg',
+                          width: 13,
+                          height: 13,
+                          color: const Color(0xff121827),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: grey50, width: 1.5),
+                            borderRadius: BorderRadius.circular(12.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: black, width: 1.5),
+                            borderRadius: BorderRadius.circular(12.0))),
+                    searchDecoration: InputDecoration(
+                        hintText: "Search facility",
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: grey50, width: 1.5),
+                            borderRadius: BorderRadius.circular(5.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: grey50, width: 1.5),
+                            borderRadius: BorderRadius.circular(5.0))),
+                    validator: (value) {
+                      if (value == null) {
+                        return "Required field";
+                      } else {
+                        return null;
+                      }
+                    },
+                    dropDownItemCount: 6,
+                    dropDownList: homeWatch.facilitiesList!.map((value) {
+                      return DropDownValueModel(name: value, value: value);
+                    }).toList(),
+                    onChanged: (val) {},
+                  ),
+                  // OutlineDropdown(options: homeRead.facilitiesList),
                   const SizedBox(
                     height: 12,
                   ),
@@ -120,7 +247,7 @@ class _FilterScreenState extends State<FilterScreen>
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .4,
-                        child: const Column(
+                        child: Column(
                           children: [
                             Row(
                               children: [
@@ -147,14 +274,17 @@ class _FilterScreenState extends State<FilterScreen>
                             SizedBox(
                               height: 7,
                             ),
-                            OutlineDatePicker(),
+                            OutlineDatePicker(
+                              onTap: () => homeRead.selectFromDateCal(context),
+                              controller: homeRead.fromDateController,
+                            ),
                           ],
                         ),
                       ),
                       const Spacer(),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * .4,
-                        child: const Column(
+                        child: Column(
                           children: [
                             Row(
                               children: [
@@ -181,7 +311,10 @@ class _FilterScreenState extends State<FilterScreen>
                             SizedBox(
                               height: 7,
                             ),
-                            OutlineDatePicker(),
+                            OutlineDatePicker(
+                              onTap: () => homeRead.selectToDateCal(context),
+                              controller: homeRead.toDateController,
+                            ),
                           ],
                         ),
                       )
@@ -229,9 +362,15 @@ class _FilterScreenState extends State<FilterScreen>
                             width: double.infinity, // Make button full width
                             child: TextButton(
                               onPressed: () {
-                                Navigator.pop(context);
+                                context.pop();
+                                homeRead.fetchWalletData(context,
+                                    state: homeWatch.selectedState ?? '',
+                                    lga: homeWatch.selectedLga ?? '',
+                                    facilitys: homeWatch.selectedFacility ?? '',
+                                    fromDate: homeWatch.fromDate ?? '',
+                                    toDate: homeWatch.toDate ?? '');
                               },
-                              style: ElevatedButton.styleFrom(
+                              style: TextButton.styleFrom(
                                 backgroundColor: red,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0),

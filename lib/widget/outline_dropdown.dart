@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class OutlineDropdown extends StatefulWidget {
-  final List<String> options;
-  const OutlineDropdown(this.options, {super.key});
+  final List<String>? options;
+  final Function(String?)? onChanged;
+  const OutlineDropdown({this.options, this.onChanged, super.key});
   @override
   State<OutlineDropdown> createState() => _OutlineDropdownState();
 }
@@ -13,7 +14,7 @@ class _OutlineDropdownState extends State<OutlineDropdown> {
 
   @override
   void initState() {
-    selectedValue = widget.options.isNotEmpty ? widget.options.first : null;
+    selectedValue = widget.options!.isNotEmpty ? widget.options!.first : null;
     super.initState();
   }
 
@@ -35,7 +36,7 @@ class _OutlineDropdownState extends State<OutlineDropdown> {
             height: 13,
             color: const Color(0xff121827),
           ),
-          items: widget.options.map((String value) {
+          items: widget.options!.map((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(
@@ -50,10 +51,11 @@ class _OutlineDropdownState extends State<OutlineDropdown> {
           onChanged: (newValue) {
             setState(() {
               selectedValue = newValue!;
+              widget.onChanged!(newValue);
             });
           },
           selectedItemBuilder: (BuildContext context) {
-            return widget.options.map<Widget>((String item) {
+            return widget.options!.map<Widget>((String item) {
               return Container(
                 alignment: Alignment.centerLeft,
                 child: Text(

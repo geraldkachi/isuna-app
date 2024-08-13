@@ -1106,8 +1106,8 @@ class TransactionTab extends ConsumerWidget {
                           title: transaction.facility,
                           subTitle: category,
                           amount: StringUtils.currencyConverter(isIncome
-                              ? int.parse(transaction.income!.amount)
-                              : int.parse(transaction.expense!.amount)),
+                              ? transaction.income!.amount.toInt()
+                              : transaction.expense!.amount.toInt()),
                           date: date,
                           cashFlow: isIncome
                               ? 'assets/svg/direction_up.svg'

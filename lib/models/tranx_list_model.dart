@@ -11,9 +11,8 @@ class TransactionList {
 
   factory TransactionList.fromJson(Map<String, dynamic> json) {
     return TransactionList(
-      edges: (json['edges'] as List)
-          .map((e) => Transaction.fromJson(e))
-          .toList(),
+      edges:
+          (json['edges'] as List).map((e) => Transaction.fromJson(e)).toList(),
       pageInfo: PageInfo.fromJson(json['pageInfo']),
       totalCount: json['totalCount'],
     );
@@ -61,8 +60,8 @@ class PageInfo {
 }
 
 class Expense {
-  final String amount;
-  final String category;
+  final double amount;
+  final String? category;
   final String subCategory;
   final DateTime date;
 
@@ -75,9 +74,9 @@ class Expense {
 
   factory Expense.fromJson(Map<String, dynamic> json) {
     return Expense(
-      amount: json['amount'],
-      category: json['category'],
-      subCategory: json['subCategory'],
+      amount: double.parse(json['amount']),
+      category: json['category'] ?? '',
+      subCategory: json['subCategory'] ?? '',
       date: DateTime.parse(json['date']),
     );
   }
@@ -93,7 +92,7 @@ class Expense {
 }
 
 class Income {
-  final String amount;
+  final double amount;
   final DateTime date;
 
   Income({
@@ -103,7 +102,7 @@ class Income {
 
   factory Income.fromJson(Map<String, dynamic> json) {
     return Income(
-      amount: json['amount'],
+      amount: double.parse(json['amount']),
       date: DateTime.parse(json['date']),
     );
   }
@@ -148,12 +147,9 @@ class Transaction {
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
       id: json['id'],
-      income: json['income'] != null
-          ? Income.fromJson(json['income'])
-          : null,
-      expense: json['expense'] != null
-          ? Expense.fromJson(json['expense'])
-          : null,
+      income: json['income'] != null ? Income.fromJson(json['income']) : null,
+      expense:
+          json['expense'] != null ? Expense.fromJson(json['expense']) : null,
       addedBy: json['addedBy'],
       facility: json['facility'],
       ward: json['ward'],
@@ -162,9 +158,8 @@ class Transaction {
       healthInstituteId: json['healthInstituteId'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      deletedAt: json['deletedAt'] != null
-          ? DateTime.parse(json['deletedAt'])
-          : null,
+      deletedAt:
+          json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
     );
   }
 

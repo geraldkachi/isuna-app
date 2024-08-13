@@ -34,7 +34,6 @@ class _HomePageState extends ConsumerState<HomePage>
     _tabController = TabController(length: 2, vsync: this);
     final homeRead = ref.read(homeViemodelProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // This will run after the build method is completed
       homeRead.onInit ? null : homeRead.fetchWalletData(context);
     });
   }
@@ -206,24 +205,24 @@ class AccountsCard extends StatelessWidget {
           SizedBox(
             height: 30.0,
           ),
-          Row(
-            children: [
-              AccountsConntainer(
-                title: 'Personal',
-                IconUrl: 'assets/svg/user_icon.svg',
-                subTitle: '230',
-              ),
-              Spacer(),
-              AccountsConntainer(
-                title: 'Business',
-                IconUrl: 'assets/svg/bag_icon.svg',
-                subTitle: '46',
-              )
-            ],
-          ),
-          SizedBox(
-            height: 20.0,
-          ),
+          // Row(
+          //   children: [
+          //     AccountsConntainer(
+          //       title: 'Personal',
+          //       IconUrl: 'assets/svg/user_icon.svg',
+          //       subTitle: '230',
+          //     ),
+          //     Spacer(),
+          //     AccountsConntainer(
+          //       title: 'Business',
+          //       IconUrl: 'assets/svg/bag_icon.svg',
+          //       subTitle: '46',
+          //     )
+          //   ],
+          // ),
+          // SizedBox(
+          //   height: 20.0,
+          // ),
           Row(
             children: [
               AccountsConntainer(

@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/auth/login/login_view_model.dart';
-
+import 'package:misau/utils/string_utils.dart';
+import 'package:misau/utils/validator.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({
@@ -56,6 +56,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               const SizedBox(height: 7),
               TextFormField(
                 controller: loginWatch.emailController,
+                validator: (value) => Validator.validateEmail(value),
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 18.0,
@@ -148,9 +149,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   ),
                   suffixIcon: IconButton(
                     icon: SvgPicture.asset(
-                      'assets/svg/eye_icon.svg',
-                      width: 21.0,
-                      height: 21.0,
+                      loginWatch.obscureText
+                          ? 'assets/svg/view-off-slash-stroke-rounded.svg'
+                          : 'assets/svg/view-stroke-rounded.svg',
+                      width: 25.0,
+                      height: 25.0,
                     ),
                     onPressed: () {
                       loginRead.togglePassword();
@@ -160,17 +163,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
               const SizedBox(height: 20),
               SizedBox(
+                height: 48.0,
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () async {
                     loginRead.login(context);
                     // context.go('/home_page');
                   },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 18.0,
-                      horizontal: 10.0,
-                    ),
+                  style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),

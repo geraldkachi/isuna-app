@@ -27,19 +27,24 @@ class DashboardService {
   ExpenseCategory? get expenseCategory => _expenseCategory;
   TransactionList? get transactionList => _transactionList;
 
-  Future<void> fetchBalances() async {
+  Future<void> fetchBalances(
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute/overview?state=&lga=&facility=&section=balances',
+        '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=balances&fromDate=$fromDate&toDate=$toDate',
       );
       final encryptedResponsePayload = response['data'];
       debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
       debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
-      _balances = Balances.fromJson(
-          json.decode(decryptedResponsePayload.toString())['balances']);
+      _balances =
+          Balances.fromJson(json.decode(decryptedResponsePayload)['balances']);
     } on MisauException {
       rethrow;
     } catch (e) {
@@ -47,11 +52,16 @@ class DashboardService {
     }
   }
 
-  Future<void> fetchIncome() async {
+  Future<void> fetchIncome(
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute/overview?state=&lga=&facility=&section=incomeAnalysis',
+        '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=incomeAnalysis&fromDate=$fromDate&toDate=$toDate',
       );
       final encryptedResponsePayload = response['data'];
       debugPrint('encrypted response: $encryptedResponsePayload');
@@ -69,11 +79,16 @@ class DashboardService {
     }
   }
 
-  Future<void> fetchExpenseAnalysis() async {
+  Future<void> fetchExpenseAnalysis(
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute/overview?state=&lga=&facility=&section=expenseAnalysis',
+        '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=expenseAnalysis&fromDate=$fromDate&toDate=$toDate',
       );
 
       final encryptedResponsePayload = response['data'];
@@ -92,11 +107,16 @@ class DashboardService {
     }
   }
 
-  Future<void> fetchTranxList() async {
+  Future<void> fetchTranxList(
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute?state&lga=&facility=',
+        '/wallet/v1/health-institute?state=$state&lga=$lga&facility=$facility&fromDate=$fromDate&toDate=$toDate',
       );
 
       final encryptedResponsePayload = response['data'];
@@ -104,8 +124,8 @@ class DashboardService {
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
       debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
-      _transactionList = TransactionList.fromJson(
-          json.decode(decryptedResponsePayload.toString()));
+      _transactionList =
+          TransactionList.fromJson(json.decode(decryptedResponsePayload));
     } on MisauException {
       rethrow;
     } catch (e) {
@@ -113,11 +133,16 @@ class DashboardService {
     }
   }
 
-  Future<void> fetchExpenseCategory() async {
+  Future<void> fetchExpenseCategory(
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute/overview?state=&lga=&facility=&section=expenseCategory',
+        '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=expenseCategory&fromDate=$fromDate&toDate=$toDate',
       );
 
       final encryptedResponsePayload = response['data'];
@@ -156,11 +181,16 @@ class DashboardService {
     }
   }
 
-  Future<void> fetchFacilities() async {
+  Future<void> filterFacilities(
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/user/v1/facilities?lga=&state=Plateau',
+        '/wallet/v1/health-institute/overview?state=&lga=&facility=&section=recentActivities&fromDate=$fromDate&toDate=$toDate',
       );
 
       final encryptedResponsePayload = response['data'];
@@ -177,7 +207,8 @@ class DashboardService {
     }
   }
 
-  Future<void> fetchAuditTrails() async {
+  Future<void> fetchAuditTrails(
+      {String? state, String? lga, String? facility}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(

@@ -48,7 +48,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   bool onInit = false;
 
   void onBuild(context) {
-    getAuditTrails(context);
+    // getAuditTrails(context);
     getFacilityOverview(context);
     fetchFacilityTransactionList(context);
   }
@@ -178,7 +178,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'Something went wrong.');
+          title: 'Error', subTitle: 'facility transaction error: ${e.toString}');
     }
   }
 

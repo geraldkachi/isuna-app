@@ -31,7 +31,6 @@ class AuthService {
       });
 
       debugPrint('Raw payload $payload');
-
       // Encrypt the payload
       final encryptedPayload = _encryptionService.encrypt(payload);
 
