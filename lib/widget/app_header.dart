@@ -29,41 +29,41 @@ class AppHeader extends StatelessWidget {
           children: [
             UserAvarta(firstName: firstName, lastName: lastName),
             const Spacer(),
-            GestureDetector(
-              onTap: onSearch,
-              child: Container(
-                width: 43.0,
-                height: 43.0,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xff313131),
-                ),
-                padding: const EdgeInsets.all(10),
-                child: SvgPicture.asset(
-                  'assets/svg/search.svg',
-                  height: 20,
-                ),
-              ),
-            ),
+            // GestureDetector(
+            //   onTap: onSearch,
+            //   child: Container(
+            //     width: 43.0,
+            //     height: 43.0,
+            //     decoration: const BoxDecoration(
+            //       shape: BoxShape.circle,
+            //       color: Color(0xff313131),
+            //     ),
+            //     padding: const EdgeInsets.all(10),
+            //     child: SvgPicture.asset(
+            //       'assets/svg/search.svg',
+            //       height: 20,
+            //     ),
+            //   ),
+            // ),
             const SizedBox(
               width: 10,
             ),
-            GestureDetector(
-              onTap: onNotification,
-              child: Container(
-                width: 43.0,
-                height: 43.0,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xff313131),
-                ),
-                padding: const EdgeInsets.all(10),
-                child: SvgPicture.asset(
-                  'assets/svg/notification.svg',
-                  height: 20,
-                ),
-              ),
-            ),
+            // GestureDetector(
+            //   onTap: onNotification,
+            //   child: Container(
+            //     width: 43.0,
+            //     height: 43.0,
+            //     decoration: const BoxDecoration(
+            //       shape: BoxShape.circle,
+            //       color: Color(0xff313131),
+            //     ),
+            //     padding: const EdgeInsets.all(10),
+            //     child: SvgPicture.asset(
+            //       'assets/svg/notification.svg',
+            //       height: 20,
+            //     ),
+            //   ),
+            // ),
             const SizedBox(
               width: 10,
             ),

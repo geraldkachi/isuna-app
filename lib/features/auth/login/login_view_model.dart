@@ -22,12 +22,15 @@ class LoginViewModel extends ChangeNotifier {
 
   Future login(context) async {
     try {
-      isLoading = true;
-      notifyListeners();
-      await _authService.login(emailController.text, passController.text);
-      router.push('/main_screen');
-      isLoading = false;
-      notifyListeners();
+      if (formKey.currentState!.validate()) {
+        formKey.currentState!.save();
+        isLoading = true;
+        notifyListeners();
+        await _authService.login(emailController.text, passController.text);
+        router.push('/main_screen');
+        isLoading = false;
+        notifyListeners();
+      }
     } on MisauException catch (e) {
       isLoading = false;
       notifyListeners();

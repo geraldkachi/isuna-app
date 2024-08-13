@@ -5,8 +5,8 @@ import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 
 class ExpenseAnalysisCard extends ConsumerWidget {
-  final int? currentMonthExpense;
-  final int? lastMonthExpense;
+  final dynamic currentMonthExpense;
+  final dynamic lastMonthExpense;
   final List<String> options;
 
   const ExpenseAnalysisCard({

@@ -16,5 +16,6 @@ const Color yellow = Color(0xFFDBAA00);
 const Color yellow700 = Color(0xFFFBF4E4);
 const Color orange = Color(0xFFE7854D);
 const Color white100 = Color(0xFFEDF1F3);
+const Color grey50 = Color(0xFFD9D9D9);
 const Color grey100 = Color(0xFFD9D9D9);
 const Color grey200 = Color(0xFFDCE4E8);

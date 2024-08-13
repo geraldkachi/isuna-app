@@ -92,7 +92,7 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
                   const SizedBox(
                     height: 7,
                   ),
-                  const OutlineDropdown(['Osun', 'Justin']),
+                  const OutlineDropdown(options: ['Osun', 'Justin']),
                   const SizedBox(
                     height: 12,
                   ),
@@ -108,7 +108,7 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
                   const SizedBox(
                     height: 7,
                   ),
-                  const OutlineDropdown(['Boluwaduro']),
+                  const OutlineDropdown(options: ['Boluwaduro']),
                   const SizedBox(
                     height: 12,
                   ),
@@ -124,7 +124,8 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
                   const SizedBox(
                     height: 7,
                   ),
-                  const OutlineDropdown(['Afao Primary Health Clinic']),
+                  const OutlineDropdown(
+                      options: ['Afao Primary Health Clinic']),
                   const SizedBox(
                     height: 13,
                   ),
@@ -161,7 +162,8 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
                           const SizedBox(
                             height: 7,
                           ),
-                          const OutlineDropdown(['Training - General']),
+                          const OutlineDropdown(
+                              options: ['Training - General']),
                           const SizedBox(
                             height: 7,
                           ),
@@ -177,7 +179,7 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
                           const SizedBox(
                             height: 7,
                           ),
-                          const OutlineDropdown(['Local Training']),
+                          const OutlineDropdown(options: ['Local Training']),
                           const SizedBox(
                             height: 7,
                           ),

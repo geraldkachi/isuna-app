@@ -62,35 +62,35 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                         firstName: facilitiesRead.userData.firstName ?? '-',
                         lastName: facilitiesRead.userData.lastName ?? '-'),
                     const Spacer(),
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xff313131),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: SvgPicture.asset(
-                        'assets/svg/search.svg',
-                        height: 20,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xff313131),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: SvgPicture.asset(
-                        'assets/svg/notification.svg',
-                        height: 20,
-                      ),
-                    ),
+                    // Container(
+                    //   width: 43.0,
+                    //   height: 43.0,
+                    //   decoration: const BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //     color: Color(0xff313131),
+                    //   ),
+                    //   padding: const EdgeInsets.all(10),
+                    //   child: SvgPicture.asset(
+                    //     'assets/svg/search.svg',
+                    //     height: 20,
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   width: 10,
+                    // ),
+                    // Container(
+                    //   width: 43.0,
+                    //   height: 43.0,
+                    //   decoration: const BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //     color: Color(0xff313131),
+                    //   ),
+                    //   padding: const EdgeInsets.all(10),
+                    //   child: SvgPicture.asset(
+                    //     'assets/svg/notification.svg',
+                    //     height: 20,
+                    //   ),
+                    // ),
                     const SizedBox(
                       width: 10,
                     ),
@@ -133,7 +133,7 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                   children: [
                     SizedBox(
                       height: 48.0,
-                      width: 230.0,
+                      width: 260.0,
                       child: TextField(
                         controller: facilitiesWatch.searchController,
                         onChanged: (value) {
@@ -181,20 +181,20 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                     const SizedBox(
                       width: 15,
                     ),
-                    Container(
-                      width: 48.0,
-                      height: 48.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xffDC1D3C),
-                      ),
-                      padding: const EdgeInsets.all(13),
-                      child: SvgPicture.asset(
-                        'assets/svg/add.svg',
-                        height: 10,
-                        width: 10,
-                      ),
-                    ),
+                    // Container(
+                    //   width: 48.0,
+                    //   height: 48.0,
+                    //   decoration: const BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //     color: Color(0xffDC1D3C),
+                    //   ),
+                    //   padding: const EdgeInsets.all(13),
+                    //   child: SvgPicture.asset(
+                    //     'assets/svg/add.svg',
+                    //     height: 10,
+                    //     width: 10,
+                    //   ),
+                    // ),
                   ],
                 ),
                 const SizedBox(

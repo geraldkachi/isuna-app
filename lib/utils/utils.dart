@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:misau/features/home/filter_screen.dart';
+import 'package:misau/widget/loading_dialog.dart';
 
 class Utils {
   static String formatNumber(String numberString) {
@@ -30,5 +31,9 @@ class Utils {
         return const FilterScreen();
       },
     );
+  }
+
+ static void showLoadingDialog(context) {
+    showDialog(context: context, builder: (context) => LoadingDialog());
   }
 }

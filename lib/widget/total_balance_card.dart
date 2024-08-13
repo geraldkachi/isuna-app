@@ -5,9 +5,9 @@ import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/utils/string_utils.dart';
 
 class TotalBalanceCard extends ConsumerWidget {
-  final int? totalBalance;
-  final int? actualBalance;
-  final int? pendingBalance;
+  final dynamic totalBalance;
+  final dynamic actualBalance;
+  final dynamic pendingBalance;
 
   const TotalBalanceCard({
     Key? key,
@@ -61,7 +61,7 @@ class TotalBalanceCard extends ConsumerWidget {
                         fontFamily: 'AreaNeu'),
                   ),
                   Text(
-                    "${StringUtils.currencyConverter(totalBalance ?? 0)} ",
+                    "${StringUtils.currencyConverter(totalBalance?.toInt() ?? 0)} ",
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 34,
@@ -103,7 +103,7 @@ class TotalBalanceCard extends ConsumerWidget {
                       Text(
                         homeWatch.isLoading
                             ? '0'
-                            : "${StringUtils.currencyConverter(actualBalance ?? 0)}",
+                            : "${StringUtils.currencyConverter(actualBalance?.toInt() ?? 0)}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 20,
@@ -141,7 +141,7 @@ class TotalBalanceCard extends ConsumerWidget {
                       Text(
                         homeWatch.isLoading
                             ? '0'
-                            : "${StringUtils.currencyConverter(pendingBalance ?? 0)}",
+                            : "${StringUtils.currencyConverter(pendingBalance?.toInt() ?? 0)}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 20,

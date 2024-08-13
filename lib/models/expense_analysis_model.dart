@@ -1,9 +1,9 @@
 
 // Define the ExpenseAnalysis model
 class ExpenseAnalysis {
-  final int? lastMonthExpense;
-  final int? currentMonthExpense;
-  final int? expenseDiff;
+  final dynamic lastMonthExpense;
+  final dynamic currentMonthExpense;
+  final dynamic expenseDiff;
 
   ExpenseAnalysis({
      this.lastMonthExpense,

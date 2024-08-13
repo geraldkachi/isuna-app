@@ -7,8 +7,8 @@ import 'package:misau/utils/string_utils.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 
 class IncomeAnalysisCard extends ConsumerWidget {
-  final int? currentMonthIncome;
-  final int? lastMonthIncome;
+  final dynamic currentMonthIncome;
+  final dynamic lastMonthIncome;
   final List<String> options;
 
   const IncomeAnalysisCard({
