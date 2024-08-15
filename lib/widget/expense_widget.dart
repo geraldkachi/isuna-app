@@ -36,13 +36,12 @@ class ExpenseWidget extends StatelessWidget {
               const SizedBox(width: 3),
               SvgPicture.asset('assets/svg/info_circle.svg'),
               const Spacer(),
-              const CustomDropdown([]), // Replace with actual options
             ],
           ),
           const SizedBox(height: 13),
           Center(
               child: CustomPieChart(expenseCategory
-                  .categoriesWithPercentages )), // Replace with actual data
+                  .categoriesWithPercentages)), // Replace with actual data
           const SizedBox(height: 35),
           ...expenseCategory.categoriesWithPercentages.map((entry) {
             final color = getColorForCategory(entry.category);
@@ -85,8 +84,8 @@ Color getColorForCategory(String category) {
   return category.contains("UTILITIES")
       ? const Color(0xffE6844D)
       : category.contains("FUEL & LUBRICANTS")
-          ?  blue
+          ? blue
           : category.contains("Other")
-              ?  red700
+              ? red700
               : Colors.grey;
 }

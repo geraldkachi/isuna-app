@@ -60,8 +60,10 @@ class AdminViewModel extends ChangeNotifier {
           role: role);
       searchAdmins = _adminService.adminModel!;
       router.pop();
-    } on MisauException catch (e) {
       router.go('/main_screen');
+    } on MisauException catch (e) {
+      router.pop();
+
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e) {
@@ -99,8 +101,10 @@ class AdminViewModel extends ChangeNotifier {
     }
 
     searchAdmins = _adminService.adminModel?.where((admin) {
+      final String email = admin.email!;
       final String name = '${admin.firstName} ${admin.lastName}';
-      return name.toLowerCase().contains(searchController.text.toLowerCase());
+      return name.toLowerCase().contains(searchController.text.toLowerCase()) ||
+          email.toLowerCase().contains(searchController.text.toLowerCase());
     }).toList();
     notifyListeners();
   }

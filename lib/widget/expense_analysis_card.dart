@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/home/home_viemodel.dart';
+import 'package:misau/utils/string_utils.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 
 class ExpenseAnalysisCard extends ConsumerWidget {
@@ -45,36 +47,56 @@ class ExpenseAnalysisCard extends ConsumerWidget {
               const SizedBox(width: 3),
               SvgPicture.asset('assets/svg/info_circle.svg'),
               const Spacer(),
-              CustomDropdown(options),
+              // CustomDropdown(options),
             ],
           ),
           const SizedBox(height: 13),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(
-                    '₦',
-                    style: const TextStyle(
+              homeWatch.hideAmounts
+                  ? Text(
+                      "****",
+                      style: const TextStyle(
                         fontWeight: FontWeight.w900,
-                        fontSize: 28,
+                        fontSize: 34,
                         color: Color(0xff1B1C1E),
-                        fontFamily: 'AreaNeu'),
-                  ),
-                  Text(
-                    "${homeRead.expenseAnalysis.currentMonthExpense ?? 0}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 34,
-                      color: Color(0xff1B1C1E),
-                      letterSpacing: -.5,
+                        letterSpacing: -.5,
+                      ),
+                    )
+                  : Row(
+                      children: [
+                        Text(
+                          '₦',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 28,
+                              color: Color(0xff1B1C1E),
+                              fontFamily: 'AreaNeu'),
+                        ),
+                        Text(
+                          "${StringUtils.currencyConverter(homeRead.expenseAnalysis.currentMonthExpense ?? 0)}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 34,
+                            color: Color(0xff1B1C1E),
+                            letterSpacing: -.5,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
               const SizedBox(width: 7),
-              SvgPicture.asset('assets/svg/eye.svg'),
+              InkWell(
+                  onTap: () {
+                    homeRead.toggleAmountVisibility();
+                  },
+                  child: SvgPicture.asset(
+                    homeWatch.hideAmounts
+                        ? 'assets/svg/view-off-slash-stroke-rounded.svg'
+                        : 'assets/svg/view-stroke-rounded.svg',
+                    height: 20.0,
+                    colorFilter: ColorFilter.mode(black500, BlendMode.srcIn),
+                  )),
             ],
           ),
           const SizedBox(height: 13),
@@ -90,7 +112,7 @@ class ExpenseAnalysisCard extends ConsumerWidget {
                 child: Row(children: [
                   SvgPicture.asset('assets/svg/arrow_down.svg'),
                   Text(
-                    "11%",
+                    "${homeWatch.expensePercentageDecrease?.abs().toStringAsFixed(1)}%",
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -115,10 +137,5 @@ class ExpenseAnalysisCard extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  String calculatePercentageIncrease(int currentMonth, int lastMonth) {
-    final percentageIncrease = (lastMonth - currentMonth) / currentMonth * 100;
-    return percentageIncrease.abs().toStringAsFixed(1);
   }
 }

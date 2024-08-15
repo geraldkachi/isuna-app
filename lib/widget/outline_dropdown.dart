@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class OutlineDropdown extends StatefulWidget {
   final List<String>? options;
-  final Function(String?)? onChanged;
+  final void Function(String)? onChanged;
   const OutlineDropdown({this.options, this.onChanged, super.key});
   @override
   State<OutlineDropdown> createState() => _OutlineDropdownState();
@@ -51,7 +51,7 @@ class _OutlineDropdownState extends State<OutlineDropdown> {
           onChanged: (newValue) {
             setState(() {
               selectedValue = newValue!;
-              widget.onChanged!(newValue);
+              widget.onChanged!(selectedValue!);
             });
           },
           selectedItemBuilder: (BuildContext context) {

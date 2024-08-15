@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:misau/app/locator.dart';
 import 'package:misau/exceptions/misau_exception.dart';
+import 'package:misau/features/main_screen/main_screen_view_model.dart';
 import 'package:misau/models/admin_model.dart';
 import 'package:misau/models/balances_model.dart';
 import 'package:misau/models/expense_analysis_model.dart';
@@ -13,10 +14,13 @@ import 'package:misau/models/income_analysis_model.dart';
 import 'package:misau/models/lga_model.dart';
 import 'package:misau/models/state_model.dart';
 import 'package:misau/models/states_and_lga_model.dart';
+import 'package:misau/models/summary_model.dart';
 import 'package:misau/models/tranx_list_model.dart';
 import 'package:misau/service/auth_service.dart';
 import 'package:misau/service/dashboard_service.dart';
 import 'package:misau/service/health_facilities_service.dart';
+import 'package:misau/service/navigator_service.dart';
+import 'package:misau/service/profile_service.dart';
 import 'package:misau/service/state_and_lga_service.dart';
 import 'package:misau/service/toast_service.dart';
 
@@ -30,6 +34,7 @@ class HomeViemodel extends ChangeNotifier {
   final StateAndLgaService _stateAndLgaService = getIt<StateAndLgaService>();
   final HealthFacilitiesService _healthFacilitiesService =
       getIt<HealthFacilitiesService>();
+  final NavigatorService _navigatorService = getIt<NavigatorService>();
 
   List<StatesAndLgaModel>? get stateAndLgaModel =>
       _stateAndLgaService.statesAndLgaModel;
@@ -50,6 +55,9 @@ class HomeViemodel extends ChangeNotifier {
   ExpenseCategory get expenseCategory =>
       _dashboardService.expenseCategory ?? ExpenseCategory();
 
+  SummaryModel get summaryModel =>
+      _dashboardService.summaryModel ?? SummaryModel();
+
   TextEditingController searchController = TextEditingController();
   TextEditingController fromDateController = TextEditingController();
   TextEditingController toDateController = TextEditingController();
@@ -58,6 +66,9 @@ class HomeViemodel extends ChangeNotifier {
       SingleValueDropDownController();
 
   List<Transaction>? filteredTransactions = [];
+
+  double? incomePercentageIncrease;
+  double? expensePercentageDecrease;
 
   String? selectedState;
   String? selectedLga;
@@ -70,39 +81,12 @@ class HomeViemodel extends ChangeNotifier {
 
   bool isLoading = false;
   bool onInit = false;
+  bool hideAmounts = false;
 
   List<String>? get facilitiesList =>
       facilitiesModel.map((value) => value.name as String).toList();
 
   List<String>? lgaList = [];
-
-  void clearFilters() {
-    fromDate = '';
-    fromDateController.text = '';
-    toDate = '';
-    toDateController.text = '';
-    selectedState = '';
-    selectedLga = '';
-    searchfacilityController.dispose();
-  }
-
-  void filterTransactions() {
-    final query = searchController.text.toLowerCase().trim();
-    if (searchController.text.isEmpty) {
-      filteredTransactions = _dashboardService.transactionList?.edges ?? [];
-    }
-    filteredTransactions =
-        _dashboardService.transactionList?.edges.where((transaction) {
-              final category = transaction.income != null
-                  ? 'Income'
-                  : transaction.expense?.category ?? '';
-              final facility = transaction.facility.toLowerCase();
-              return category.toLowerCase().contains(query) ||
-                  facility.contains(query);
-            }).toList() ??
-            [];
-    notifyListeners();
-  }
 
   Future<void> fetchWalletData(context,
       {String? state = '',
@@ -140,10 +124,62 @@ class HomeViemodel extends ChangeNotifier {
         facility: facilitys,
         fromDate: fromDate,
         toDate: toDate);
+    await fetchSummary(context);
     await fetchFacilities(context);
     await getStates(context);
 
     onInit = true;
+  }
+
+
+
+  int? screenIndex;
+
+  void navToAdmin() {
+    screenIndex = 2;
+    _navigatorService.currentIndex = screenIndex!;
+    notifyListeners();
+    screenIndex = null;
+  }
+
+  void navToFacilities() {
+    screenIndex = 1;
+    _navigatorService.currentIndex = screenIndex!;
+    notifyListeners();
+    screenIndex = null;
+  }
+
+  void toggleAmountVisibility() {
+    hideAmounts = !hideAmounts;
+    notifyListeners();
+  }
+
+  void clearFilters() {
+    fromDate = '';
+    fromDateController.text = '';
+    toDate = '';
+    toDateController.text = '';
+    selectedState = '';
+    selectedLga = '';
+    searchfacilityController.dispose();
+  }
+
+  void filterTransactions() {
+    final query = searchController.text.toLowerCase().trim();
+    if (searchController.text.isEmpty) {
+      filteredTransactions = _dashboardService.transactionList?.edges ?? [];
+    }
+    filteredTransactions =
+        _dashboardService.transactionList?.edges.where((transaction) {
+              final category = transaction.income != null
+                  ? 'Income'
+                  : transaction.expense?.category ?? '';
+              final facility = transaction.facility.toLowerCase();
+              return category.toLowerCase().contains(query) ||
+                  facility.contains(query);
+            }).toList() ??
+            [];
+    notifyListeners();
   }
 
   Future<void> fetchBalances(context,
@@ -191,6 +227,7 @@ class HomeViemodel extends ChangeNotifier {
           facility: facility,
           fromDate: fromDate,
           toDate: toDate);
+      incomePercentageIncrease = calculatePercentage(incomeAnalysis.incomeDiff);
       isLoading = false;
       notifyListeners();
     } on MisauException catch (e) {
@@ -252,6 +289,9 @@ class HomeViemodel extends ChangeNotifier {
           facility: facility,
           fromDate: fromDate,
           toDate: toDate);
+      expensePercentageDecrease =
+          calculatePercentage(expenseAnalysis.expenseDiff);
+
       isLoading = false;
       notifyListeners();
     } on MisauException catch (e) {
@@ -298,6 +338,11 @@ class HomeViemodel extends ChangeNotifier {
     }
   }
 
+  double calculatePercentage(dynamic incomeDiff) {
+    double baseValue = 1000000;
+    return (incomeDiff / baseValue.toInt()) * 100;
+  }
+
   String calculatePercentageIncrease() {
     final percentageIncrease = (incomeAnalysis.currentMonthIncome ??
             0 - incomeAnalysis.lastMonthIncome!) /
@@ -339,11 +384,34 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stack) {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'facilities error: ${e.toString}');
+      debugPrint('facilities error stack $e/n$stack');
+    }
+  }
+
+  Future<void> fetchSummary(context) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+      await _dashboardService.fetchSummary();
+      isLoading = false;
+      onInit = true;
+      notifyListeners();
+    } on MisauException catch (e) {
+      isLoading = false;
+      onInit = true;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: 'summary error: ${e.toString}');
     }
   }
 

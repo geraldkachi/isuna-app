@@ -132,9 +132,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      height: 48.0,
-                      width: 230,
+                    Expanded(
                       child: TextField(
                         controller: adminWatch.searchController,
                         onChanged: (value) {
@@ -165,7 +163,9 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
                         ),
                       ),
                     ),
-                    const Spacer(),
+                    SizedBox(
+                      width: 10.0,
+                    ),
                     Container(
                       width: 48.0,
                       height: 48.0,
@@ -203,7 +203,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
                             MaterialPageRoute(
                                 builder: (context) => AddAdminPage()));
                       },
-                    ),
+                    )
                   ],
                 ),
                 const SizedBox(

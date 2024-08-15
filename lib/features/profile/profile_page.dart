@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:misau/features/health/health_details.dart';
 import 'package:misau/features/profile/personal_info.dart';
 import 'package:misau/features/profile/preferences.dart';
+import 'package:misau/features/profile/profile_view_model.dart';
 import 'package:misau/utils/utils.dart';
+import 'package:misau/widget/user_avarta.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({
     super.key,
   });
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
+class _ProfilePageState extends ConsumerState<ProfilePage>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   List<String> options = ['Monthly', 'Weekly', 'Daily'];
@@ -27,6 +30,9 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
+    final profileWatch = ref.watch(profileViewModelProvider);
+    final profileRead = ref.read(profileViewModelProvider.notifier);
+
     final appSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xffF4F4F7),
@@ -44,74 +50,60 @@ class _ProfilePageState extends State<ProfilePage>
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xff313131), // Border color
-                          width: 5, // Border width
-                        ),
-                        image: const DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                            'https://gravatar.com/avatar/0d6eff6c107827ccf1a5dd478d540700?s=400&d=robohash&r=x', // Replace with your image URL
-                          ),
-                        ),
-                      ),
-                    ),
+                    UserAvarta(
+                        firstName: profileRead.userData.firstName ?? '-',
+                        lastName: profileRead.userData.lastName ?? '-'),
                     const Spacer(),
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xff313131),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: SvgPicture.asset(
-                        'assets/svg/search.svg',
-                        height: 20,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 43.0,
-                      height: 43.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xff313131),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: SvgPicture.asset(
-                        'assets/svg/notification.svg',
-                        height: 20,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    InkWell(
-                      child: Container(
-                        width: 43.0,
-                        height: 43.0,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xff313131),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: SvgPicture.asset(
-                          'assets/svg/filter.svg',
-                          height: 20,
-                        ),
-                      ),
-                      onTap: () {
-                        Utils.showFilterBottomSheet(context);
-                      },
-                    ),
+                    // Container(
+                    //   width: 43.0,
+                    //   height: 43.0,
+                    //   decoration: const BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //     color: Color(0xff313131),
+                    //   ),
+                    //   padding: const EdgeInsets.all(10),
+                    //   child: SvgPicture.asset(
+                    //     'assets/svg/search.svg',
+                    //     height: 20,
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   width: 10,
+                    // ),
+                    // Container(
+                    //   width: 43.0,
+                    //   height: 43.0,
+                    //   decoration: const BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //     color: Color(0xff313131),
+                    //   ),
+                    //   padding: const EdgeInsets.all(10),
+                    //   child: SvgPicture.asset(
+                    //     'assets/svg/notification.svg',
+                    //     height: 20,
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   width: 10,
+                    // ),
+                    // InkWell(
+                    //   child: Container(
+                    //     width: 43.0,
+                    //     height: 43.0,
+                    //     decoration: const BoxDecoration(
+                    //       shape: BoxShape.circle,
+                    //       color: Color(0xff313131),
+                    //     ),
+                    //     padding: const EdgeInsets.all(10),
+                    //     child: SvgPicture.asset(
+                    //       'assets/svg/filter.svg',
+                    //       height: 20,
+                    //     ),
+                    //   ),
+                    //   onTap: () {
+                    //     Utils.showFilterBottomSheet(context);
+                    //   },
+                    // ),
                   ],
                 ),
                 const SizedBox(
@@ -121,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage>
                   "Profile",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 23,
+                    fontSize: 20.0,
                     color: Colors.white,
                     letterSpacing: -.5,
                   ),

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:misau/app/theme/colors.dart';
+import 'package:misau/service/toast_service.dart';
 
 class Toast extends StatelessWidget {
   final String title;
   final String subTitle;
+  final ToastType? type;
 
-  const Toast({
-    Key? key,
-    required this.title,
-    required this.subTitle,
-  }) : super(key: key);
+  const Toast(
+      {Key? key, required this.title, required this.subTitle, this.type})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration:
-          BoxDecoration(color: red, borderRadius: BorderRadius.circular(10.0)),
+      decoration: BoxDecoration(
+          color: type == ToastType.success ? green : red,
+          borderRadius: BorderRadius.circular(10.0)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

@@ -1,23 +1,28 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:misau/app/theme/colors.dart';
+import 'package:misau/features/health/health_facilities_view_model.dart';
 import 'package:misau/utils/utils.dart';
+import 'package:misau/utils/validator.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
 import 'package:misau/widget/outline_datepicker.dart';
 import 'package:misau/widget/outline_dropdown.dart';
 import 'package:misau/widget/outline_textfield.dart';
 
-class RecordInflowPayment extends StatefulWidget {
+class RecordInflowPayment extends ConsumerStatefulWidget {
   const RecordInflowPayment({
     super.key,
   });
 
   @override
-  State<RecordInflowPayment> createState() => _RecordInflowPaymentState();
+  ConsumerState<RecordInflowPayment> createState() =>
+      _RecordInflowPaymentState();
 }
 
-class _RecordInflowPaymentState extends State<RecordInflowPayment>
+class _RecordInflowPaymentState extends ConsumerState<RecordInflowPayment>
     with SingleTickerProviderStateMixin {
   // List<String> options = ['Monthly', 'Weekly', 'Daily'];
   bool showGreenLine = true;
@@ -31,12 +36,17 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
 
   @override
   Widget build(BuildContext context) {
+    final facilitiesWatch = ref.watch(healthFacilitiesViemodelProvider);
+    final facilitiesRead = ref.read(healthFacilitiesViemodelProvider.notifier);
     final appSize = MediaQuery.of(context).size;
+
     return Scaffold(
         backgroundColor: const Color(0xffF4F4F7),
         body: Padding(
             padding: const EdgeInsets.only(top: 60, left: 20, right: 20),
-            child: SingleChildScrollView(
+            child: Form(
+              key: facilitiesWatch.formKey,
+              autovalidateMode: AutovalidateMode.always,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -67,10 +77,11 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
                   const SizedBox(
                     height: 26,
                   ),
-                  const Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "State ",
+                      const Text(
+                        "Status",
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 15,
@@ -78,260 +89,154 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
                           letterSpacing: -.5,
                         ),
                       ),
-                      Text(
-                        "*",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
-                          color: Color(0xffE03137),
-                          letterSpacing: -.5,
-                        ),
+                      const SizedBox(
+                        height: 7,
                       ),
+                      DropdownButtonFormField<String>(
+                        value: facilitiesWatch.inflowStatusValue,
+                        validator: (value) => Validator.validateField(value),
+                        decoration: InputDecoration(
+                          hintText: 'Select status',
+                          hintStyle: TextStyle(
+                            color: Color(0xff121827).withOpacity(0.4),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: grey100,
+                              width: 1.0,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: grey100,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: black,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
+                        icon: SvgPicture.asset(
+                          'assets/svg/arrow_dropdown.svg',
+                          width: 13,
+                          height: 13,
+                          color: const Color(0xff121827),
+                        ),
+                        items: ['Flagged', 'Resolved'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                  color: Color(0xff121827),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            facilitiesWatch.inflowStatusValue = newValue!;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      const Row(
+                        children: [
+                          Text(
+                            "Amount ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                              color: Color(0xff1B1C1E),
+                              letterSpacing: -.5,
+                            ),
+                          ),
+                          Text(
+                            "*",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: Color(0xffE03137),
+                              letterSpacing: -.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      TextFormField(
+                        controller: facilitiesWatch.inflowAmountContoller,
+                        keyboardType: TextInputType.number,
+                        validator: (value) => Validator.validateField(value),
+                        decoration: InputDecoration(
+                          hintText: 'Enter amount',
+                          hintStyle: TextStyle(
+                            color: Color(0xff121827).withOpacity(0.4),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: grey100,
+                              width: 1.0,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: grey100,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: black,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
+                        style: const TextStyle(
+                          color: Color(0xff121827),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )
                     ],
                   ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  const OutlineDropdown(options: ['Osun', 'Justin']),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  const Text(
-                    "LGA ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: Color(0xff1B1C1E),
-                      letterSpacing: -.5,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  const OutlineDropdown(options: ['Boluwaduro']),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  const Text(
-                    "Facility ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: Color(0xff1B1C1E),
-                      letterSpacing: -.5,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  const OutlineDropdown(
-                      options: ['Afao Primary Health Clinic']),
-                  const SizedBox(
-                    height: 13,
-                  ),
-                  const Text(
-                    "Inflow",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 22,
-                      color: Color(0xff1B1C1E),
-                      letterSpacing: -.5,
-                    ),
-                  ),
-                  Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color(0xffE9EAEB),
-                        ),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Category",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                              color: Color(0xff1B1C1E),
-                              letterSpacing: -.5,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const OutlineDropdown(
-                              options: ['Training - General']),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const Text(
-                            "Sub Category",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                              color: Color(0xff1B1C1E),
-                              letterSpacing: -.5,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const OutlineDropdown(options: ['Local Training']),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const Row(
-                            children: [
-                              Text(
-                                "Title ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: Color(0xff1B1C1E),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                              Text(
-                                "*",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color(0xffE03137),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          OutlineTextField(
-                              controller: titleController,
-                              hintText: 'Enter Title'),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const Row(
-                            children: [
-                              Text(
-                                "Date ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: Color(0xff1B1C1E),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                              Text(
-                                "*",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color(0xffE03137),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const OutlineDatePicker(),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const Row(
-                            children: [
-                              Text(
-                                "Amount ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: Color(0xff1B1C1E),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                              Text(
-                                "*",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color(0xffE03137),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          OutlineTextField(
-                              controller: titleController,
-                              hintText: 'Enter Amount',
-                              isNumeric: true),
-                          const SizedBox(
-                            height: 13,
-                          ),
-                          Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: const Color(0xffE9EAEB), width: 1.5),
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Total Balance",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15,
-                                      color: Color(0xff1B1C1E),
-                                      letterSpacing: -.5,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    Utils.formatNumber("12456315"),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 20,
-                                      color: Color(0xff1B1C1E),
-                                      letterSpacing: -.5,
-                                    ),
-                                  )
-                                ],
-                              )),
-                        ],
-                      )),
-                  const SizedBox(
-                    height: 30,
-                  ),
+                  Spacer(),
                   SizedBox(
+                      height: 48.0,
                       width: double.infinity, // Make button full width
-                      child: ElevatedButton(
+                      child: TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          facilitiesRead.addPayment(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 18.0, horizontal: 10.0),
+                          backgroundColor: red,
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(12.0), // border radius
                           ),
-                          // primary: const red, // background color
                         ),
                         child: const Text(
-                          "Record ",
+                          "Add Payment ",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -345,12 +250,5 @@ class _RecordInflowPaymentState extends State<RecordInflowPayment>
                 ],
               ),
             )));
-  }
-
-  Widget _buildTab(String text) {
-    return Tab(
-      text: text,
-      height: 38,
-    );
   }
 }

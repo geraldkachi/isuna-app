@@ -32,7 +32,9 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
       final facilitiesRead =
           ref.read(healthFacilitiesViemodelProvider.notifier);
 
-      facilitiesRead.onInit ? null : facilitiesRead.fetchFacilities(context);
+      facilitiesRead.onInit
+          ? null
+          : facilitiesRead.fetchFacilitiesPagnated(context);
     });
   }
 

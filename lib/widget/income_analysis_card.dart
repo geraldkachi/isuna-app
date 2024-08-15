@@ -47,36 +47,56 @@ class IncomeAnalysisCard extends ConsumerWidget {
               const SizedBox(width: 3),
               SvgPicture.asset('assets/svg/info_circle.svg'),
               const Spacer(),
-              CustomDropdown(options),
+              // CustomDropdown(options),
             ],
           ),
           const SizedBox(height: 13),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(
-                    '₦',
-                    style: TextStyle(
+              homeWatch.hideAmounts
+                  ? Text(
+                      "****",
+                      style: const TextStyle(
                         fontWeight: FontWeight.w900,
-                        fontSize: 28,
+                        fontSize: 34,
                         color: Color(0xff1B1C1E),
-                        fontFamily: 'AreaNeu'),
-                  ),
-                  Text(
-                    "${StringUtils.currencyConverter(homeWatch.incomeAnalysis.currentMonthIncome ?? 0).trim()} ",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 34,
-                      color: Color(0xff1B1C1E),
-                      letterSpacing: -.5,
+                        letterSpacing: -.5,
+                      ),
+                    )
+                  : Row(
+                      children: [
+                        Text(
+                          '₦',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 28,
+                              color: Color(0xff1B1C1E),
+                              fontFamily: 'AreaNeu'),
+                        ),
+                        Text(
+                          "${StringUtils.currencyConverter(homeWatch.incomeAnalysis.currentMonthIncome ?? 0).trim()} ",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 34,
+                            color: Color(0xff1B1C1E),
+                            letterSpacing: -.5,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
               const SizedBox(width: 7),
-              SvgPicture.asset('assets/svg/eye.svg'),
+              InkWell(
+                  onTap: () {
+                    homeRead.toggleAmountVisibility();
+                  },
+                  child: SvgPicture.asset(
+                    homeWatch.hideAmounts
+                        ? 'assets/svg/view-off-slash-stroke-rounded.svg'
+                        : 'assets/svg/view-stroke-rounded.svg',
+                    height: 20.0,
+                    colorFilter: ColorFilter.mode(black500, BlendMode.srcIn),
+                  )),
             ],
           ),
           const SizedBox(height: 13),
@@ -92,7 +112,7 @@ class IncomeAnalysisCard extends ConsumerWidget {
                 child: Row(children: [
                   SvgPicture.asset('assets/svg/arrow_up.svg'),
                   Text(
-                    "+${homeRead.calculatePercentageIncrease().trim()}%",
+                    "${homeRead.incomePercentageIncrease?.abs().toStringAsFixed(1)}%",
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,

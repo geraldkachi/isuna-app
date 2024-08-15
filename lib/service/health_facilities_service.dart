@@ -3,9 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:misau/app/locator.dart';
 import 'package:misau/exceptions/misau_exception.dart';
+import 'package:misau/models/balance_expense_model.dart';
+import 'package:misau/models/balance_income_model.dart';
+import 'package:misau/models/categories_model.dart';
 import 'package:misau/models/facility_balances_model.dart';
 import 'package:misau/models/audit_details.dart';
 import 'package:misau/models/facilities_model.dart';
+import 'package:misau/models/inflow_payment_model.dart';
 import 'package:misau/models/tranx_list_model.dart';
 import 'package:misau/service/encryption_service.dart';
 import 'package:misau/service/network_service.dart';
@@ -18,11 +22,18 @@ class HealthFacilitiesService {
   List<AuditTrailsModel>? _auditTrailsModel;
   FacilityBalancesModel? _facilityBalances;
   TransactionList? _transactionList;
+  List<CategoriesModel>? _categoriesModel;
+  BalanceExpenseModel? _balanceExpenseModel;
+  BalanceIncomeModel? _balanceIncomeModel;
 
   List<FacilitiesModel>? get facilitiesModel => _facilitiesModel;
   List<AuditTrailsModel>? get auditTrailsModel => _auditTrailsModel;
-  FacilityBalancesModel? get facilityBalancesModel => _facilityBalances!;
+  FacilityBalancesModel? get facilityBalancesModel => _facilityBalances;
+  BalanceExpenseModel? get balanceExpenseModel => _balanceExpenseModel;
+  BalanceIncomeModel? get balanceIncomeModel => _balanceIncomeModel;
+
   TransactionList? get transactionList => _transactionList;
+  List<CategoriesModel>? get categoriesModel => _categoriesModel;
 
   Future<void> fetchFacilitiesPagnated() async {
     // Send the request to the backend
@@ -114,6 +125,50 @@ class HealthFacilitiesService {
     }
   }
 
+  Future<void> getBalanceIncome(
+      String facility, String state, String lga) async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+          '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=balanceIncome');
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: $decryptedResponsePayload');
+      final Map<String, dynamic> jsonDecodedPayload =
+          json.decode(decryptedResponsePayload);
+      _balanceIncomeModel =
+          BalanceIncomeModel.fromJson(jsonDecodedPayload['balanceIncome']);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getBalanceExpense(
+      String facility, String state, String lga) async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+          '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=balanceExpense');
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: $decryptedResponsePayload');
+      final Map<String, dynamic> jsonDecodedPayload =
+          json.decode(decryptedResponsePayload);
+      _balanceExpenseModel =
+          BalanceExpenseModel.fromJson(jsonDecodedPayload['balanceExpense']);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> fetchFacilityTransactionList(
       String facility, String state, String lga) async {
     // Send the request to the backend
@@ -126,9 +181,59 @@ class HealthFacilitiesService {
       debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
-      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
-      _transactionList = TransactionList.fromJson(
-          json.decode(decryptedResponsePayload.toString()));
+      debugPrint('decrypted response: ${decryptedResponsePayload}');
+      _transactionList =
+          TransactionList.fromJson(json.decode(decryptedResponsePayload));
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchCategories() async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/user/v1/categories',
+      );
+
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload}');
+      List jsonDecodedPayload = json.decode(decryptedResponsePayload);
+      _categoriesModel = jsonDecodedPayload
+          .map((value) => CategoriesModel.fromJson(value))
+          .toList();
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addInflow(InflowPaymentModel inflowPaymentModel) async {
+    // Send the request to the backend
+    try {
+      debugPrint('Raw payload ${inflowPaymentModel.toJson()}');
+
+      final encryptedPayload =
+          _encryptionService.encrypt(json.encode(inflowPaymentModel.toJson()));
+
+      final response = await _networkService.post('/wallet/v1/health-institute',
+          data: {'payload': encryptedPayload});
+
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload}');
+      List jsonDecodedPayload = json.decode(decryptedResponsePayload);
+      // _categoriesModel = jsonDecodedPayload
+      //     .map((value) => CategoriesModel.fromJson(value))
+      //     .toList();
     } on MisauException {
       rethrow;
     } catch (e) {

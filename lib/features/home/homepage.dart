@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/home/home_viemodel.dart';
+import 'package:misau/features/home/statistics_tab.dart';
 import 'package:misau/features/home/tranx_screen.dart';
 import 'package:misau/utils/utils.dart';
 import 'package:misau/widget/app_header.dart';
@@ -31,7 +32,7 @@ class _HomePageState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     final homeRead = ref.read(homeViemodelProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       homeRead.onInit ? null : homeRead.fetchWalletData(context);
@@ -81,7 +82,8 @@ class _HomePageState extends ConsumerState<HomePage>
                     tabs: [
                       _buildTab('Overview'),
                       _buildTab('Transaction'),
-                      // _buildTab('Statistics'),
+                      GestureDetector(
+                          onTap: () {}, child: _buildTab('Statistics')),
                     ],
                   ),
                   const SizedBox(
@@ -147,13 +149,18 @@ class _HomePageState extends ConsumerState<HomePage>
                                     expenseCategory: homeWatch.expenseCategory,
                                   ),
                             const SizedBox(height: 20),
-                            AccountsCard(),
+                            AccountsCard(
+                              managersCount:
+                                  homeWatch.summaryModel.admin.toString(),
+                              healthFacilitiesCount:
+                                  homeWatch.summaryModel.facility.toString(),
+                            ),
                             const SizedBox(height: 20),
                           ],
                         ),
                       ),
                       TransactionsScreen(),
-                      // StatisticsTab(appSize: appSize, homeWatch: homeWatch, options: options),
+                      StatisticsTab(homeWatch: homeWatch, options: options),
                     ],
                   )),
                 ],
@@ -171,13 +178,14 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 }
 
-class AccountsCard extends StatelessWidget {
-  const AccountsCard({
-    super.key,
-  });
+class AccountsCard extends ConsumerWidget {
+  final String? managersCount;
+  final String? healthFacilitiesCount;
+  const AccountsCard(
+      {super.key, this.healthFacilitiesCount, this.managersCount});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -205,39 +213,37 @@ class AccountsCard extends StatelessWidget {
           SizedBox(
             height: 30.0,
           ),
-          // Row(
-          //   children: [
-          //     AccountsConntainer(
-          //       title: 'Personal',
-          //       IconUrl: 'assets/svg/user_icon.svg',
-          //       subTitle: '230',
-          //     ),
-          //     Spacer(),
-          //     AccountsConntainer(
-          //       title: 'Business',
-          //       IconUrl: 'assets/svg/bag_icon.svg',
-          //       subTitle: '46',
-          //     )
-          //   ],
-          // ),
-          // SizedBox(
-          //   height: 20.0,
-          // ),
           Row(
             children: [
               AccountsConntainer(
                 title: 'Health Facilities',
                 IconUrl: 'assets/svg/hospital.svg',
-                subTitle: '150',
+                subTitle: healthFacilitiesCount,
+                onTap: () =>
+                    ref.read(homeViemodelProvider.notifier).navToFacilities(),
               ),
               Spacer(),
               AccountsConntainer(
                 title: 'Managers',
                 IconUrl: 'assets/svg/people_icon.svg',
-                subTitle: '322',
+                subTitle: managersCount,
+                onTap: () =>
+                    ref.read(homeViemodelProvider.notifier).navToAdmin(),
               )
             ],
-          )
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+
+          //     Spacer(),
+          // AccountsConntainer(
+          //   title: 'Business',
+          //   IconUrl: 'assets/svg/bag_icon.svg',
+          //   subTitle: ,
+          // )
+          //   ],
+          // )
         ],
       ),
     );
@@ -248,47 +254,47 @@ class AccountsConntainer extends StatelessWidget {
   final String? IconUrl;
   final String? title;
   final String? subTitle;
-  const AccountsConntainer({
-    super.key,
-    this.IconUrl,
-    this.title,
-    this.subTitle,
-  });
+  final VoidCallback? onTap;
+  const AccountsConntainer(
+      {super.key, this.IconUrl, this.title, this.subTitle, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 150.0,
-      width: 150.0,
-      padding: EdgeInsets.all(15.0),
-      decoration: BoxDecoration(
-          border: Border.all(color: grey100),
-          borderRadius: BorderRadius.circular(12.0)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-              height: 40.0,
-              width: 40.0,
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0), color: white100),
-              child: SvgPicture.asset(
-                IconUrl!,
-              )),
-          SizedBox(
-            height: 15.0,
-          ),
-          Text(
-            title!,
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15.0),
-          ),
-          Text(
-            subTitle!,
-            style: TextStyle(
-                fontWeight: FontWeight.w600, color: black400, fontSize: 13.0),
-          ),
-        ],
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 150.0,
+        width: 150.0,
+        padding: EdgeInsets.all(15.0),
+        decoration: BoxDecoration(
+            border: Border.all(color: grey100),
+            borderRadius: BorderRadius.circular(12.0)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                height: 40.0,
+                width: 40.0,
+                padding: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0), color: white100),
+                child: SvgPicture.asset(
+                  IconUrl!,
+                )),
+            SizedBox(
+              height: 15.0,
+            ),
+            Text(
+              title!,
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15.0),
+            ),
+            Text(
+              subTitle!,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600, color: black400, fontSize: 13.0),
+            ),
+          ],
+        ),
       ),
     );
   }

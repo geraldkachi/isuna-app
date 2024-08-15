@@ -30,9 +30,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         children: [
           Row(
             children: [
-              SizedBox(
-                height: 48.0,
-                width: 230.0,
+              Expanded(
                 child: TextField(
                   controller: homeWatch.searchController,
                   onChanged: (value) {
@@ -63,7 +61,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                   ),
                 ),
               ),
-              const Spacer(),
+              SizedBox(width: 10.0),
               Container(
                 width: 50.0,
                 height: 50.0,
@@ -91,7 +89,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                   height: 10,
                   width: 10,
                 ),
-              ),
+              )
             ],
           ),
           Container(
@@ -124,9 +122,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                               .toLocal()
                               .toString()
                               .split(' ')[0];
-                      final category = isIncome
-                          ? "Income"
-                          : transaction.expense?.category;
+                      final category =
+                          isIncome ? "Income" : transaction.expense?.category;
 
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

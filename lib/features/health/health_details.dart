@@ -200,37 +200,64 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  '₦',
-                                                  style: const TextStyle(
+                                            facilitiesWatch.hideAmounts
+                                                ? Text(
+                                                    "****",
+                                                    style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w900,
                                                       fontSize: 32,
                                                       color: Color(0xff1B1C1E),
-                                                      fontFamily: 'AreaNeu'),
-                                                ),
-                                                Text(
-                                                  StringUtils.currencyConverter(
-                                                      facilitiesWatch
-                                                              .facilityBalancesModel
-                                                              .actualBalance ??
-                                                          0),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w900,
-                                                    fontSize: 34,
-                                                    color: Color(0xff1B1C1E),
-                                                    letterSpacing: -.5,
+                                                      letterSpacing: -.5,
+                                                    ),
+                                                  )
+                                                : Row(
+                                                    children: [
+                                                      Text(
+                                                        '₦',
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w900,
+                                                            fontSize: 32,
+                                                            color: Color(
+                                                                0xff1B1C1E),
+                                                            fontFamily:
+                                                                'AreaNeu'),
+                                                      ),
+                                                      Text(
+                                                        StringUtils.currencyConverter(
+                                                            facilitiesWatch
+                                                                    .facilityBalancesModel
+                                                                    .actualBalance ??
+                                                                0),
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w900,
+                                                          fontSize: 34,
+                                                          color:
+                                                              Color(0xff1B1C1E),
+                                                          letterSpacing: -.5,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                              ],
-                                            ),
                                             const SizedBox(
                                               width: 7,
                                             ),
-                                            SvgPicture.asset(
-                                                'assets/svg/eye.svg')
+                                            InkWell(
+                                                onTap: () {
+                                                  facilitiesRead
+                                                      .toggleAmountVisibility();
+                                                },
+                                                child: SvgPicture.asset(
+                                                  facilitiesWatch.hideAmounts
+                                                      ? 'assets/svg/view-off-slash-stroke-rounded.svg'
+                                                      : 'assets/svg/view-stroke-rounded.svg',
+                                                  height: 20.0,
+                                                  colorFilter: ColorFilter.mode(
+                                                      black500,
+                                                      BlendMode.srcIn),
+                                                ))
                                           ],
                                         ),
                                         const SizedBox(
@@ -319,11 +346,8 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                     ]),
                                               ),
                                               onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const RecordExpensePayment()));
+                                                context.go(
+                                                    '/main_screen/health_details/record_expense_payment');
                                               },
                                             ),
                                             const Spacer(),
@@ -568,69 +592,98 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                             height: 400,
                                             child: LineChart(
                                               LineChartData(
-                                                maxY: 25,
+                                                maxY: 100000,
+                                                maxX: facilitiesRead
+                                                        .balanceIncomeModel
+                                                        .categories!
+                                                        .length
+                                                        .toDouble() -
+                                                    1,
                                                 titlesData: FlTitlesData(
                                                   show: true,
                                                   bottomTitles: AxisTitles(
                                                     sideTitles: SideTitles(
                                                       showTitles: true,
                                                       reservedSize: 40,
+                                                      interval: 3,
                                                       getTitlesWidget:
                                                           (double value,
                                                               TitleMeta meta) {
-                                                        const style = TextStyle(
-                                                          color:
-                                                              Color(0xffABB5BC),
-                                                          fontWeight:
-                                                              FontWeight.w100,
-                                                          fontSize: 14,
-                                                        );
-                                                        Widget text;
-                                                        switch (value.toInt()) {
-                                                          case 0:
-                                                            text = const Text(
-                                                                'Jan',
-                                                                style: style);
-                                                            break;
-                                                          case 1:
-                                                            text = const Text(
-                                                                'Feb',
-                                                                style: style);
-                                                            break;
-                                                          case 2:
-                                                            text = const Text(
-                                                                'Mar',
-                                                                style: style);
-                                                            break;
-                                                          case 3:
-                                                            text = const Text(
-                                                                'Apr',
-                                                                style: style);
-                                                            break;
-                                                          case 4:
-                                                            text = const Text(
-                                                                'May',
-                                                                style: style);
-                                                            break;
-                                                          default:
-                                                            text = const Text(
-                                                                '',
-                                                                style: style);
-                                                            break;
+                                                        int index =
+                                                            value.toInt();
+                                                        if (index >= 0 &&
+                                                            index <
+                                                                facilitiesRead
+                                                                    .balanceIncomeModel
+                                                                    .categories!
+                                                                    .length) {
+                                                          return Text(
+                                                              facilitiesRead
+                                                                  .balanceIncomeModel
+                                                                  .categories![index],
+                                                              style: TextStyle(
+                                                                color: black400,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w100,
+                                                                fontSize: 14,
+                                                              ));
                                                         }
-                                                        return SideTitleWidget(
-                                                          axisSide:
-                                                              meta.axisSide,
-                                                          space: 8,
-                                                          child: text,
-                                                        );
+                                                        return SizedBox
+                                                            .shrink();
+
+                                                        // const style = TextStyle(
+                                                        //   color: black400,
+                                                        //   fontWeight:
+                                                        //       FontWeight.w100,
+                                                        //   fontSize: 14,
+                                                        // );
+                                                        // Widget text;
+                                                        // switch (value.toInt()) {
+                                                        //   case 0:
+                                                        //     text = const Text(
+                                                        //         'Jan',
+                                                        //         style: style);
+                                                        //     break;
+                                                        //   case 1:
+                                                        //     text = const Text(
+                                                        //         'Feb',
+                                                        //         style: style);
+                                                        //     break;
+                                                        //   case 2:
+                                                        //     text = const Text(
+                                                        //         'Mar',
+                                                        //         style: style);
+                                                        //     break;
+                                                        //   case 3:
+                                                        //     text = const Text(
+                                                        //         'Apr',
+                                                        //         style: style);
+                                                        //     break;
+                                                        //   case 4:
+                                                        //     text = const Text(
+                                                        //         'May',
+                                                        //         style: style);
+                                                        //     break;
+                                                        //   default:
+                                                        //     text = const Text(
+                                                        //         '',
+                                                        //         style: style);
+                                                        //     break;
+                                                        // }
+                                                        // return SideTitleWidget(
+                                                        //   axisSide:
+                                                        //       meta.axisSide,
+                                                        //   space: 8,
+                                                        //   child: text,
+                                                        // );
                                                       },
                                                     ),
                                                   ),
                                                   leftTitles: AxisTitles(
                                                     sideTitles: SideTitles(
                                                       showTitles: true,
-                                                      reservedSize: 40,
+                                                      reservedSize: 45,
                                                       getTitlesWidget:
                                                           (double value,
                                                               TitleMeta meta) {
@@ -641,32 +694,151 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                               FontWeight.w100,
                                                           fontSize: 14,
                                                         );
+                                                        const nairaStyle =
+                                                            TextStyle(
+                                                                color: Color(
+                                                                    0xffABB5BC),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w100,
+                                                                fontSize: 12,
+                                                                fontFamily:
+                                                                    'AreaNeu');
                                                         Widget text;
                                                         switch (value.toInt()) {
-                                                          case 1:
-                                                            text = const Text(
-                                                                '\$1k',
-                                                                style: style);
+                                                          case 10000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '10k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
                                                             break;
-                                                          case 5:
-                                                            text = const Text(
-                                                                '\$5k',
-                                                                style: style);
+                                                          case 20000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '20k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
                                                             break;
-                                                          case 10:
-                                                            text = const Text(
-                                                                '\$10k',
-                                                                style: style);
+                                                          case 30000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '30k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
                                                             break;
-                                                          case 15:
-                                                            text = const Text(
-                                                                '\$15k',
-                                                                style: style);
+                                                          case 40000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '40k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
                                                             break;
-                                                          case 20:
-                                                            text = const Text(
-                                                                '\$20k',
-                                                                style: style);
+                                                          case 50000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '50k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
+                                                            break;
+
+                                                          case 60000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '60k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
+                                                            break;
+
+                                                          case 70000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '70k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
+                                                            break;
+
+                                                          case 80000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '80k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
+                                                            break;
+
+                                                          case 90000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '90k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
+                                                            break;
+                                                          case 100000:
+                                                            text = Row(
+                                                              children: [
+                                                                Text('₦',
+                                                                    style:
+                                                                        nairaStyle),
+                                                                const Text(
+                                                                    '100k',
+                                                                    style:
+                                                                        style),
+                                                              ],
+                                                            );
                                                             break;
                                                           default:
                                                             text = const Text(
@@ -711,13 +883,27 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                 lineBarsData: [
                                                   if (showGreenLine)
                                                     LineChartBarData(
-                                                      spots: [
-                                                        const FlSpot(0, 8),
-                                                        const FlSpot(1, 10),
-                                                        const FlSpot(2, 14),
-                                                        const FlSpot(3, 15),
-                                                        const FlSpot(4, 13),
-                                                      ],
+                                                      spots: List.generate(
+                                                          facilitiesRead
+                                                              .balanceIncomeModel
+                                                              .data!
+                                                              .length, (index) {
+                                                        return FlSpot(
+                                                          index.toDouble(),
+                                                          facilitiesRead
+                                                              .balanceIncomeModel
+                                                              .data![index]
+                                                              .toDouble(),
+                                                        );
+                                                      }),
+
+                                                      // [
+                                                      //   const FlSpot(0, 8),
+                                                      //   const FlSpot(1, 10),
+                                                      //   const FlSpot(2, 14),
+                                                      //   const FlSpot(3, 15),
+                                                      //   const FlSpot(4, 13),
+                                                      // ],
                                                       isCurved: true,
                                                       color: const Color(
                                                           0xFF34B77F),
@@ -734,13 +920,26 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                     ),
                                                   if (showOrangeLine)
                                                     LineChartBarData(
-                                                      spots: [
-                                                        const FlSpot(0, 12),
-                                                        const FlSpot(1, 14),
-                                                        const FlSpot(2, 18),
-                                                        const FlSpot(3, 19),
-                                                        const FlSpot(4, 17),
-                                                      ],
+                                                      spots: List.generate(
+                                                          facilitiesRead
+                                                              .balanceExpenseModel
+                                                              .data!
+                                                              .length, (index) {
+                                                        return FlSpot(
+                                                          index.toDouble(),
+                                                          facilitiesRead
+                                                              .balanceExpenseModel
+                                                              .data![index]
+                                                              .toDouble(),
+                                                        );
+                                                      }),
+                                                      // [
+                                                      //   const FlSpot(0, 12),
+                                                      //   const FlSpot(1, 14),
+                                                      //   const FlSpot(2, 18),
+                                                      //   const FlSpot(3, 19),
+                                                      //   const FlSpot(4, 17),
+                                                      // ],
                                                       isCurved: true,
                                                       color: const Color(
                                                           0xFFE7844E),

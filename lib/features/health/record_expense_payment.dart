@@ -1,23 +1,28 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:misau/app/theme/colors.dart';
+import 'package:misau/features/health/health_facilities_view_model.dart';
 import 'package:misau/utils/utils.dart';
+import 'package:misau/utils/validator.dart';
 import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
 import 'package:misau/widget/outline_datepicker.dart';
 import 'package:misau/widget/outline_dropdown.dart';
 import 'package:misau/widget/outline_textfield.dart';
 
-class RecordExpensePayment extends StatefulWidget {
+class RecordExpensePayment extends ConsumerStatefulWidget {
   const RecordExpensePayment({
     super.key,
   });
 
   @override
-  State<RecordExpensePayment> createState() => _RecordExpensePaymentState();
+  ConsumerState<RecordExpensePayment> createState() =>
+      _RecordExpensePaymentState();
 }
 
-class _RecordExpensePaymentState extends State<RecordExpensePayment>
+class _RecordExpensePaymentState extends ConsumerState<RecordExpensePayment>
     with SingleTickerProviderStateMixin {
   // List<String> options = ['Monthly', 'Weekly', 'Daily'];
   bool showGreenLine = true;
@@ -31,6 +36,9 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
 
   @override
   Widget build(BuildContext context) {
+    final facilitiesWatch = ref.watch(healthFacilitiesViemodelProvider);
+    final facilitiesRead = ref.read(healthFacilitiesViemodelProvider.notifier);
+
     final appSize = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color(0xffF4F4F7),
@@ -65,12 +73,13 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                     onTap: () => Navigator.pop(context),
                   ),
                   const SizedBox(
-                    height: 26,
+                    height: 30.0,
                   ),
-                  const Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "State ",
+                      const Text(
+                        "Category",
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 15,
@@ -78,253 +87,143 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                           letterSpacing: -.5,
                         ),
                       ),
-                      Text(
-                        "*",
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      const OutlineDropdown(options: ['Training - General']),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      const Text(
+                        "Sub Category",
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           fontSize: 15,
-                          color: Color(0xffE03137),
+                          color: Color(0xff1B1C1E),
                           letterSpacing: -.5,
                         ),
+                      ),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      const OutlineDropdown(options: ['Local Training']),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      const Text(
+                        "Status",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Color(0xff1B1C1E),
+                          letterSpacing: -.5,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: facilitiesWatch.expenseStatusValue,
+                        validator: (value) => Validator.validateField(value),
+                        decoration: InputDecoration(
+                          hintText: 'Select status',
+                          hintStyle: TextStyle(
+                            color: Color(0xff121827).withOpacity(0.4),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: grey100,
+                              width: 1.0,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: grey100,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: black,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
+                        icon: SvgPicture.asset(
+                          'assets/svg/arrow_dropdown.svg',
+                          width: 13,
+                          height: 13,
+                          color: const Color(0xff121827),
+                        ),
+                        items: ['Flagged', 'Resolved'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                  color: Color(0xff121827),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            facilitiesWatch.expenseStatusValue = newValue!;
+                          });
+                        },
+                      ),
+                      const Row(
+                        children: [
+                          Text(
+                            "Amount ",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                              color: Color(0xff1B1C1E),
+                              letterSpacing: -.5,
+                            ),
+                          ),
+                          Text(
+                            "*",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: Color(0xffE03137),
+                              letterSpacing: -.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      OutlineTextField(
+                          controller: titleController,
+                          hintText: 'Enter Amount',
+                          isNumeric: true),
+                      const SizedBox(
+                        height: 13,
                       ),
                     ],
                   ),
                   const SizedBox(
-                    height: 7,
-                  ),
-                  const OutlineDropdown(options: ['Osun', 'Justin']),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  const Text(
-                    "LGA ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: Color(0xff1B1C1E),
-                      letterSpacing: -.5,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  const OutlineDropdown(options: ['Boluwaduro']),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  const Text(
-                    "Facility ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: Color(0xff1B1C1E),
-                      letterSpacing: -.5,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  const OutlineDropdown(options: ['Afao Primary Health Clinic']),
-                  const SizedBox(
-                    height: 13,
-                  ),
-                  const Text(
-                    "Expense",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 22,
-                      color: Color(0xff1B1C1E),
-                      letterSpacing: -.5,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color(0xffE9EAEB),
-                        ),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Category",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                              color: Color(0xff1B1C1E),
-                              letterSpacing: -.5,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const OutlineDropdown(options: ['Training - General']),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const Text(
-                            "Sub Category",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                              color: Color(0xff1B1C1E),
-                              letterSpacing: -.5,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const OutlineDropdown(options: ['Local Training']),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const Row(
-                            children: [
-                              Text(
-                                "Title ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: Color(0xff1B1C1E),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                              Text(
-                                "*",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color(0xffE03137),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          OutlineTextField(
-                              controller: titleController,
-                              hintText: 'Enter Title'),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const Row(
-                            children: [
-                              Text(
-                                "Date ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: Color(0xff1B1C1E),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                              Text(
-                                "*",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color(0xffE03137),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const OutlineDatePicker(),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          const Row(
-                            children: [
-                              Text(
-                                "Amount ",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  color: Color(0xff1B1C1E),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                              Text(
-                                "*",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color(0xffE03137),
-                                  letterSpacing: -.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          OutlineTextField(
-                              controller: titleController,
-                              hintText: 'Enter Amount',
-                              isNumeric: true),
-                          const SizedBox(
-                            height: 13,
-                          ),
-                          Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: const Color(0xffE9EAEB), width: 1.5),
-                                borderRadius: BorderRadius.circular(15.0),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Total Balance",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15,
-                                      color: Color(0xff1B1C1E),
-                                      letterSpacing: -.5,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    Utils.formatNumber("12456315"),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 20,
-                                      color: Color(0xff1B1C1E),
-                                      letterSpacing: -.5,
-                                    ),
-                                  )
-                                ],
-                              )),
-                        ],
-                      )),
-                  const SizedBox(
                     height: 30,
                   ),
                   SizedBox(
+                      height: 48.0,
                       width: double.infinity, // Make button full width
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 18.0, horizontal: 10.0),
+                        style: TextButton.styleFrom(
+                          backgroundColor: red,
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(12.0), // border radius
@@ -332,7 +231,7 @@ class _RecordExpensePaymentState extends State<RecordExpensePayment>
                           // primary: const red, // background color
                         ),
                         child: const Text(
-                          "Record Payment",
+                          "Add Payment",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,

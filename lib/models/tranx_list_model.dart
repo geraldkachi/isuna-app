@@ -44,8 +44,8 @@ class PageInfo {
     return PageInfo(
       hasNextPage: json['hasNextPage'],
       hasPreviousPage: json['hasPreviousPage'],
-      startCursor: json['startCursor'],
-      endCursor: json['endCursor'],
+      startCursor: json['startCursor'] ?? '',
+      endCursor: json['endCursor'] ?? '',
     );
   }
 

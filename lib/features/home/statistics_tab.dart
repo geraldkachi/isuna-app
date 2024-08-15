@@ -9,12 +9,12 @@ import 'package:misau/widget/income_analysis_card.dart';
 class StatisticsTab extends StatelessWidget {
   const StatisticsTab({
     super.key,
-    required this.appSize,
+    // required this.appSize,
     required this.homeWatch,
     required this.options,
   });
 
-  final Size appSize;
+  // final Size appSize;
   final HomeViemodel homeWatch;
   final List<String> options;
 
@@ -29,11 +29,9 @@ class StatisticsTab extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
               ),
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 18, vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -49,23 +47,20 @@ class StatisticsTab extends StatelessWidget {
                       const SizedBox(
                         width: 3,
                       ),
-                      SvgPicture.asset(
-                          'assets/svg/info_circle.svg')
+                      SvgPicture.asset('assets/svg/info_circle.svg')
                     ],
                   ),
                   const SizedBox(
                     height: 13,
                   ),
                   SizedBox(
-                    width: appSize.width,
+                    // width: appSize.width,
                     height: 400,
                     child: BarChart(
                       BarChartData(
-                        alignment:
-                            BarChartAlignment.spaceAround,
+                        alignment: BarChartAlignment.spaceAround,
                         maxY: 25,
-                        barTouchData:
-                            BarTouchData(enabled: false),
+                        barTouchData: BarTouchData(enabled: false),
                         titlesData: FlTitlesData(
                           show: true,
                           bottomTitles: AxisTitles(
@@ -73,40 +68,31 @@ class StatisticsTab extends StatelessWidget {
                               showTitles: true,
                               reservedSize:
                                   40, // Increased reserved size for bottom titles
-                              getTitlesWidget:
-                                  (double value,
-                                      TitleMeta meta) {
+                              getTitlesWidget: (double value, TitleMeta meta) {
                                 const style = TextStyle(
                                   color: Color(0xffABB5BC),
-                                  fontWeight:
-                                      FontWeight.w100,
+                                  fontWeight: FontWeight.w100,
                                   fontSize: 14,
                                 );
                                 Widget text;
                                 switch (value.toInt()) {
                                   case 0:
-                                    text = Text('Jan',
-                                        style: style);
+                                    text = Text('Jan', style: style);
                                     break;
                                   case 1:
-                                    text = Text('Feb',
-                                        style: style);
+                                    text = Text('Feb', style: style);
                                     break;
                                   case 2:
-                                    text = Text('Mar',
-                                        style: style);
+                                    text = Text('Mar', style: style);
                                     break;
                                   case 3:
-                                    text = Text('Apr',
-                                        style: style);
+                                    text = Text('Apr', style: style);
                                     break;
                                   case 4:
-                                    text = Text('May',
-                                        style: style);
+                                    text = Text('May', style: style);
                                     break;
                                   default:
-                                    text = Text('',
-                                        style: style);
+                                    text = Text('', style: style);
                                     break;
                                 }
                                 return SideTitleWidget(
@@ -123,40 +109,31 @@ class StatisticsTab extends StatelessWidget {
                               showTitles: true,
                               reservedSize:
                                   40, // Increased reserved size for left titles
-                              getTitlesWidget:
-                                  (double value,
-                                      TitleMeta meta) {
+                              getTitlesWidget: (double value, TitleMeta meta) {
                                 const style = TextStyle(
                                   color: Color(0xffABB5BC),
-                                  fontWeight:
-                                      FontWeight.w100,
+                                  fontWeight: FontWeight.w100,
                                   fontSize: 14,
                                 );
                                 Widget text;
                                 switch (value.toInt()) {
                                   case 1:
-                                    text = Text('\$1k',
-                                        style: style);
+                                    text = Text('\$1k', style: style);
                                     break;
                                   case 5:
-                                    text = Text('\$5k',
-                                        style: style);
+                                    text = Text('\$5k', style: style);
                                     break;
                                   case 10:
-                                    text = Text('\$10k',
-                                        style: style);
+                                    text = Text('\$10k', style: style);
                                     break;
                                   case 15:
-                                    text = Text('\$15k',
-                                        style: style);
+                                    text = Text('\$15k', style: style);
                                     break;
                                   case 20:
-                                    text = Text('\$20k',
-                                        style: style);
+                                    text = Text('\$20k', style: style);
                                     break;
                                   default:
-                                    text = Text('',
-                                        style: style);
+                                    text = Text('', style: style);
                                     break;
                                 }
                                 return SideTitleWidget(
@@ -168,20 +145,17 @@ class StatisticsTab extends StatelessWidget {
                             ),
                           ),
                           rightTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                                showTitles: false),
+                            sideTitles: SideTitles(showTitles: false),
                           ),
                           topTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                                showTitles: false),
+                            sideTitles: SideTitles(showTitles: false),
                           ),
                         ),
                         gridData: FlGridData(
                           show: true,
                           drawHorizontalLine: true,
                           horizontalInterval: 5,
-                          getDrawingHorizontalLine:
-                              (value) {
+                          getDrawingHorizontalLine: (value) {
                             return FlLine(
                               color: Color(0xffE5EAED),
                               strokeWidth: 1,
@@ -200,8 +174,7 @@ class StatisticsTab extends StatelessWidget {
                                 toY: 8,
                                 color: Color(0xFFB1C7F3),
                                 width: 35,
-                                borderRadius:
-                                    BorderRadius.zero,
+                                borderRadius: BorderRadius.zero,
                               ),
                             ],
                           ),
@@ -212,8 +185,7 @@ class StatisticsTab extends StatelessWidget {
                                 toY: 10,
                                 color: Color(0xFFB1C7F3),
                                 width: 35,
-                                borderRadius:
-                                    BorderRadius.zero,
+                                borderRadius: BorderRadius.zero,
                               ),
                             ],
                           ),
@@ -224,8 +196,7 @@ class StatisticsTab extends StatelessWidget {
                                 toY: 14,
                                 color: Color(0xFFB1C7F3),
                                 width: 35,
-                                borderRadius:
-                                    BorderRadius.zero,
+                                borderRadius: BorderRadius.zero,
                               ),
                             ],
                           ),
@@ -236,8 +207,7 @@ class StatisticsTab extends StatelessWidget {
                                 toY: 15,
                                 color: Color(0xFFB1C7F3),
                                 width: 35,
-                                borderRadius:
-                                    BorderRadius.zero,
+                                borderRadius: BorderRadius.zero,
                               ),
                             ],
                           ),
@@ -248,8 +218,7 @@ class StatisticsTab extends StatelessWidget {
                                 toY: 13,
                                 color: Color(0xFFB1C7F3),
                                 width: 35,
-                                borderRadius:
-                                    BorderRadius.zero,
+                                borderRadius: BorderRadius.zero,
                               ),
                             ],
                           ),
@@ -263,18 +232,14 @@ class StatisticsTab extends StatelessWidget {
             height: 20,
           ),
           IncomeAnalysisCard(
-            currentMonthIncome:
-                homeWatch.incomeAnalysis.currentMonthIncome,
-            lastMonthIncome:
-                homeWatch.incomeAnalysis.lastMonthIncome,
+            currentMonthIncome: homeWatch.incomeAnalysis.currentMonthIncome,
+            lastMonthIncome: homeWatch.incomeAnalysis.lastMonthIncome,
             options: options,
           ),
           const SizedBox(height: 20),
           ExpenseAnalysisCard(
-            currentMonthExpense:
-                homeWatch.expenseAnalysis.currentMonthExpense,
-            lastMonthExpense:
-                homeWatch.expenseAnalysis.lastMonthExpense,
+            currentMonthExpense: homeWatch.expenseAnalysis.currentMonthExpense,
+            lastMonthExpense: homeWatch.expenseAnalysis.lastMonthExpense,
             options: options,
           ),
           const SizedBox(height: 20),

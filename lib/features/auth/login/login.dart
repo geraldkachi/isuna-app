@@ -65,27 +65,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
-                      color: Color(0xffE8EAED),
+                      color: grey100,
                       width: 1.0,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
-                      color: Color(0xffE8EAED),
+                      color: grey100,
                       width: 1.0,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
-                      color: Color(0xffE8EAED),
+                      color: black,
                       width: 1.0,
                     ),
                   ),
                   hintText: 'Enter your email address',
                   hintStyle: const TextStyle(
-                    color: Color(0xffC0C4CD),
+                    color: grey300,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -124,27 +124,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
-                      color: Color(0xffE8EAED),
+                      color: grey100,
                       width: 1.0,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
-                      color: Color(0xffE8EAED),
+                      color: grey100,
                       width: 1.0,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: const BorderSide(
-                      color: Color(0xffE8EAED),
+                      color: black,
                       width: 1.0,
                     ),
                   ),
                   hintText: 'Enter your password',
                   hintStyle: const TextStyle(
-                    color: Color(0xffC0C4CD),
+                    color: grey300,
                     fontWeight: FontWeight.w400,
                   ),
                   suffixIcon: IconButton(

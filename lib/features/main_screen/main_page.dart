@@ -1,51 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:misau/features/admin/admin_homepage.dart';
 import 'package:misau/features/health/health_home_page.dart';
+import 'package:misau/features/home/home_viemodel.dart';
 import 'package:misau/features/home/homepage.dart';
+import 'package:misau/features/main_screen/main_screen_view_model.dart';
 import 'package:misau/features/profile/profile_page.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
-  final List<Widget> _pages = [
-    const HomePage(),
-    const HealthHomePage(),
-    AdminHomePage(),
-    ProfilePage(),
-  ];
-
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
-  Widget _getIcon(String selectedIcon, String unselectedIcon, int index) {
-    return SvgPicture.asset(
-      _currentIndex == index ? selectedIcon : unselectedIcon,
-      width: 24,
-      height: 24,
-    );
-  }
-
+class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   Widget build(BuildContext context) {
+    final mainWatch = ref.watch(mainScreenViewModelProvider);
+    final mainRead = ref.read(mainScreenViewModelProvider.notifier);
+
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: mainWatch.pages[ref.watch(homeViemodelProvider).screenIndex ??
+          mainWatch.currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 10,
         unselectedFontSize: 10,
-        currentIndex: _currentIndex,
-        onTap: onTabTapped,
+        currentIndex: ref.watch(homeViemodelProvider).screenIndex ??
+            mainWatch.currentIndex,
+        onTap: mainRead.onTabTapped,
         items: [
           BottomNavigationBarItem(
-            icon: _getIcon(
+            icon: mainRead.getIcon(
               'assets/svg/selected_dashboard.svg',
               'assets/svg/unselected_dashboard.svg',
               0,
@@ -53,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
-            icon: _getIcon(
+            icon: mainRead.getIcon(
               'assets/svg/selected_facilities.svg',
               'assets/svg/unselected_facilities.svg',
               1,
@@ -61,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Facilities',
           ),
           BottomNavigationBarItem(
-            icon: _getIcon(
+            icon: mainRead.getIcon(
               'assets/svg/selected_admin.svg',
               'assets/svg/unselected_admin.svg',
               2,
@@ -69,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Admin',
           ),
           BottomNavigationBarItem(
-            icon: _getIcon(
+            icon: mainRead.getIcon(
               'assets/svg/selected_profile.svg',
               'assets/svg/unselected_profile.svg',
               3,
