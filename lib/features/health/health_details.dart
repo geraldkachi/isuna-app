@@ -1100,9 +1100,7 @@ class TransactionTab extends ConsumerWidget {
         children: [
           Row(
             children: [
-              SizedBox(
-                height: 48.0,
-                width: 230,
+              Expanded(
                 child: TextField(
                   controller: facilitiesWatch.searchController,
                   onChanged: (value) {
@@ -1133,7 +1131,9 @@ class TransactionTab extends ConsumerWidget {
                   ),
                 ),
               ),
-              const Spacer(),
+              SizedBox(
+                width: 10.0,
+              ),
               Container(
                 width: 48.0,
                 height: 48.0,
@@ -1165,6 +1165,9 @@ class TransactionTab extends ConsumerWidget {
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: 20.0,
           ),
           facilitiesWatch.isLoading
               ? const ShimmerScreenLoading(
