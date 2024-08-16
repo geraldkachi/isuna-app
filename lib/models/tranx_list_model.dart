@@ -74,7 +74,7 @@ class Expense {
 
   factory Expense.fromJson(Map<String, dynamic> json) {
     return Expense(
-      amount: double.parse(json['amount']),
+      amount: double.parse(json['amount'] == '' ? '0' : json['amount']),
       category: json['category'] ?? '',
       subCategory: json['subCategory'] ?? '',
       date: DateTime.parse(json['date']),
@@ -92,7 +92,7 @@ class Expense {
 }
 
 class Income {
-  final double amount;
+  final dynamic amount;
   final DateTime date;
 
   Income({
@@ -102,7 +102,7 @@ class Income {
 
   factory Income.fromJson(Map<String, dynamic> json) {
     return Income(
-      amount: double.parse(json['amount']),
+      amount: double.parse(json['amount'] == '' ? '0' : json['amount']),
       date: DateTime.parse(json['date']),
     );
   }

@@ -998,162 +998,57 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                             SvgPicture.asset(
                                                 'assets/svg/info_circle.svg'),
                                             const Spacer(),
-                                            CustomDropdown(options)
                                           ],
                                         ),
                                         const SizedBox(
                                           height: 13,
                                         ),
                                         Center(
-                                          child: CustomPieChart([]),
+                                          child: CustomPieChart(facilitiesWatch
+                                              .expenseCategory
+                                              .categoriesWithPercentages),
                                         ),
                                         const SizedBox(
                                           height: 35,
                                         ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 13,
-                                              height: 13,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Color(0xff30B099),
-                                              ),
-                                              margin: const EdgeInsets.only(
-                                                  right: 5),
+                                        ...facilitiesWatch.expenseCategory
+                                            .categoriesWithPercentages
+                                            .map((entry) {
+                                          final color = getColorForCategory(
+                                              entry.category);
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 23),
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 13,
+                                                  height: 13,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: color,
+                                                  ),
+                                                  margin: const EdgeInsets.only(
+                                                      right: 5),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    '${entry.category} (${entry.percentage}%)',
+                                                    style: const TextStyle(
+                                                      color: Color(0xff6C7278),
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      letterSpacing: -.1,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            const Text(
-                                              'Travel & Transport (40.1%)',
-                                              style: TextStyle(
-                                                color: Color(0xff6C7278),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                letterSpacing: -.1,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            const Text(
-                                              'NGN500.000',
-                                              style: TextStyle(
-                                                color: Color(0xff1B1C1E),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w800,
-                                                letterSpacing: -.1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 23,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 13,
-                                              height: 13,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Color(0xffE6844D),
-                                              ),
-                                              margin: const EdgeInsets.only(
-                                                  right: 5),
-                                            ),
-                                            const Text(
-                                              'Utilities (25%)',
-                                              style: TextStyle(
-                                                color: Color(0xff6C7278),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                letterSpacing: -.1,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            const Text(
-                                              'NGN1000.000',
-                                              style: TextStyle(
-                                                color: Color(0xff1B1C1E),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w800,
-                                                letterSpacing: -.1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 23,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 13,
-                                              height: 13,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: red700,
-                                              ),
-                                              margin: const EdgeInsets.only(
-                                                  right: 5),
-                                            ),
-                                            const Text(
-                                              'Maintenance (6.1%)',
-                                              style: TextStyle(
-                                                color: Color(0xff6C7278),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                letterSpacing: -.1,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            const Text(
-                                              'NGN365.000',
-                                              style: TextStyle(
-                                                color: Color(0xff1B1C1E),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w800,
-                                                letterSpacing: -.1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 23,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 13,
-                                              height: 13,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: blue,
-                                              ),
-                                              margin: const EdgeInsets.only(
-                                                  right: 5),
-                                            ),
-                                            const Text(
-                                              'Other Services (19.2%)',
-                                              style: TextStyle(
-                                                color: Color(0xff6C7278),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                letterSpacing: -.1,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            const Text(
-                                              'NGN234.098',
-                                              style: TextStyle(
-                                                color: Color(0xff1B1C1E),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w800,
-                                                letterSpacing: -.1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 23,
-                                        ),
+                                          );
+                                        }).toList(),
                                       ],
                                     )),
                             const SizedBox(
@@ -1177,6 +1072,16 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
       text: text,
       height: 38,
     );
+  }
+
+  Color getColorForCategory(String category) {
+    return category.contains("UTILITIES")
+        ? const Color(0xffE6844D)
+        : category.contains("FUEL & LUBRICANTS")
+            ? blue
+            : category.contains("Other")
+                ? red700
+                : Colors.grey;
   }
 }
 

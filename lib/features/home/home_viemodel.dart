@@ -131,8 +131,6 @@ class HomeViemodel extends ChangeNotifier {
     onInit = true;
   }
 
-
-
   int? screenIndex;
 
   void navToAdmin() {
@@ -266,11 +264,12 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'fecth transactions error ${e.toString()}');
+      debugPrint('fetch transaction error: $e/n $stackTrace');
     }
   }
 

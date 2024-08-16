@@ -6,6 +6,8 @@ import 'package:misau/exceptions/misau_exception.dart';
 import 'package:misau/models/balance_expense_model.dart';
 import 'package:misau/models/balance_income_model.dart';
 import 'package:misau/models/categories_model.dart';
+import 'package:misau/models/expense_category.dart';
+import 'package:misau/models/expense_payment_model.dart';
 import 'package:misau/models/facility_balances_model.dart';
 import 'package:misau/models/audit_details.dart';
 import 'package:misau/models/facilities_model.dart';
@@ -25,12 +27,14 @@ class HealthFacilitiesService {
   List<CategoriesModel>? _categoriesModel;
   BalanceExpenseModel? _balanceExpenseModel;
   BalanceIncomeModel? _balanceIncomeModel;
+  ExpenseCategory? _expenseCategory;
 
   List<FacilitiesModel>? get facilitiesModel => _facilitiesModel;
   List<AuditTrailsModel>? get auditTrailsModel => _auditTrailsModel;
   FacilityBalancesModel? get facilityBalancesModel => _facilityBalances;
   BalanceExpenseModel? get balanceExpenseModel => _balanceExpenseModel;
   BalanceIncomeModel? get balanceIncomeModel => _balanceIncomeModel;
+  ExpenseCategory? get expenseCategory => _expenseCategory;
 
   TransactionList? get transactionList => _transactionList;
   List<CategoriesModel>? get categoriesModel => _categoriesModel;
@@ -230,10 +234,54 @@ class HealthFacilitiesService {
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
       debugPrint('decrypted response: ${decryptedResponsePayload}');
-      List jsonDecodedPayload = json.decode(decryptedResponsePayload);
-      // _categoriesModel = jsonDecodedPayload
-      //     .map((value) => CategoriesModel.fromJson(value))
-      //     .toList();
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addExpense(ExpensePaymentModel expensePaymentModel) async {
+    // Send the request to the backend
+    try {
+      debugPrint('Raw payload ${expensePaymentModel.toJson()}');
+
+      final encryptedPayload =
+          _encryptionService.encrypt(json.encode(expensePaymentModel.toJson()));
+
+      final response = await _networkService.post('/wallet/v1/health-institute',
+          data: {'payload': encryptedPayload});
+
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload}');
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchExpenseCategory({
+    String? state,
+    String? lga,
+    String? facility,
+  }) async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=expenseCategory',
+      );
+
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: ${encryptedResponsePayload}');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload}');
+      _expenseCategory = ExpenseCategory.fromJson(
+          json.decode(decryptedResponsePayload.toString())['expenseCategory']);
     } on MisauException {
       rethrow;
     } catch (e) {
