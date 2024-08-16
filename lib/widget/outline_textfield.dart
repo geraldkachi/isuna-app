@@ -8,6 +8,7 @@ class OutlineTextField extends StatefulWidget {
   final bool isNumeric;
   final bool? obscureText;
   final Widget? suffixIcon;
+  final int? maxLines;
   final String Function(String?)? validator;
   const OutlineTextField(
       {Key? key,
@@ -16,6 +17,7 @@ class OutlineTextField extends StatefulWidget {
       this.isNumeric = false,
       this.suffixIcon,
       this.validator,
+      this.maxLines = 1,
       this.obscureText = false})
       : super(key: key);
 
@@ -31,6 +33,7 @@ class _OutlineTextFieldState extends State<OutlineTextField> {
       obscureText: widget.obscureText!,
       keyboardType:
           widget.isNumeric ? TextInputType.number : TextInputType.text,
+      maxLines: widget.maxLines,
       validator: widget.validator,
       decoration: InputDecoration(
         hintText: widget.hintText,

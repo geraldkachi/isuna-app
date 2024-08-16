@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,8 @@ import 'package:misau/models/audit_details.dart';
 import 'package:misau/models/balance_expense_model.dart';
 import 'package:misau/models/balance_income_model.dart';
 import 'package:misau/models/categories_model.dart';
+import 'package:misau/models/expense_category.dart';
+import 'package:misau/models/expense_payment_model.dart';
 import 'package:misau/models/facilities_model.dart';
 import 'package:misau/models/facility_balances_model.dart';
 import 'package:misau/models/inflow_payment_model.dart';
@@ -55,6 +59,9 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   FacilityBalancesModel get facilityBalancesModel =>
       _healthFacilitiesService.facilityBalancesModel ?? FacilityBalancesModel();
 
+  ExpenseCategory get expenseCategory =>
+      _healthFacilitiesService.expenseCategory ?? ExpenseCategory();
+
   TextEditingController searchController = TextEditingController();
   TextEditingController inflowAmountContoller = TextEditingController();
   String? inflowStatusValue;
@@ -62,7 +69,11 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   TextEditingController reasonContoller = TextEditingController();
 
   String? expenseStatusValue;
-  final GlobalKey<FormState> formKey = GlobalKey();
+  String? selectedCategory;
+  String? selectedSubCategory;
+
+  final GlobalKey<FormState> inFlowFormKey = GlobalKey();
+  final GlobalKey<FormState> expenseFormKey = GlobalKey();
 
   List<Transaction>? filteredTransactions = [];
 
@@ -78,6 +89,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     await fetchCategories(context);
     await getBalanceIncome(context);
     await getExpenseIncome(context);
+    await fetchExpenseCategory(context);
   }
 
   void toggleAmountVisibility() {
@@ -214,6 +226,33 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> fetchExpenseCategory(
+    context,
+  ) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+      await _healthFacilitiesService.fetchExpenseCategory(
+        state: selectedFacility!.state,
+        lga: selectedFacility!.lga,
+        facility: selectedFacility!.name,
+      );
+      isLoading = false;
+      notifyListeners();
+    } on MisauException catch (e) {
+      isLoading = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error',
+          subTitle: 'fecth expense category error ${e.toString()}');
+    }
+  }
+
   Future<void> facilitiesBalances(context) async {
     try {
       isLoading = true;
@@ -312,9 +351,9 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addPayment(context) async {
-    if (formKey.currentState!.validate()) {
-      formKey.currentState!.save();
+  Future<void> addInflowPayment(context) async {
+    if (inFlowFormKey.currentState!.validate()) {
+      inFlowFormKey.currentState!.save();
       try {
         Utils.showLoadingDialog(context);
         final List<IncomeData> income = [];
@@ -334,6 +373,52 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
             income: income);
 
         await _healthFacilitiesService.addInflow(inflowPaymentModel);
+        router.pop();
+        _toastService.showToast(context,
+            title: 'Success',
+            subTitle: 'Payment added succefully.',
+            type: ToastType.success);
+      } on MisauException catch (e) {
+        // TODO
+        isLoading = false;
+        notifyListeners();
+        _toastService.showToast(context,
+            title: 'Error', subTitle: e.message ?? '');
+      } catch (e, stackTrace) {
+        isLoading = false;
+        notifyListeners();
+        _toastService.showToast(context,
+            title: 'Error', subTitle: 'Something went wrong.');
+
+        debugPrint('add inflow error $e/n $stackTrace');
+      }
+    }
+  }
+
+  Future<void> addExpensePayment(context) async {
+    if (expenseFormKey.currentState!.validate()) {
+      expenseFormKey.currentState!.save();
+      try {
+        Utils.showLoadingDialog(context);
+        final List<ExpenseData> expense = [];
+        ExpenseData expenseData = ExpenseData(
+            status: expenseStatusValue,
+            reason: reasonContoller.text,
+            date: DateTime.now(),
+            category: selectedCategory,
+            amount: expenseAmountContoller.text,
+            subCategory: selectedSubCategory);
+
+        expense.add(expenseData);
+
+        ExpensePaymentModel expensePaymentModel = ExpensePaymentModel(
+            state: selectedFacility?.state,
+            ward: selectedFacility?.ward,
+            facility: selectedFacility?.name,
+            lga: selectedFacility?.lga,
+            expense: expense);
+
+        await _healthFacilitiesService.addExpense(expensePaymentModel);
         router.pop();
         _toastService.showToast(context,
             title: 'Success',

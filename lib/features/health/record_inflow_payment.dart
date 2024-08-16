@@ -45,7 +45,7 @@ class _RecordInflowPaymentState extends ConsumerState<RecordInflowPayment>
         body: Padding(
             padding: const EdgeInsets.only(top: 60, left: 20, right: 20),
             child: Form(
-              key: facilitiesWatch.formKey,
+              key: facilitiesWatch.inFlowFormKey,
               autovalidateMode: AutovalidateMode.always,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,7 +226,7 @@ class _RecordInflowPaymentState extends ConsumerState<RecordInflowPayment>
                       width: double.infinity, // Make button full width
                       child: TextButton(
                         onPressed: () {
-                          facilitiesRead.addPayment(context);
+                          facilitiesRead.addInflowPayment(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: red,
