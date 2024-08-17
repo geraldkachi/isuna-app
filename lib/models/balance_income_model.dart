@@ -12,7 +12,7 @@ String balanceIncomeModelToJson(BalanceIncomeModel data) =>
 
 class BalanceIncomeModel {
   final List<String>? categories;
-  final List<int>? data;
+  final List? data;
 
   BalanceIncomeModel({
     this.categories,
@@ -26,7 +26,7 @@ class BalanceIncomeModel {
             : List<String>.from(json["categories"]!.map((x) => x)),
         data: json["data"] == null
             ? []
-            : List<int>.from(json["data"]!.map((x) => x)),
+            : List.from(json["data"]!.map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {

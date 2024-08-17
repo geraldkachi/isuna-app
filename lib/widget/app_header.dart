@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/widget/user_avarta.dart';
 
 class AppHeader extends StatelessWidget {
@@ -80,6 +81,26 @@ class AppHeader extends StatelessWidget {
                 child: SvgPicture.asset(
                   'assets/svg/filter.svg',
                   height: 20,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            GestureDetector(
+              onTap: onFilter,
+              child: Container(
+                width: 43.0,
+                height: 43.0,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xff313131),
+                ),
+                padding: const EdgeInsets.all(10),
+                child: SvgPicture.asset(
+                  'assets/svg/logout.svg',
+                  height: 20,
+                  colorFilter: ColorFilter.mode(white100, BlendMode.srcIn),
                 ),
               ),
             ),
