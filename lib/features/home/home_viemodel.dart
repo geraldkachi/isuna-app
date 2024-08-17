@@ -21,8 +21,10 @@ import 'package:misau/service/dashboard_service.dart';
 import 'package:misau/service/health_facilities_service.dart';
 import 'package:misau/service/navigator_service.dart';
 import 'package:misau/service/profile_service.dart';
+import 'package:misau/service/shared_preference_service.dart';
 import 'package:misau/service/state_and_lga_service.dart';
 import 'package:misau/service/toast_service.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 final homeViemodelProvider =
     ChangeNotifierProvider<HomeViemodel>((ref) => HomeViemodel());
@@ -35,6 +37,8 @@ class HomeViemodel extends ChangeNotifier {
   final HealthFacilitiesService _healthFacilitiesService =
       getIt<HealthFacilitiesService>();
   final NavigatorService _navigatorService = getIt<NavigatorService>();
+  final SharedPreferenceService _sharedPreferenceService =
+      getIt<SharedPreferenceService>();
 
   List<StatesAndLgaModel>? get stateAndLgaModel =>
       _stateAndLgaService.statesAndLgaModel;
@@ -65,6 +69,12 @@ class HomeViemodel extends ChangeNotifier {
   SingleValueDropDownController searchfacilityController =
       SingleValueDropDownController();
 
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
+
+  RefreshController transactionRefreshController =
+      RefreshController(initialRefresh: false);
+
   List<Transaction>? filteredTransactions = [];
 
   double? incomePercentageIncrease;
@@ -83,6 +93,8 @@ class HomeViemodel extends ChangeNotifier {
   bool onInit = false;
   bool hideAmounts = false;
 
+  int? screenIndex;
+
   List<String>? get facilitiesList =>
       facilitiesModel.map((value) => value.name as String).toList();
 
@@ -94,6 +106,11 @@ class HomeViemodel extends ChangeNotifier {
       String? facilitys = '',
       String? fromDate = '',
       String? toDate = ''}) async {
+    Future(() {
+      hideAmounts = _sharedPreferenceService.getBool('isAmountHidden')!;
+      notifyListeners();
+    });
+
     await fetchBalances(context,
         state: state,
         lga: lga,
@@ -131,8 +148,6 @@ class HomeViemodel extends ChangeNotifier {
     onInit = true;
   }
 
-  int? screenIndex;
-
   void navToAdmin() {
     screenIndex = 2;
     _navigatorService.currentIndex = screenIndex!;
@@ -147,8 +162,15 @@ class HomeViemodel extends ChangeNotifier {
     screenIndex = null;
   }
 
+  void onRefresh(context) {
+    fetchWalletData(context);
+    refreshController.refreshCompleted();
+    transactionRefreshController.refreshCompleted();
+  }
+
   void toggleAmountVisibility() {
     hideAmounts = !hideAmounts;
+    _sharedPreferenceService.setBool('isAmountHidden', hideAmounts);
     notifyListeners();
   }
 
@@ -328,12 +350,14 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error',
           subTitle: 'fecth expense category error ${e.toString()}');
+
+      debugPrint('fecth expense category error: $e/n$stackTrace');
     }
   }
 

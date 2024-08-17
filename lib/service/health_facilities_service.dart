@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:misau/app/locator.dart';
@@ -12,6 +13,7 @@ import 'package:misau/models/facility_balances_model.dart';
 import 'package:misau/models/audit_details.dart';
 import 'package:misau/models/facilities_model.dart';
 import 'package:misau/models/inflow_payment_model.dart';
+import 'package:misau/models/page_info_model.dart';
 import 'package:misau/models/tranx_list_model.dart';
 import 'package:misau/service/encryption_service.dart';
 import 'package:misau/service/network_service.dart';
@@ -28,6 +30,7 @@ class HealthFacilitiesService {
   BalanceExpenseModel? _balanceExpenseModel;
   BalanceIncomeModel? _balanceIncomeModel;
   ExpenseCategory? _expenseCategory;
+  PageInfoModel? _pageInfoModel;
 
   List<FacilitiesModel>? get facilitiesModel => _facilitiesModel;
   List<AuditTrailsModel>? get auditTrailsModel => _auditTrailsModel;
@@ -35,15 +38,17 @@ class HealthFacilitiesService {
   BalanceExpenseModel? get balanceExpenseModel => _balanceExpenseModel;
   BalanceIncomeModel? get balanceIncomeModel => _balanceIncomeModel;
   ExpenseCategory? get expenseCategory => _expenseCategory;
+  PageInfoModel? get pageInfoModel => _pageInfoModel;
 
   TransactionList? get transactionList => _transactionList;
   List<CategoriesModel>? get categoriesModel => _categoriesModel;
 
-  Future<void> fetchFacilitiesPagnated() async {
+  Future<void> fetchFacilitiesPagnated(
+      {String? prev = '', String? next = ''}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/user/v1/facilities/all?search=&prev=&next=',
+        '/user/v1/facilities/all?search=&prev=$prev&next=$next',
       );
       final encryptedResponsePayload = response['data'];
       debugPrint('encrypted response: $encryptedResponsePayload');
@@ -52,6 +57,8 @@ class HealthFacilitiesService {
       debugPrint('decrypted response: $decryptedResponsePayload');
       final List jsonDecodedPayload =
           json.decode(decryptedResponsePayload)['edges'];
+      _pageInfoModel = PageInfoModel.fromJson(
+          json.decode(decryptedResponsePayload)['pageInfo']);
       _facilitiesModel = jsonDecodedPayload
           .map((value) => FacilitiesModel.fromJson(value))
           .toList();

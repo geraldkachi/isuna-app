@@ -8,6 +8,7 @@ import 'package:misau/features/health/health_facilities_view_model.dart';
 import 'package:misau/utils/utils.dart';
 import 'package:misau/widget/shimmer.dart';
 import 'package:misau/widget/user_avarta.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HealthHomePage extends ConsumerStatefulWidget {
   const HealthHomePage({
@@ -64,6 +65,7 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                         firstName: facilitiesRead.userData.firstName ?? '-',
                         lastName: facilitiesRead.userData.lastName ?? '-'),
                     const Spacer(),
+
                     // Container(
                     //   width: 43.0,
                     //   height: 43.0,
@@ -93,9 +95,7 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                     //     height: 20,
                     //   ),
                     // ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+
                     InkWell(
                       child: Container(
                         width: 43.0,
@@ -113,6 +113,27 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                       onTap: () {
                         Utils.showFilterBottomSheet(context);
                       },
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        width: 43.0,
+                        height: 43.0,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xff313131),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: SvgPicture.asset(
+                          'assets/svg/logout.svg',
+                          height: 20,
+                          colorFilter:
+                              ColorFilter.mode(white100, BlendMode.srcIn),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -203,60 +224,71 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                   height: 20,
                 ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 50),
-                      child: Column(
-                        children: [
-                          facilitiesWatch.isLoading
-                              ? const ShimmerScreenLoading(
-                                  height: 600.0,
-                                  width: double.infinity,
-                                  radius: 14.0,
-                                )
-                              : Container(
-                                  margin: const EdgeInsets.only(top: 20),
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 18),
-                                  child: ListView.separated(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(
-                                      height: 25,
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    header: WaterDropHeader(),
+                    footer: ClassicFooter(),
+                    controller: facilitiesWatch.facilitiesController,
+                    onRefresh: () =>
+                        facilitiesRead.onRefreshHealthFacilities(context),
+                    onLoading: () =>
+                        facilitiesRead.onLoadingHealthFacilities(context),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 50),
+                        child: Column(
+                          children: [
+                            facilitiesWatch.isLoading
+                                ? const ShimmerScreenLoading(
+                                    height: 600.0,
+                                    width: double.infinity,
+                                    radius: 14.0,
+                                  )
+                                : Container(
+                                    margin: const EdgeInsets.only(top: 20),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(14),
                                     ),
-                                    itemCount: facilitiesWatch
-                                        .searchFacilities!.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) =>
-                                        FacilityCardItem(
-                                      onTap: () {
-                                        facilitiesWatch.selectedFacility =
-                                            facilitiesWatch
-                                                .searchFacilities![index];
-                                        context
-                                            .go('/main_screen/health_details');
-                                      },
-                                      facilityName: facilitiesWatch
-                                          .searchFacilities![index].name,
-                                      lga: facilitiesWatch
-                                          .searchFacilities![index].lga,
-                                      state: facilitiesWatch
-                                          .searchFacilities![index].state,
-                                      isActive: facilitiesWatch
-                                          .searchFacilities![index].isActive,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18),
+                                    child: ListView.separated(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      separatorBuilder: (context, index) =>
+                                          const SizedBox(
+                                        height: 25,
+                                      ),
+                                      itemCount: facilitiesWatch
+                                          .searchFacilities!.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) =>
+                                          FacilityCardItem(
+                                        onTap: () {
+                                          facilitiesWatch.selectedFacility =
+                                              facilitiesWatch
+                                                  .searchFacilities![index];
+                                          context.go(
+                                              '/main_screen/health_details');
+                                        },
+                                        facilityName: facilitiesWatch
+                                            .searchFacilities![index].name,
+                                        lga: facilitiesWatch
+                                            .searchFacilities![index].lga,
+                                        state: facilitiesWatch
+                                            .searchFacilities![index].state,
+                                        isActive: facilitiesWatch
+                                            .searchFacilities![index].isActive,
+                                      ),
                                     ),
                                   ),
-                                ),
-                          const SizedBox(
-                            height: 13,
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 13,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

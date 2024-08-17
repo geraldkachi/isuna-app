@@ -11,6 +11,7 @@ import 'package:misau/service/auth_service.dart';
 import 'package:misau/service/state_and_lga_service.dart';
 import 'package:misau/service/toast_service.dart';
 import 'package:misau/utils/utils.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 final adminViewModelProvider =
     ChangeNotifierProvider<AdminViewModel>((ref) => AdminViewModel());
@@ -35,6 +36,9 @@ class AdminViewModel extends ChangeNotifier {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
+
   String? role;
 
   bool obscurePassword = true;
@@ -44,9 +48,19 @@ class AdminViewModel extends ChangeNotifier {
   List<String> get roleList =>
       roleModel!.map((value) => value.name as String).toList();
 
+  Future<void> onBuild(context) async {
+    await fetchAdmins(context);
+    await getRoles(context);
+  }
+
   void togglePassword() {
     obscurePassword = !obscurePassword;
     notifyListeners();
+  }
+
+  void onRefresh(context) {
+    onBuild(context);
+    refreshController.refreshCompleted();
   }
 
   Future<void> addAdmin(context) async {

@@ -17,11 +17,14 @@ import 'package:misau/models/expense_payment_model.dart';
 import 'package:misau/models/facilities_model.dart';
 import 'package:misau/models/facility_balances_model.dart';
 import 'package:misau/models/inflow_payment_model.dart';
+import 'package:misau/models/page_info_model.dart';
 import 'package:misau/models/tranx_list_model.dart';
 import 'package:misau/service/auth_service.dart';
 import 'package:misau/service/health_facilities_service.dart';
+import 'package:misau/service/shared_preference_service.dart';
 import 'package:misau/service/toast_service.dart';
 import 'package:misau/utils/utils.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 final healthFacilitiesViemodelProvider =
     ChangeNotifierProvider<HealthFacilitiesViewModel>(
@@ -32,6 +35,8 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   final ToastService _toastService = getIt<ToastService>();
   final HealthFacilitiesService _healthFacilitiesService =
       getIt<HealthFacilitiesService>();
+  final SharedPreferenceService _sharedPreferenceService =
+      getIt<SharedPreferenceService>();
 
   List<FacilitiesModel> get facilitiesModel =>
       _healthFacilitiesService.facilitiesModel ?? [];
@@ -59,14 +64,27 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   FacilityBalancesModel get facilityBalancesModel =>
       _healthFacilitiesService.facilityBalancesModel ?? FacilityBalancesModel();
 
+  PageInfoModel get pageInfoModel =>
+      _healthFacilitiesService.pageInfoModel ?? PageInfoModel();
+
   ExpenseCategory get expenseCategory =>
       _healthFacilitiesService.expenseCategory ?? ExpenseCategory();
 
   TextEditingController searchController = TextEditingController();
+    TextEditingController transactionSearchController = TextEditingController();
+
   TextEditingController inflowAmountContoller = TextEditingController();
   String? inflowStatusValue;
   TextEditingController expenseAmountContoller = TextEditingController();
   TextEditingController reasonContoller = TextEditingController();
+  RefreshController transactionController =
+      RefreshController(initialRefresh: false);
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
+  RefreshController facilitiesController =
+      RefreshController(initialRefresh: false);
+
+  int page = 0;
 
   String? expenseStatusValue;
   String? selectedCategory;
@@ -84,6 +102,10 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
 
   Future<void> onBuild(context) async {
     // getAuditTrails(context);
+    Future(() {
+      hideAmounts = _sharedPreferenceService.getBool('isAmountHidden')!;
+      notifyListeners();
+    });
     await facilitiesBalances(context);
     await fetchFacilityTransactionList(context);
     await fetchCategories(context);
@@ -92,8 +114,44 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     await fetchExpenseCategory(context);
   }
 
+  void onRefreshFacility(context) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    onBuild(context);
+    refreshController.refreshCompleted();
+    transactionController.refreshCompleted();
+  }
+
+  void onLoadingFacility() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    refreshController.loadComplete();
+    transactionController.loadComplete();
+  }
+
+  void onRefreshHealthFacilities(context) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    fetchFacilitiesPagnated(context, next: '');
+    facilitiesController.refreshCompleted();
+  }
+
+  void onLoadingHealthFacilities(context) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+
+    fetchFacilitiesPagnated(context,
+        next: pageInfoModel.hasNextPage! ? pageInfoModel.endCursor : '');
+    facilitiesController.loadComplete();
+  }
+
   void toggleAmountVisibility() {
     hideAmounts = !hideAmounts;
+    _sharedPreferenceService.setBool('isAmountHidden', hideAmounts);
     notifyListeners();
   }
 
@@ -121,7 +179,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await _healthFacilitiesService.fetchFacilities();
-      searchFacilities = _healthFacilitiesService.facilitiesModel!;
+      searchFacilities = facilitiesModel;
       isLoading = false;
       onInit = true;
       notifyListeners();
@@ -141,12 +199,12 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchFacilitiesPagnated(context) async {
+  Future<void> fetchFacilitiesPagnated(context, {String? next = ''}) async {
     try {
       isLoading = true;
       notifyListeners();
-      await _healthFacilitiesService.fetchFacilitiesPagnated();
-      searchFacilities = _healthFacilitiesService.facilitiesModel!;
+      await _healthFacilitiesService.fetchFacilitiesPagnated(next: next);
+      searchFacilities?.addAll(facilitiesModel);
       isLoading = false;
       onInit = true;
       notifyListeners();

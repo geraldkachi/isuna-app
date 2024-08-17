@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/admin/add_admin.dart';
 import 'package:misau/features/admin/admin_view_model.dart';
 import 'package:misau/features/health/health_details.dart';
@@ -11,6 +12,7 @@ import 'package:misau/widget/custom_dropdown.dart';
 import 'package:misau/widget/custom_pie_chart.dart';
 import 'package:misau/widget/shimmer.dart';
 import 'package:misau/widget/user_avarta.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminHomePage extends ConsumerStatefulWidget {
   const AdminHomePage({
@@ -33,8 +35,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
     final adminRead = ref.read(adminViewModelProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // This will run after the build method is completed
-      adminRead.fetchAdmins(context);
-      adminRead.getRoles(context);
+      adminRead.onBuild(context);
     });
   }
 
@@ -63,6 +64,24 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
                         firstName: adminWatch.userData?.firstName ?? '',
                         lastName: adminWatch.userData?.lastName ?? ''),
                     const Spacer(),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        width: 43.0,
+                        height: 43.0,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xff313131),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: SvgPicture.asset(
+                          'assets/svg/logout.svg',
+                          height: 20,
+                          colorFilter:
+                              ColorFilter.mode(white100, BlendMode.srcIn),
+                        ),
+                      ),
+                    ),
                     // Container(
                     //   width: 43.0,
                     //   height: 43.0,
@@ -92,27 +111,27 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
                     //     height: 20,
                     //   ),
                     // ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    InkWell(
-                      child: Container(
-                        width: 43.0,
-                        height: 43.0,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xff313131),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: SvgPicture.asset(
-                          'assets/svg/filter.svg',
-                          height: 20,
-                        ),
-                      ),
-                      onTap: () {
-                        Utils.showFilterBottomSheet(context);
-                      },
-                    ),
+                    // const SizedBox(
+                    //   width: 10,
+                    // ),
+                    // InkWell(
+                    //   child: Container(
+                    //     width: 43.0,
+                    //     height: 43.0,
+                    //     decoration: const BoxDecoration(
+                    //       shape: BoxShape.circle,
+                    //       color: Color(0xff313131),
+                    //     ),
+                    //     padding: const EdgeInsets.all(10),
+                    //     child: SvgPicture.asset(
+                    //       'assets/svg/filter.svg',
+                    //       height: 20,
+                    //     ),
+                    //   ),
+                    //   onTap: () {
+                    //     Utils.showFilterBottomSheet(context);
+                    //   },
+                    // ),
                   ],
                 ),
                 const SizedBox(
@@ -210,54 +229,61 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
                   height: 20,
                 ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 50),
-                      child: Column(
-                        children: [
-                          adminWatch.isLoading
-                              ? const ShimmerScreenLoading(
-                                  height: 600.0,
-                                  width: double.infinity,
-                                  radius: 14.0,
-                                )
-                              : Container(
-                                  margin: const EdgeInsets.only(top: 20),
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 18),
-                                  child: ListView.separated(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(
-                                      height: 25,
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    header: WaterDropHeader(),
+                    controller: adminWatch.refreshController,
+                    onRefresh: () => adminRead.onRefresh(context),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 50),
+                        child: Column(
+                          children: [
+                            adminWatch.isLoading
+                                ? const ShimmerScreenLoading(
+                                    height: 600.0,
+                                    width: double.infinity,
+                                    radius: 14.0,
+                                  )
+                                : Container(
+                                    margin: const EdgeInsets.only(top: 20),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(14),
                                     ),
-                                    itemCount: adminWatch.searchAdmins!.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) =>
-                                        AdminCardItem(
-                                      title:
-                                          '${adminWatch.searchAdmins![index].firstName ?? ''} ${adminWatch.searchAdmins![index].lastName ?? ''}',
-                                      role:
-                                          adminWatch.searchAdmins![index].role,
-                                      phoneNumber: adminWatch
-                                          .searchAdmins![index].phoneNumber,
-                                      isActive: adminWatch
-                                              .searchAdmins![index].isActive!
-                                          ? 'Active'
-                                          : 'Inactive',
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18),
+                                    child: ListView.separated(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      separatorBuilder: (context, index) =>
+                                          const SizedBox(
+                                        height: 25,
+                                      ),
+                                      itemCount:
+                                          adminWatch.searchAdmins!.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) =>
+                                          AdminCardItem(
+                                        title:
+                                            '${adminWatch.searchAdmins![index].firstName ?? ''} ${adminWatch.searchAdmins![index].lastName ?? ''}',
+                                        role: adminWatch
+                                            .searchAdmins![index].role,
+                                        phoneNumber: adminWatch
+                                            .searchAdmins![index].phoneNumber,
+                                        isActive: adminWatch
+                                                .searchAdmins![index].isActive!
+                                            ? 'Active'
+                                            : 'Inactive',
+                                      ),
                                     ),
                                   ),
-                                ),
-                          const SizedBox(
-                            height: 13,
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 13,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

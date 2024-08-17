@@ -3,7 +3,7 @@ import 'dart:convert';
 class ExpenseCategory {
   final String? name;
   final List<String>? categories;
-  final List<int>? records;
+  final List? records;
 
   ExpenseCategory({
     this.name,
@@ -12,7 +12,7 @@ class ExpenseCategory {
   });
 
   // Method to calculate the total expense
-  int get total => records!.reduce((a, b) => a + b);
+  get total => records!.reduce((a, b) => a + b);
 
   // Method to get category data with percentages
   List<CategoryData> get categoriesWithPercentages {
@@ -35,7 +35,7 @@ class ExpenseCategory {
     return ExpenseCategory(
       name: json['name'] as String,
       categories: List<String>.from(json['data'] as List),
-      records: List<int>.from(json['records'] as List),
+      records: List.from(json['records'] as List),
     );
   }
 
@@ -51,7 +51,7 @@ class ExpenseCategory {
 
 class CategoryData {
   final String category;
-  final int amount;
+  final dynamic amount;
   final String percentage;
 
   CategoryData({

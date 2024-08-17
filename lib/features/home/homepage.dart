@@ -13,6 +13,7 @@ import 'package:misau/widget/expense_widget.dart';
 import 'package:misau/widget/income_analysis_card.dart';
 import 'package:misau/widget/shimmer.dart';
 import 'package:misau/widget/total_balance_card.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -93,70 +94,77 @@ class _HomePageState extends ConsumerState<HomePage>
                       child: TabBarView(
                     controller: _tabController,
                     children: [
-                      SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            homeWatch.isLoading
-                                ? const ShimmerScreenLoading(
-                                    height: 200.0,
-                                    width: double.infinity,
-                                    radius: 14.0,
-                                  )
-                                : TotalBalanceCard(
-                                    totalBalance:
-                                        homeWatch.balances.totalBalance,
-                                    actualBalance:
-                                        homeWatch.balances.actualBalance,
-                                    pendingBalance:
-                                        homeWatch.balances.pendingBalance,
-                                  ),
-                            const SizedBox(height: 20),
-                            homeWatch.isLoading
-                                ? const ShimmerScreenLoading(
-                                    height: 200.0,
-                                    width: double.infinity,
-                                    radius: 14.0,
-                                  )
-                                : IncomeAnalysisCard(
-                                    currentMonthIncome: homeWatch
-                                        .incomeAnalysis.currentMonthIncome,
-                                    lastMonthIncome: homeWatch
-                                        .incomeAnalysis.lastMonthIncome,
-                                    options: options,
-                                  ),
-                            const SizedBox(height: 20),
-                            homeWatch.isLoading
-                                ? const ShimmerScreenLoading(
-                                    height: 200.0,
-                                    width: double.infinity,
-                                    radius: 14.0,
-                                  )
-                                : ExpenseAnalysisCard(
-                                    currentMonthExpense: homeWatch
-                                        .expenseAnalysis.currentMonthExpense,
-                                    lastMonthExpense: homeWatch
-                                        .expenseAnalysis.lastMonthExpense,
-                                    options: options,
-                                  ),
-                            const SizedBox(height: 20),
-                            homeWatch.isLoading
-                                ? const ShimmerScreenLoading(
-                                    height: 350.0,
-                                    width: double.infinity,
-                                    radius: 14.0,
-                                  )
-                                : ExpenseWidget(
-                                    expenseCategory: homeWatch.expenseCategory,
-                                  ),
-                            const SizedBox(height: 20),
-                            AccountsCard(
-                              managersCount:
-                                  homeWatch.summaryModel.admin.toString(),
-                              healthFacilitiesCount:
-                                  homeWatch.summaryModel.facility.toString(),
-                            ),
-                            const SizedBox(height: 20),
-                          ],
+                      SmartRefresher(
+                        enablePullDown: true,
+                        header: WaterDropHeader(),
+                        controller: homeWatch.refreshController,
+                        onRefresh: () => homeRead.onRefresh(context),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              homeWatch.isLoading
+                                  ? const ShimmerScreenLoading(
+                                      height: 200.0,
+                                      width: double.infinity,
+                                      radius: 14.0,
+                                    )
+                                  : TotalBalanceCard(
+                                      totalBalance:
+                                          homeWatch.balances.totalBalance,
+                                      actualBalance:
+                                          homeWatch.balances.actualBalance,
+                                      pendingBalance:
+                                          homeWatch.balances.pendingBalance,
+                                    ),
+                              const SizedBox(height: 20),
+                              homeWatch.isLoading
+                                  ? const ShimmerScreenLoading(
+                                      height: 200.0,
+                                      width: double.infinity,
+                                      radius: 14.0,
+                                    )
+                                  : IncomeAnalysisCard(
+                                      currentMonthIncome: homeWatch
+                                          .incomeAnalysis.currentMonthIncome,
+                                      lastMonthIncome: homeWatch
+                                          .incomeAnalysis.lastMonthIncome,
+                                      options: options,
+                                    ),
+                              const SizedBox(height: 20),
+                              homeWatch.isLoading
+                                  ? const ShimmerScreenLoading(
+                                      height: 200.0,
+                                      width: double.infinity,
+                                      radius: 14.0,
+                                    )
+                                  : ExpenseAnalysisCard(
+                                      currentMonthExpense: homeWatch
+                                          .expenseAnalysis.currentMonthExpense,
+                                      lastMonthExpense: homeWatch
+                                          .expenseAnalysis.lastMonthExpense,
+                                      options: options,
+                                    ),
+                              const SizedBox(height: 20),
+                              homeWatch.isLoading
+                                  ? const ShimmerScreenLoading(
+                                      height: 350.0,
+                                      width: double.infinity,
+                                      radius: 14.0,
+                                    )
+                                  : ExpenseWidget(
+                                      expenseCategory:
+                                          homeWatch.expenseCategory,
+                                    ),
+                              const SizedBox(height: 20),
+                              AccountsCard(
+                                managersCount:
+                                    homeWatch.summaryModel.admin.toString(),
+                                healthFacilitiesCount:
+                                    homeWatch.summaryModel.facility.toString(),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          ),
                         ),
                       ),
                       TransactionsScreen(),

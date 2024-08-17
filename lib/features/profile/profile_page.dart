@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:misau/app/theme/colors.dart';
 import 'package:misau/features/health/health_details.dart';
 import 'package:misau/features/profile/personal_info.dart';
 import 'package:misau/features/profile/preferences.dart';
@@ -54,6 +55,24 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         firstName: profileRead.userData.firstName ?? '-',
                         lastName: profileRead.userData.lastName ?? '-'),
                     const Spacer(),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        width: 43.0,
+                        height: 43.0,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xff313131),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: SvgPicture.asset(
+                          'assets/svg/logout.svg',
+                          height: 20,
+                          colorFilter:
+                              ColorFilter.mode(white100, BlendMode.srcIn),
+                        ),
+                      ),
+                    ),
                     // Container(
                     //   width: 43.0,
                     //   height: 43.0,
