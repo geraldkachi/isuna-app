@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/app/router.dart';
-import 'package:misau/exceptions/misau_exception.dart';
-import 'package:misau/models/error_model.dart';
-import 'package:misau/service/auth_service.dart';
-import 'package:misau/service/toast_service.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/app/router.dart';
+import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/models/error_model.dart';
+import 'package:isuna/service/auth_service.dart';
+import 'package:isuna/service/secure_storage_service.dart';
+import 'package:isuna/service/toast_service.dart';
 
 final loginViewModelProvider =
-    ChangeNotifierProvider<LoginViewModel>((ref) => LoginViewModel());
+    ChangeNotifierProvider.autoDispose<LoginViewModel>(
+        (ref) => LoginViewModel());
 
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService = getIt<AuthService>();
   final ToastService _toastService = getIt<ToastService>();
+  final SecureStorageService _secureStorageService =
+      getIt<SecureStorageService>();
 
   bool obscureText = true;
   bool isLoading = false;
@@ -26,8 +30,11 @@ class LoginViewModel extends ChangeNotifier {
         formKey.currentState!.save();
         isLoading = true;
         notifyListeners();
-        await _authService.login(emailController.text, passController.text);
-        router.push('/main_screen');
+        await _authService.login(
+            emailController.text.toLowerCase(), passController.text);
+        emailController.clear();
+        passController.clear();
+        router.go('/main_screen');
         isLoading = false;
         notifyListeners();
       }

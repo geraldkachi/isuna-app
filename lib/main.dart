@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/app/router.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/utils/env_utils.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/app/router.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/utils/env_utils.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {

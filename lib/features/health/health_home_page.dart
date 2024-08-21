@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/health/health_details.dart';
-import 'package:misau/features/health/health_facilities_view_model.dart';
-import 'package:misau/utils/utils.dart';
-import 'package:misau/widget/shimmer.dart';
-import 'package:misau/widget/user_avarta.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/health/health_details.dart';
+import 'package:isuna/features/health/health_facilities_view_model.dart';
+import 'package:isuna/utils/utils.dart';
+import 'package:isuna/widget/shimmer.dart';
+import 'package:isuna/widget/user_avarta.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HealthHomePage extends ConsumerStatefulWidget {
@@ -61,9 +61,24 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
               children: [
                 Row(
                   children: [
-                    UserAvarta(
-                        firstName: facilitiesRead.userData.firstName ?? '-',
-                        lastName: facilitiesRead.userData.lastName ?? '-'),
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/png/isuna_logo.png',
+                          scale: 2.5,
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Text(
+                          'Isuna',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22.0,
+                              color: white100),
+                        )
+                      ],
+                    ),
                     const Spacer(),
 
                     // Container(
@@ -96,29 +111,29 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                     //   ),
                     // ),
 
-                    InkWell(
-                      child: Container(
-                        width: 43.0,
-                        height: 43.0,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xff313131),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: SvgPicture.asset(
-                          'assets/svg/filter.svg',
-                          height: 20,
-                        ),
-                      ),
-                      onTap: () {
-                        Utils.showFilterBottomSheet(context);
-                      },
-                    ),
+                    // InkWell(
+                    //   child: Container(
+                    //     width: 43.0,
+                    //     height: 43.0,
+                    //     decoration: const BoxDecoration(
+                    //       shape: BoxShape.circle,
+                    //       color: Color(0xff313131),
+                    //     ),
+                    //     padding: const EdgeInsets.all(10),
+                    //     child: SvgPicture.asset(
+                    //       'assets/svg/filter.svg',
+                    //       height: 20,
+                    //     ),
+                    //   ),
+                    //   onTap: () {
+                    //     Utils.showFacilitiesFilterBottomSheet(context);
+                    //   },
+                    // ),
                     SizedBox(
                       width: 10.0,
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: facilitiesRead.logout,
                       child: Container(
                         width: 43.0,
                         height: 43.0,
@@ -135,6 +150,12 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                         ),
                       ),
                     ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    UserAvarta(
+                        firstName: facilitiesRead.userData.firstName ?? '-',
+                        lastName: facilitiesRead.userData.lastName ?? '-'),
                   ],
                 ),
                 const SizedBox(
@@ -154,9 +175,7 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      height: 48.0,
-                      width: 260.0,
+                    Expanded(
                       child: TextField(
                         controller: facilitiesWatch.searchController,
                         onChanged: (value) {
@@ -187,7 +206,32 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                         ),
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        facilitiesWatch.searchController.text.isEmpty
+                            ? null
+                            : facilitiesRead.searchFacilitiesName(context);
+                      },
+                      child: Container(
+                        width: 48.0,
+                        height: 48.0,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xff313131),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: SvgPicture.asset(
+                          'assets/svg/search.svg',
+                          height: 20,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10.0,
+                    ),
                     Container(
                       width: 48.0,
                       height: 48.0,
@@ -201,23 +245,6 @@ class _HealthHomePageState extends ConsumerState<HealthHomePage>
                         height: 19,
                       ),
                     ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    // Container(
-                    //   width: 48.0,
-                    //   height: 48.0,
-                    //   decoration: const BoxDecoration(
-                    //     shape: BoxShape.circle,
-                    //     color: Color(0xffDC1D3C),
-                    //   ),
-                    //   padding: const EdgeInsets.all(13),
-                    //   child: SvgPicture.asset(
-                    //     'assets/svg/add.svg',
-                    //     height: 10,
-                    //     width: 10,
-                    //   ),
-                    // ),
                   ],
                 ),
                 const SizedBox(

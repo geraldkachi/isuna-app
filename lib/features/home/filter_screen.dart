@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/home/home_viemodel.dart';
-import 'package:misau/widget/outline_datepicker.dart';
-import 'package:misau/widget/outline_dropdown.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/home/home_viemodel.dart';
+import 'package:isuna/widget/outline_datepicker.dart';
+import 'package:isuna/widget/outline_dropdown.dart';
+import 'package:nigerian_states_and_lga/nigerian_states_and_lga.dart';
 
 class FilterScreen extends ConsumerStatefulWidget {
   const FilterScreen({
@@ -24,9 +25,19 @@ class _FilterScreenState extends ConsumerState<FilterScreen>
   bool showOrangeLine = true;
   TextEditingController titleController = TextEditingController();
 
+  String state = '';
+  String lga = '';
+  String facility = '';
+
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -106,21 +117,27 @@ class _FilterScreenState extends ConsumerState<FilterScreen>
                           height: 13,
                           color: const Color(0xff121827),
                         ),
-                        items: homeRead.stateModel?.map((value) {
+                        items: homeWatch.states.map((value) {
+                          state = value;
                           return DropdownMenuItem(
-                            value: value.stateCode,
+                            value: state,
                             child: Text(
-                              value.name!,
+                              value,
                               style: const TextStyle(
                                   color: Color(0xff121827),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600),
                             ),
+                            onTap: () {
+                              homeWatch.selectedState = '';
+                            },
                           );
                         }).toList(),
                         onChanged: (value) {
                           homeWatch.selectedState = value;
-                          homeRead.getLga(context, value!);
+                          homeWatch.stateLga =
+                              NigerianStatesAndLGA.getStateLGAs(value!);
+                          setState(() {});
                         },
                       ),
                     ),
@@ -159,19 +176,18 @@ class _FilterScreenState extends ConsumerState<FilterScreen>
                           height: 13,
                           color: const Color(0xff121827),
                         ),
-                        items:
-                            homeRead.lgaList?.asMap().entries.map((mapValue) {
+                        items: homeWatch.stateLga.map((value) {
                           return DropdownMenuItem(
-                            value: mapValue.key.toString(),
+                            value: value.toString(),
                             child: Text(
-                              mapValue.value,
+                              value,
                               style: const TextStyle(
                                   color: Color(0xff121827),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600),
                             ),
                             onTap: () {
-                              // homeWatch.selectedLga = mapValue.value;
+                              // homeWatch.selectedLga = mvalue;
                               setState(() {});
                             },
                           );
@@ -363,12 +379,14 @@ class _FilterScreenState extends ConsumerState<FilterScreen>
                             child: TextButton(
                               onPressed: () {
                                 context.pop();
+
                                 homeRead.fetchWalletData(context,
                                     state: homeWatch.selectedState ?? '',
                                     lga: homeWatch.selectedLga ?? '',
                                     facilitys: homeWatch.selectedFacility ?? '',
                                     fromDate: homeWatch.fromDate ?? '',
                                     toDate: homeWatch.toDate ?? '');
+                                homeRead.clearFilters();
                               },
                               style: TextButton.styleFrom(
                                 backgroundColor: red,

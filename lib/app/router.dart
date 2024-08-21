@@ -1,16 +1,17 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:go_router/go_router.dart';
-import 'package:misau/features/admin/add_admin.dart';
-import 'package:misau/features/auth/login/login.dart';
-import 'package:misau/features/health/health_details.dart';
-import 'package:misau/features/health/health_home_page.dart';
-import 'package:misau/features/health/record_expense_payment.dart';
-import 'package:misau/features/health/record_inflow_payment.dart';
-import 'package:misau/features/home/homepage.dart';
-import 'package:misau/features/main_screen/main_page.dart';
-import 'package:misau/features/profile/preferences.dart';
-import 'package:misau/features/profile/profile_page.dart';
+import 'package:isuna/features/admin/add_admin.dart';
+import 'package:isuna/features/auth/login/login.dart';
+import 'package:isuna/features/health/health_details.dart';
+import 'package:isuna/features/health/health_home_page.dart';
+import 'package:isuna/features/health/record_expense_payment.dart';
+import 'package:isuna/features/health/record_inflow_payment.dart';
+import 'package:isuna/features/home/homepage.dart';
+import 'package:isuna/features/main_screen/main_page.dart';
+import 'package:isuna/features/profile/change_password.dart';
+import 'package:isuna/features/profile/preferences.dart';
+import 'package:isuna/features/profile/profile_page.dart';
 
 final GoRouter router = GoRouter(routes: [
   GoRoute(path: '/', builder: (context, state) => LoginPage(), routes: []),
@@ -38,6 +39,10 @@ final GoRouter router = GoRouter(routes: [
         GoRoute(
           path: 'preferences',
           builder: (context, state) => PreferencesPage(),
+        ),
+        GoRoute(
+          path: 'change_password',
+          builder: (context, state) => ChangePassword(),
         ),
       ]),
 ]);

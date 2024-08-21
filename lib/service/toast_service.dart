@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:misau/widget/toast.dart';
+import 'package:isuna/widget/toast.dart';
 
 enum ToastType { error, warning, success, defaultType }
 
 class ToastService {
   void showToast(context,
-      {
-      required String title,
-      required String subTitle,
-      ToastType? type
-      }) {
+      {required String title, required String subTitle, ToastType? type}) {
     final snackBar = SnackBar(
         backgroundColor: Colors.transparent,
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

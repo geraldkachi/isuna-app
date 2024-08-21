@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/home/home_viemodel.dart';
-import 'package:misau/utils/string_utils.dart';
-import 'package:misau/widget/custom_dropdown.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/home/home_viemodel.dart';
+import 'package:isuna/utils/string_utils.dart';
+import 'package:isuna/widget/custom_dropdown.dart';
 
 class IncomeAnalysisCard extends ConsumerWidget {
   final dynamic currentMonthIncome;
@@ -75,7 +75,7 @@ class IncomeAnalysisCard extends ConsumerWidget {
                               fontFamily: 'AreaNeu'),
                         ),
                         Text(
-                          "${StringUtils.currencyConverter(homeWatch.incomeAnalysis.currentMonthIncome ?? 0).trim()} ",
+                          "${StringUtils.currencyConverter(homeWatch.incomeAnalysis.currentMonthIncome.toInt() ?? 0).trim()} ",
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 34,
@@ -112,7 +112,7 @@ class IncomeAnalysisCard extends ConsumerWidget {
                 child: Row(children: [
                   SvgPicture.asset('assets/svg/arrow_up.svg'),
                   Text(
-                    "${homeRead.incomePercentageIncrease?.abs().toStringAsFixed(1)}%",
+                    "${homeRead.incomePercentageIncrease?.abs().toStringAsFixed(3)}%",
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,

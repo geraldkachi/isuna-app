@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:misau/features/home/filter_screen.dart';
-import 'package:misau/widget/loading_dialog.dart';
+import 'package:isuna/features/health/faciliteies_filter_scren.dart';
+import 'package:isuna/features/home/filter_screen.dart';
+import 'package:isuna/widget/loading_dialog.dart';
 
 class Utils {
   static String formatNumber(String numberString) {
@@ -33,7 +34,22 @@ class Utils {
     );
   }
 
- static void showLoadingDialog(context) {
+    static void showFacilitiesFilterBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return const FacilitiesFilterScreen();
+      },
+    );
+  }
+
+  static void showLoadingDialog(context) {
     showDialog(context: context, builder: (context) => LoadingDialog());
   }
 }

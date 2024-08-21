@@ -1,4 +1,4 @@
-package com.misau.misau
+package com.isuna.isuna
 
 import io.flutter.embedding.android.FlutterActivity
 

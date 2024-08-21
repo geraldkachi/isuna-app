@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/widget/user_avarta.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/widget/user_avarta.dart';
 
 class AppHeader extends StatelessWidget {
   final String firstName;
   final String lastName;
   final VoidCallback onFilter;
   final VoidCallback onSearch;
+  final VoidCallback logout;
   final VoidCallback onNotification;
 
-  const AppHeader({
-    Key? key,
-    required this.firstName,
-    required this.lastName,
-    required this.onFilter,
-    required this.onSearch,
-    required this.onNotification,
-  }) : super(key: key);
+  const AppHeader(
+      {Key? key,
+      required this.firstName,
+      required this.lastName,
+      required this.onFilter,
+      required this.onSearch,
+      required this.onNotification,
+      required this.logout})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,24 @@ class AppHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            UserAvarta(firstName: firstName, lastName: lastName),
+            Row(
+              children: [
+                Image.asset(
+                  'assets/png/isuna_logo.png',
+                  scale: 2.5,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Text(
+                  'Isuna',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 22.0,
+                      color: white100),
+                )
+              ],
+            ),
             const Spacer(),
             // GestureDetector(
             //   onTap: onSearch,
@@ -88,7 +107,7 @@ class AppHeader extends StatelessWidget {
               width: 10.0,
             ),
             GestureDetector(
-              onTap: onFilter,
+              onTap: logout,
               child: Container(
                 width: 43.0,
                 height: 43.0,
@@ -104,6 +123,10 @@ class AppHeader extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(
+              width: 10.0,
+            ),
+            UserAvarta(firstName: firstName, lastName: lastName),
           ],
         ),
         const SizedBox(

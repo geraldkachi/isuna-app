@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:misau/exceptions/error_handling.dart';
-import 'package:misau/interceptors/app_interceptors.dart';
+import 'package:isuna/exceptions/error_handling.dart';
+import 'package:isuna/interceptors/app_interceptors.dart';
 
 class NetworkService with ErrorHandling {
   late final Dio dio;
@@ -92,6 +92,24 @@ class NetworkService with ErrorHandling {
   }) async {
     try {
       Response response = await dio.post(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+
+      return response.data;
+    } on DioException catch (e) {
+      handleError(e);
+    }
+  }
+
+  Future patch(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      Response response = await dio.patch(
         path,
         data: data,
         queryParameters: queryParameters,

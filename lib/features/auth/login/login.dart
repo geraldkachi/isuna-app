@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/auth/login/login_view_model.dart';
-import 'package:misau/utils/string_utils.dart';
-import 'package:misau/utils/validator.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/auth/login/login_view_model.dart';
+import 'package:isuna/utils/string_utils.dart';
+import 'package:isuna/utils/validator.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({
@@ -29,7 +29,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset('assets/svg/logo.svg'),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/png/isuna_logo.png',
+                    scale: 2.5,
+                  ),
+                  Text(
+                    'Isuna',
+                    style:
+                        TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+                  )
+                ],
+              ),
               const SizedBox(height: 26),
               const Text(
                 "Welcome Back!",
@@ -41,7 +53,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
               const SizedBox(height: 10),
               const Text(
-                "Let's login to your Misua account",
+                "Let's login to your Isuna account",
                 style: TextStyle(color: black500, fontSize: 15),
               ),
               const SizedBox(height: 30),
@@ -101,15 +113,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Spacer(),
-                  Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      color: Color(0xff31AF99),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  // Spacer(),
+                  // Text(
+                  //   "Forgot Password?",
+                  //   style: TextStyle(
+                  //     color: Color(0xff31AF99),
+                  //     fontSize: 14,
+                  //     fontWeight: FontWeight.w700,
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 7),

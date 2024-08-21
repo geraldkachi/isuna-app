@@ -2,15 +2,16 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/health/health_facilities_view_model.dart';
-import 'package:misau/utils/utils.dart';
-import 'package:misau/utils/validator.dart';
-import 'package:misau/widget/custom_dropdown.dart';
-import 'package:misau/widget/custom_pie_chart.dart';
-import 'package:misau/widget/outline_datepicker.dart';
-import 'package:misau/widget/outline_dropdown.dart';
-import 'package:misau/widget/outline_textfield.dart';
+import 'package:go_router/go_router.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/health/health_facilities_view_model.dart';
+import 'package:isuna/utils/utils.dart';
+import 'package:isuna/utils/validator.dart';
+import 'package:isuna/widget/custom_dropdown.dart';
+import 'package:isuna/widget/custom_pie_chart.dart';
+import 'package:isuna/widget/outline_datepicker.dart';
+import 'package:isuna/widget/outline_dropdown.dart';
+import 'package:isuna/widget/outline_textfield.dart';
 
 class RecordInflowPayment extends ConsumerStatefulWidget {
   const RecordInflowPayment({
@@ -72,7 +73,10 @@ class _RecordInflowPaymentState extends ConsumerState<RecordInflowPayment>
                         )
                       ],
                     ),
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                      context.pop();
+                      facilitiesRead.clearInflowFields();
+                    },
                   ),
                   const SizedBox(
                     height: 26,
@@ -80,74 +84,74 @@ class _RecordInflowPaymentState extends ConsumerState<RecordInflowPayment>
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Status",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Color(0xff1B1C1E),
-                          letterSpacing: -.5,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 7,
-                      ),
-                      DropdownButtonFormField<String>(
-                        value: facilitiesWatch.inflowStatusValue,
-                        validator: (value) => Validator.validateField(value),
-                        decoration: InputDecoration(
-                          hintText: 'Select status',
-                          hintStyle: TextStyle(
-                            color: Color(0xff121827).withOpacity(0.4),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: const BorderSide(
-                              color: grey100,
-                              width: 1.0,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: const BorderSide(
-                              color: grey100,
-                              width: 1.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: const BorderSide(
-                              color: black,
-                              width: 1.0,
-                            ),
-                          ),
-                        ),
-                        icon: SvgPicture.asset(
-                          'assets/svg/arrow_dropdown.svg',
-                          width: 13,
-                          height: 13,
-                          color: const Color(0xff121827),
-                        ),
-                        items: ['Flagged', 'Resolved'].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: const TextStyle(
-                                  color: Color(0xff121827),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          setState(() {
-                            facilitiesWatch.inflowStatusValue = newValue!;
-                          });
-                        },
-                      ),
+                      // const Text(
+                      //   "Status",
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.w500,
+                      //     fontSize: 15,
+                      //     color: Color(0xff1B1C1E),
+                      //     letterSpacing: -.5,
+                      //   ),
+                      // ),
+                      // const SizedBox(
+                      //   height: 7,
+                      // ),
+                      // DropdownButtonFormField<String>(
+                      //   value: facilitiesWatch.inflowStatusValue,
+                      //   validator: (value) => Validator.validateField(value),
+                      //   decoration: InputDecoration(
+                      //     hintText: 'Select status',
+                      //     hintStyle: TextStyle(
+                      //       color: Color(0xff121827).withOpacity(0.4),
+                      //       fontSize: 16,
+                      //       fontWeight: FontWeight.w600,
+                      //     ),
+                      //     border: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(12.0),
+                      //       borderSide: const BorderSide(
+                      //         color: grey100,
+                      //         width: 1.0,
+                      //       ),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(12.0),
+                      //       borderSide: const BorderSide(
+                      //         color: grey100,
+                      //         width: 1.0,
+                      //       ),
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(12.0),
+                      //       borderSide: const BorderSide(
+                      //         color: black,
+                      //         width: 1.0,
+                      //       ),
+                      //     ),
+                      //   ),
+                      //   icon: SvgPicture.asset(
+                      //     'assets/svg/arrow_dropdown.svg',
+                      //     width: 13,
+                      //     height: 13,
+                      //     color: const Color(0xff121827),
+                      //   ),
+                      //   items: ['Flagged', 'Resolved'].map((String value) {
+                      //     return DropdownMenuItem<String>(
+                      //       value: value,
+                      //       child: Text(
+                      //         value,
+                      //         style: const TextStyle(
+                      //             color: Color(0xff121827),
+                      //             fontSize: 16,
+                      //             fontWeight: FontWeight.w600),
+                      //       ),
+                      //     );
+                      //   }).toList(),
+                      //   onChanged: (newValue) {
+                      //     setState(() {
+                      //       facilitiesWatch.inflowStatusValue = newValue!;
+                      //     });
+                      //   },
+                      // ),
                       const SizedBox(
                         height: 7,
                       ),
@@ -227,6 +231,7 @@ class _RecordInflowPaymentState extends ConsumerState<RecordInflowPayment>
                       child: TextButton(
                         onPressed: () {
                           facilitiesRead.addInflowPayment(context);
+                          facilitiesRead.clearInflowFields();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: red,

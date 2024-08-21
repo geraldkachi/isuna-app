@@ -1,10 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/features/home/home_viemodel.dart';
-import 'package:misau/widget/expense_analysis_card.dart';
-import 'package:misau/widget/expense_widget.dart';
-import 'package:misau/widget/income_analysis_card.dart';
+import 'package:isuna/features/home/home_viemodel.dart';
+import 'package:isuna/widget/expense_analysis_card.dart';
+import 'package:isuna/widget/expense_widget.dart';
+import 'package:isuna/widget/income_analysis_card.dart';
 
 class StatisticsTab extends StatelessWidget {
   const StatisticsTab({

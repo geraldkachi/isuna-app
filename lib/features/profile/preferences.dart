@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:misau/app/theme/colors.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/profile/profile_view_model.dart';
 
-class PreferencesPage extends StatefulWidget {
+class PreferencesPage extends ConsumerStatefulWidget {
   const PreferencesPage({super.key});
 
   @override
-  State<PreferencesPage> createState() => _PreferencesPageState();
+  ConsumerState<PreferencesPage> createState() => _PreferencesPageState();
 }
 
-class _PreferencesPageState extends State<PreferencesPage> {
+class _PreferencesPageState extends ConsumerState<PreferencesPage> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -34,6 +37,9 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final profileWatch = ref.watch(profileViewModelProvider);
+    final profileRead = ref.read(profileViewModelProvider.notifier);
+
     return Scaffold(
       backgroundColor: const Color(0xffF4F4F7),
       body: Padding(
@@ -61,7 +67,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                   ),
                 ],
               ),
-              onTap: () => Navigator.pop(context),
+              onTap: () => context.pop(),
             ),
             const SizedBox(height: 26),
             // Row(
@@ -194,8 +200,10 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 ),
                 const Spacer(),
                 Switch(
-                  value: true,
-                  onChanged: (value) {},
+                  value: profileWatch.isEmailEnabled,
+                  onChanged: (value) {
+                    profileRead.toggleSwitchState(value);
+                  },
                   activeColor: const Color(0xFF34B77F),
                   trackOutlineColor: MaterialStateProperty.resolveWith(
                     (final Set<MaterialState> states) {
@@ -217,7 +225,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
               children: [
                 SizedBox(
                     width: MediaQuery.of(context).size.width * .4,
-                    height: 55,
+                    height: 48.0,
                     child: OutlinedButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -243,12 +251,12 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 const Spacer(),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .4,
-                  height: 55,
+                  height: 48,
                   child: SizedBox(
                       width: double.infinity, // Make button full width
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          profileRead.toggleEmailPreference(context);
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: red,
@@ -258,14 +266,23 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                 BorderRadius.circular(12.0), // border radius
                           ),
                         ),
-                        child: const Text(
-                          "Save",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                        child: profileWatch.isLoading
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.0,
+                                ),
+                              )
+                            : const Text(
+                                "Save",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                       )),
                 )
               ],

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/admin/admin_view_model.dart';
-import 'package:misau/utils/utils.dart';
-import 'package:misau/widget/outline_datepicker.dart';
-import 'package:misau/widget/outline_dropdown.dart';
-import 'package:misau/widget/outline_textfield.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/admin/admin_view_model.dart';
+import 'package:isuna/utils/utils.dart';
+import 'package:isuna/widget/outline_datepicker.dart';
+import 'package:isuna/widget/outline_dropdown.dart';
+import 'package:isuna/widget/outline_textfield.dart';
 
 class AddAdminPage extends ConsumerStatefulWidget {
   const AddAdminPage({super.key});

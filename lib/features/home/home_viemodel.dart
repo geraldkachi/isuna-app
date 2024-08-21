@@ -2,32 +2,34 @@ import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/exceptions/misau_exception.dart';
-import 'package:misau/features/main_screen/main_screen_view_model.dart';
-import 'package:misau/models/admin_model.dart';
-import 'package:misau/models/balances_model.dart';
-import 'package:misau/models/expense_analysis_model.dart';
-import 'package:misau/models/expense_category.dart';
-import 'package:misau/models/facilities_model.dart';
-import 'package:misau/models/income_analysis_model.dart';
-import 'package:misau/models/lga_model.dart';
-import 'package:misau/models/state_model.dart';
-import 'package:misau/models/states_and_lga_model.dart';
-import 'package:misau/models/summary_model.dart';
-import 'package:misau/models/tranx_list_model.dart';
-import 'package:misau/service/auth_service.dart';
-import 'package:misau/service/dashboard_service.dart';
-import 'package:misau/service/health_facilities_service.dart';
-import 'package:misau/service/navigator_service.dart';
-import 'package:misau/service/profile_service.dart';
-import 'package:misau/service/shared_preference_service.dart';
-import 'package:misau/service/state_and_lga_service.dart';
-import 'package:misau/service/toast_service.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/features/main_screen/main_screen_view_model.dart';
+import 'package:isuna/models/admin_model.dart';
+import 'package:isuna/models/balances_model.dart';
+import 'package:isuna/models/expense_analysis_model.dart';
+import 'package:isuna/models/expense_category.dart';
+import 'package:isuna/models/facilities_model.dart';
+import 'package:isuna/models/income_analysis_model.dart';
+import 'package:isuna/models/lga_model.dart';
+import 'package:isuna/models/state_model.dart';
+import 'package:isuna/models/states_and_lga_model.dart';
+import 'package:isuna/models/summary_model.dart';
+import 'package:isuna/models/tranx_list_model.dart';
+import 'package:isuna/service/auth_service.dart';
+import 'package:isuna/service/dashboard_service.dart';
+import 'package:isuna/service/excel_service.dart';
+import 'package:isuna/service/health_facilities_service.dart';
+import 'package:isuna/service/navigator_service.dart';
+import 'package:isuna/service/profile_service.dart';
+import 'package:isuna/service/shared_preference_service.dart';
+import 'package:isuna/service/state_and_lga_service.dart';
+import 'package:isuna/service/toast_service.dart';
+import 'package:nigerian_states_and_lga/nigerian_states_and_lga.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 final homeViemodelProvider =
-    ChangeNotifierProvider<HomeViemodel>((ref) => HomeViemodel());
+    ChangeNotifierProvider.autoDispose<HomeViemodel>((ref) => HomeViemodel());
 
 class HomeViemodel extends ChangeNotifier {
   final DashboardService _dashboardService = getIt<DashboardService>();
@@ -39,6 +41,7 @@ class HomeViemodel extends ChangeNotifier {
   final NavigatorService _navigatorService = getIt<NavigatorService>();
   final SharedPreferenceService _sharedPreferenceService =
       getIt<SharedPreferenceService>();
+  final ExcelService _excelService = getIt<ExcelService>();
 
   List<StatesAndLgaModel>? get stateAndLgaModel =>
       _stateAndLgaService.statesAndLgaModel;
@@ -76,6 +79,10 @@ class HomeViemodel extends ChangeNotifier {
       RefreshController(initialRefresh: false);
 
   List<Transaction>? filteredTransactions = [];
+  List<String> states = [];
+  TransactionList get transactionList => _dashboardService.transactionList!;
+
+  List<String> stateLga = [];
 
   double? incomePercentageIncrease;
   double? expensePercentageDecrease;
@@ -90,6 +97,8 @@ class HomeViemodel extends ChangeNotifier {
   String? get selectedFacility => searchfacilityController.dropDownValue?.value;
 
   bool isLoading = false;
+  bool isShareLoading = false;
+
   bool onInit = false;
   bool hideAmounts = false;
 
@@ -100,17 +109,24 @@ class HomeViemodel extends ChangeNotifier {
 
   List<String>? lgaList = [];
 
+  DateTime now = DateTime.now();
+  String get threeMonthsAgo => DateFormat('yyyy-MM-dd')
+      .format(DateTime(now.year, now.month - 3, now.day));
+  String get dateNow => DateFormat('yyyy-MM-dd').format(now);
+
   Future<void> fetchWalletData(context,
       {String? state = '',
       String? lga = '',
       String? facilitys = '',
       String? fromDate = '',
-      String? toDate = ''}) async {
+      String? toDate = '',
+      String? prev = '',
+      String? next = ''}) async {
     Future(() {
       hideAmounts = _sharedPreferenceService.getBool('isAmountHidden')!;
       notifyListeners();
     });
-
+    states = NigerianStatesAndLGA.allStates;
     await fetchBalances(context,
         state: state,
         lga: lga,
@@ -121,20 +137,23 @@ class HomeViemodel extends ChangeNotifier {
         state: state,
         lga: lga,
         facility: facilitys,
-        fromDate: fromDate,
-        toDate: toDate);
+        fromDate: fromDate!.isEmpty ? threeMonthsAgo : fromDate,
+        toDate: toDate!.isEmpty ? dateNow : toDate);
     await fetchTranxList(context,
         state: state,
         lga: lga,
         facility: facilitys,
         fromDate: fromDate,
+        prev: prev,
+        next: next,
+        limit: '10',
         toDate: toDate);
     await fetchExpenseAnalysis(context,
         state: state,
         lga: lga,
         facility: facilitys,
-        fromDate: fromDate,
-        toDate: toDate);
+        fromDate: fromDate!.isEmpty ? threeMonthsAgo : fromDate,
+        toDate: toDate!.isEmpty ? dateNow : toDate);
     await fetchExpenseCategory(context,
         state: state,
         lga: lga,
@@ -168,6 +187,51 @@ class HomeViemodel extends ChangeNotifier {
     transactionRefreshController.refreshCompleted();
   }
 
+  Future<void> shareTransactionSheet(context) async {
+    try {
+      isShareLoading = true;
+      notifyListeners();
+      await _dashboardService.fetchTranxList(
+          state: '',
+          lga: '',
+          facility: '',
+          fromDate: '',
+          prev: '',
+          next: '',
+          limit: transactionList.totalCount.toString(),
+          toDate: '');
+      isShareLoading = false;
+      _excelService.shareTransaction(transactionList.edges);
+      notifyListeners();
+    } on MisauException catch (e) {
+      // TODO
+      isLoading = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e, stackTrace) {
+      isLoading = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'share error', subTitle: 'Something went wrong.');
+      debugPrint('share error $e/n$stackTrace');
+    }
+  }
+
+  void onTransactionLoading(context) {
+    fetchTranxList(context,
+        state: '',
+        lga: '',
+        facility: '',
+        fromDate: '',
+        toDate: '',
+        prev: '',
+        next: transactionList.pageInfo.hasNextPage
+            ? transactionList.pageInfo.endCursor
+            : '');
+    transactionRefreshController.loadComplete();
+  }
+
   void toggleAmountVisibility() {
     hideAmounts = !hideAmounts;
     _sharedPreferenceService.setBool('isAmountHidden', hideAmounts);
@@ -179,10 +243,16 @@ class HomeViemodel extends ChangeNotifier {
     fromDateController.text = '';
     toDate = '';
     toDateController.text = '';
-    selectedState = '';
-    selectedLga = '';
-    searchfacilityController.dispose();
+    selectedState = null;
+    states = [''];
+    selectedLga = null;
+    stateLga = [''];
+    states = NigerianStatesAndLGA.allStates;
+
+    searchfacilityController.clearDropDown();
   }
+
+  void logout() => _authService.logout();
 
   void filterTransactions() {
     final query = searchController.text.toLowerCase().trim();
@@ -195,8 +265,12 @@ class HomeViemodel extends ChangeNotifier {
                   ? 'Income'
                   : transaction.expense?.category ?? '';
               final facility = transaction.facility.toLowerCase();
+              final date = transaction.createdAt;
+              final state = transaction.state;
               return category.toLowerCase().contains(query) ||
-                  facility.contains(query);
+                  facility.contains(query) ||
+                  date.toString().contains(query) ||
+                  state.contains(query);
             }).toList() ??
             [];
     notifyListeners();
@@ -224,11 +298,12 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'fecth balances error ${e.toString()}');
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('fecth balances error ${e.toString()}/n $stackTrace');
     }
   }
 
@@ -255,11 +330,12 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'fecth income error ${e.toString()}');
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('fecth income error ${e.toString()}/n $stackTrace');
     }
   }
 
@@ -268,6 +344,9 @@ class HomeViemodel extends ChangeNotifier {
       String? lga,
       String? facility,
       String? fromDate,
+      String? prev,
+      String? next,
+      String? limit,
       String? toDate}) async {
     try {
       isLoading = true;
@@ -277,8 +356,11 @@ class HomeViemodel extends ChangeNotifier {
           lga: lga,
           facility: facility,
           fromDate: fromDate,
+          prev: prev,
+          next: next,
+          limit: limit,
           toDate: toDate);
-      filteredTransactions = _dashboardService.transactionList?.edges ?? [];
+      filteredTransactions?.addAll(_dashboardService.transactionList!.edges);
       isLoading = false;
       notifyListeners();
     } on MisauException catch (e) {
@@ -290,7 +372,7 @@ class HomeViemodel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'fecth transactions error ${e.toString()}');
+          title: 'Error', subTitle: 'Something went wrong.');
       debugPrint('fetch transaction error: $e/n $stackTrace');
     }
   }
@@ -320,11 +402,12 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'expense analysis error ${e.toString()}');
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('expense analysis error ${e.toString()}/n $stackTrace');
     }
   }
 
@@ -354,8 +437,7 @@ class HomeViemodel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
-          title: 'Error',
-          subTitle: 'fecth expense category error ${e.toString()}');
+          title: 'Error', subTitle: 'Something went wrong.');
 
       debugPrint('fecth expense category error: $e/n$stackTrace');
     }
@@ -388,8 +470,10 @@ class HomeViemodel extends ChangeNotifier {
     } on MisauException catch (e) {
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
-      _toastService.showToast(context, title: 'Error', subTitle: e.toString());
+    } catch (e, stackTrace) {
+      _toastService.showToast(context,
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('fecth state and lga error: $e/n$stackTrace');
     }
   }
 
@@ -411,7 +495,7 @@ class HomeViemodel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'facilities error: ${e.toString}');
+          title: 'Error', subTitle: 'Something went wrong.');
       debugPrint('facilities error stack $e/n$stack');
     }
   }
@@ -430,11 +514,12 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'summary error: ${e.toString}');
+          title: 'Error', subTitle: 'Somethng went wrong.');
+      debugPrint('fetch summary error stack $e/n$stackTrace');
     }
   }
 
@@ -444,9 +529,10 @@ class HomeViemodel extends ChangeNotifier {
     } on MisauException catch (e) {
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'state error: ${e.toString}');
+          title: 'Error', subTitle: 'Sonething went wrong.');
+      debugPrint('fetch state error  $e/n$stackTrace');
     }
   }
 
@@ -458,9 +544,10 @@ class HomeViemodel extends ChangeNotifier {
     } on MisauException catch (e) {
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       _toastService.showToast(context,
-          title: 'Error', subTitle: 'lga error: ${e.toString}');
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('fetch lga error $e/n$stackTrace');
     }
   }
 

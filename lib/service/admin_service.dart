@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/exceptions/misau_exception.dart';
-import 'package:misau/models/admin_model.dart';
-import 'package:misau/models/role_model.dart';
-import 'package:misau/service/encryption_service.dart';
-import 'package:misau/service/network_service.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/models/admin_model.dart';
+import 'package:isuna/models/role_model.dart';
+import 'package:isuna/service/encryption_service.dart';
+import 'package:isuna/service/network_service.dart';
 
 class AdminService {
   final NetworkService _networkService = getIt<NetworkService>();

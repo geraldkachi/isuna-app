@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/home/home_viemodel.dart';
-import 'package:misau/utils/string_utils.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/home/home_viemodel.dart';
+import 'package:isuna/utils/string_utils.dart';
 
 class TotalBalanceCard extends ConsumerWidget {
   final dynamic totalBalance;
@@ -169,18 +169,16 @@ class TotalBalanceCard extends ConsumerWidget {
                         )
                       : Row(
                           children: [
+                            // Text(
+                            //   '₦',
+                            //   style: const TextStyle(
+                            //       fontWeight: FontWeight.w900,
+                            //       fontSize: 17.0,
+                            //       color: Color(0xffDC1D3C),
+                            //       fontFamily: 'AreaNeu'),
+                            // ),
                             Text(
-                              '₦',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 17.0,
-                                  color: Color(0xffDC1D3C),
-                                  fontFamily: 'AreaNeu'),
-                            ),
-                            Text(
-                              homeWatch.isLoading
-                                  ? '0'
-                                  : "${StringUtils.currencyConverter(pendingBalance?.toInt() ?? 0)}",
+                              pendingBalance,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 20,

@@ -1,4 +1,4 @@
-import 'package:misau/utils/string_utils.dart';
+import 'package:isuna/utils/string_utils.dart';
 
 class Validator {
   static String? validateEmail(String? s) {

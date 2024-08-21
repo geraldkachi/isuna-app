@@ -2,17 +2,17 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/home/home_viemodel.dart';
-import 'package:misau/features/home/statistics_tab.dart';
-import 'package:misau/features/home/tranx_screen.dart';
-import 'package:misau/utils/utils.dart';
-import 'package:misau/widget/app_header.dart';
-import 'package:misau/widget/expense_analysis_card.dart';
-import 'package:misau/widget/expense_widget.dart';
-import 'package:misau/widget/income_analysis_card.dart';
-import 'package:misau/widget/shimmer.dart';
-import 'package:misau/widget/total_balance_card.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/home/home_viemodel.dart';
+import 'package:isuna/features/home/statistics_tab.dart';
+import 'package:isuna/features/home/tranx_screen.dart';
+import 'package:isuna/utils/utils.dart';
+import 'package:isuna/widget/app_header.dart';
+import 'package:isuna/widget/expense_analysis_card.dart';
+import 'package:isuna/widget/expense_widget.dart';
+import 'package:isuna/widget/income_analysis_card.dart';
+import 'package:isuna/widget/shimmer.dart';
+import 'package:isuna/widget/total_balance_card.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -27,8 +27,10 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage>
     with SingleTickerProviderStateMixin {
-  TabController? _tabController;
+  late TabController? _tabController;
   List<String> options = ['Monthly', 'Weekly', 'Daily'];
+  bool _isStatsTabEnabled = false;
+  int? prevIndex = 0;
 
   @override
   void initState() {
@@ -65,27 +67,37 @@ class _HomePageState extends ConsumerState<HomePage>
                     onNotification: () {},
                     onFilter: () => Utils.showFilterBottomSheet(context),
                     onSearch: () {},
+                    logout: homeRead.logout,
                   ),
-                  TabBar(
-                    controller: _tabController,
-                    dividerColor: const Color(0xff5F5F5F),
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    indicatorPadding: EdgeInsets.zero,
-                    unselectedLabelColor: const Color(0xffA1A6A9),
-                    labelColor: Colors.white,
-                    indicator: UnderlineTabIndicator(
-                      borderSide: BorderSide(
-                        width: 1.0,
-                        color: red.withOpacity(0.7),
+                  GestureDetector(
+                    child: TabBar(
+                      controller: _tabController,
+                      dividerColor: const Color(0xff5F5F5F),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicatorPadding: EdgeInsets.zero,
+                      unselectedLabelColor: const Color(0xffA1A6A9),
+                      labelColor: Colors.white,
+                      indicator: UnderlineTabIndicator(
+                        borderSide: BorderSide(
+                          width: 1.0,
+                          color: red.withOpacity(0.7),
+                        ),
+                        insets: EdgeInsets.zero,
                       ),
-                      insets: EdgeInsets.zero,
+                      onTap: (index) {
+                        if (index == 2) {
+                          print('index $index');
+                          _tabController?.index = prevIndex!;
+                          return;
+                        }
+                        prevIndex = index;
+                      },
+                      tabs: [
+                        _buildTab('Overview'),
+                        _buildTab('Transaction'),
+                        _buildTab('Statistics'),
+                      ],
                     ),
-                    tabs: [
-                      _buildTab('Overview'),
-                      _buildTab('Transaction'),
-                      GestureDetector(
-                          onTap: () {}, child: _buildTab('Statistics')),
-                    ],
                   ),
                   const SizedBox(
                     height: 20,
@@ -110,11 +122,10 @@ class _HomePageState extends ConsumerState<HomePage>
                                     )
                                   : TotalBalanceCard(
                                       totalBalance:
-                                          homeWatch.balances.totalBalance,
+                                          homeWatch.balances.actualBalance,
                                       actualBalance:
                                           homeWatch.balances.actualBalance,
-                                      pendingBalance:
-                                          homeWatch.balances.pendingBalance,
+                                      pendingBalance: '0',
                                     ),
                               const SizedBox(height: 20),
                               homeWatch.isLoading
@@ -145,17 +156,17 @@ class _HomePageState extends ConsumerState<HomePage>
                                       options: options,
                                     ),
                               const SizedBox(height: 20),
-                              homeWatch.isLoading
-                                  ? const ShimmerScreenLoading(
-                                      height: 350.0,
-                                      width: double.infinity,
-                                      radius: 14.0,
-                                    )
-                                  : ExpenseWidget(
-                                      expenseCategory:
-                                          homeWatch.expenseCategory,
-                                    ),
-                              const SizedBox(height: 20),
+                              // homeWatch.isLoading
+                              //     ? const ShimmerScreenLoading(
+                              //         height: 350.0,
+                              //         width: double.infinity,
+                              //         radius: 14.0,
+                              //       )
+                              //     : ExpenseWidget(
+                              //         expenseCategory:
+                              //             homeWatch.expenseCategory,
+                              //       ),
+                              // const SizedBox(height: 20),
                               AccountsCard(
                                 managersCount:
                                     homeWatch.summaryModel.admin.toString(),
@@ -168,7 +179,9 @@ class _HomePageState extends ConsumerState<HomePage>
                         ),
                       ),
                       TransactionsScreen(),
-                      StatisticsTab(homeWatch: homeWatch, options: options),
+                      IgnorePointer(
+                          child: StatisticsTab(
+                              homeWatch: homeWatch, options: options)),
                     ],
                   )),
                 ],
@@ -235,8 +248,8 @@ class AccountsCard extends ConsumerWidget {
                 title: 'Managers',
                 IconUrl: 'assets/svg/people_icon.svg',
                 subTitle: managersCount,
-                onTap: () =>
-                    ref.read(homeViemodelProvider.notifier).navToAdmin(),
+                // onTap: () =>
+                //     ref.read(homeViemodelProvider.notifier).navToAdmin(),
               )
             ],
           ),

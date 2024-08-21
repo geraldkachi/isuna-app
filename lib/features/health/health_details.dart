@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/health/health_facilities_view_model.dart';
-import 'package:misau/features/health/record_expense_payment.dart';
-import 'package:misau/features/health/record_inflow_payment.dart';
-import 'package:misau/utils/string_utils.dart';
-import 'package:misau/widget/custom_dropdown.dart';
-import 'package:misau/widget/custom_pie_chart.dart';
-import 'package:misau/widget/shimmer.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/health/health_facilities_view_model.dart';
+import 'package:isuna/features/health/record_expense_payment.dart';
+import 'package:isuna/features/health/record_inflow_payment.dart';
+import 'package:isuna/utils/string_utils.dart';
+import 'package:isuna/widget/custom_dropdown.dart';
+import 'package:isuna/widget/custom_pie_chart.dart';
+import 'package:isuna/widget/shimmer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HealthDetails extends ConsumerStatefulWidget {
@@ -291,8 +291,8 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                 child: Row(children: [
                                                   SvgPicture.asset(
                                                       'assets/svg/arrow_up.svg'),
-                                                  const Text(
-                                                    "+3.1%",
+                                                  Text(
+                                                    '${facilitiesWatch.incomPercentageIncrease?.abs().toStringAsFixed(3)}',
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -724,127 +724,6 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                           Widget text;
                                                           switch (
                                                               value.toInt()) {
-                                                            case 10000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '10k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 20000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '20k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 30000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '30k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 40000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '40k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 50000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '50k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-
-                                                            case 60000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '60k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-
-                                                            case 70000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '70k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-
-                                                            case 80000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '80k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-
-                                                            case 90000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '90k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
                                                             case 100000:
                                                               text = Row(
                                                                 children: [
@@ -853,6 +732,127 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                                           nairaStyle),
                                                                   const Text(
                                                                       '100k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+                                                            case 200000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '200k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+                                                            case 300000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '300k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+                                                            case 400000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '400k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+                                                            case 500000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '500k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+
+                                                            case 600000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '600k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+
+                                                            case 700000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '700k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+
+                                                            case 800000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '800k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+
+                                                            case 900000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '900k',
+                                                                      style:
+                                                                          style),
+                                                                ],
+                                                              );
+                                                              break;
+                                                            case 1000000:
+                                                              text = Row(
+                                                                children: [
+                                                                  Text('₦',
+                                                                      style:
+                                                                          nairaStyle),
+                                                                  const Text(
+                                                                      '1M',
                                                                       style:
                                                                           style),
                                                                 ],
@@ -998,96 +998,96 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                               const SizedBox(
                                 height: 20,
                               ),
-                              facilitiesWatch.isLoading
-                                  ? const ShimmerScreenLoading(
-                                      height: 500.0,
-                                      width: double.infinity,
-                                      radius: 14.0,
-                                    )
-                                  : Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 18, vertical: 13),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                "Expense Category ",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 17,
-                                                  color: Color(0xff1B1C1E),
-                                                  letterSpacing: -.5,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                              SvgPicture.asset(
-                                                  'assets/svg/info_circle.svg'),
-                                              const Spacer(),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 13,
-                                          ),
-                                          Center(
-                                            child: CustomPieChart(
-                                                facilitiesWatch.expenseCategory
-                                                    .categoriesWithPercentages),
-                                          ),
-                                          const SizedBox(
-                                            height: 35,
-                                          ),
-                                          ...facilitiesWatch.expenseCategory
-                                              .categoriesWithPercentages
-                                              .map((entry) {
-                                            final color = getColorForCategory(
-                                                entry.category);
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 23),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    width: 13,
-                                                    height: 13,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: color,
-                                                    ),
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            right: 5),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      '${entry.category} (${entry.percentage}%)',
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xff6C7278),
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        letterSpacing: -.1,
-                                                      ),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          }).toList(),
-                                        ],
-                                      )),
+                              // facilitiesWatch.isLoading
+                              //     ? const ShimmerScreenLoading(
+                              //         height: 500.0,
+                              //         width: double.infinity,
+                              //         radius: 14.0,
+                              //       )
+                              //     : Container(
+                              //         width: double.infinity,
+                              //         decoration: BoxDecoration(
+                              //           color: Colors.white,
+                              //           borderRadius: BorderRadius.circular(14),
+                              //         ),
+                              //         padding: const EdgeInsets.symmetric(
+                              //             horizontal: 18, vertical: 13),
+                              //         child: Column(
+                              //           crossAxisAlignment:
+                              //               CrossAxisAlignment.start,
+                              //           children: [
+                              //             Row(
+                              //               children: [
+                              //                 const Text(
+                              //                   "Expense Category ",
+                              //                   style: TextStyle(
+                              //                     fontWeight: FontWeight.w600,
+                              //                     fontSize: 17,
+                              //                     color: Color(0xff1B1C1E),
+                              //                     letterSpacing: -.5,
+                              //                   ),
+                              //                 ),
+                              //                 const SizedBox(
+                              //                   width: 3,
+                              //                 ),
+                              //                 SvgPicture.asset(
+                              //                     'assets/svg/info_circle.svg'),
+                              //                 const Spacer(),
+                              //               ],
+                              //             ),
+                              //             const SizedBox(
+                              //               height: 13,
+                              //             ),
+                              //             Center(
+                              //               child: CustomPieChart(
+                              //                   facilitiesWatch.expenseCategory
+                              //                       .categoriesWithPercentages),
+                              //             ),
+                              //             const SizedBox(
+                              //               height: 35,
+                              //             ),
+                              //             ...facilitiesWatch.expenseCategory
+                              //                 .categoriesWithPercentages
+                              //                 .map((entry) {
+                              //               final color = getColorForCategory(
+                              //                   entry.category);
+                              //               return Padding(
+                              //                 padding: const EdgeInsets.only(
+                              //                     bottom: 23),
+                              //                 child: Row(
+                              //                   children: [
+                              //                     Container(
+                              //                       width: 13,
+                              //                       height: 13,
+                              //                       decoration: BoxDecoration(
+                              //                         shape: BoxShape.circle,
+                              //                         color: color,
+                              //                       ),
+                              //                       margin:
+                              //                           const EdgeInsets.only(
+                              //                               right: 5),
+                              //                     ),
+                              //                     Expanded(
+                              //                       child: Text(
+                              //                         '${entry.category} (${entry.percentage}%)',
+                              //                         style: const TextStyle(
+                              //                           color:
+                              //                               Color(0xff6C7278),
+                              //                           fontSize: 14,
+                              //                           fontWeight:
+                              //                               FontWeight.w600,
+                              //                           letterSpacing: -.1,
+                              //                         ),
+                              //                         overflow:
+                              //                             TextOverflow.ellipsis,
+                              //                       ),
+                              //                     ),
+                              //                   ],
+                              //                 ),
+                              //               );
+                              //             }).toList(),
+                              //           ],
+                              //         )),
                               const SizedBox(
                                 height: 13,
                               ),
@@ -1135,80 +1135,122 @@ class TransactionTab extends ConsumerWidget {
 
     return SmartRefresher(
       enablePullDown: true,
+      enablePullUp: true,
       header: WaterDropHeader(),
       controller: facilitiesWatch.transactionController,
       onRefresh: () => facilitiesRead.onRefreshFacility(context),
-      onLoading: facilitiesRead.onLoadingFacility,
+      onLoading: () => facilitiesRead.onLoadingTransactions(context),
       child: SingleChildScrollView(
         child: Column(
           children: [
             Row(
               children: [
-                SizedBox(
-                  height: 48.0,
-                  width: 230,
-                  child: TextField(
-                    controller: facilitiesWatch.transactionSearchController,
-                    onChanged: (value) {
-                      facilitiesRead.filterTransactions();
-                    },
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'Search transactions',
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(11.5),
-                        child: SvgPicture.asset(
-                          'assets/svg/search.svg',
-                          color: Colors.black,
-                          width: 16,
-                          height: 16,
+                Expanded(
+                  child: SizedBox(
+                    height: 48.0,
+                    width: 230,
+                    child: TextField(
+                      controller: facilitiesWatch.transactionSearchController,
+                      onChanged: (value) {
+                        facilitiesRead.filterTransactions();
+                      },
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Search transactions',
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(11.5),
+                          child: SvgPicture.asset(
+                            'assets/svg/search.svg',
+                            color: Colors.black,
+                            width: 16,
+                            height: 16,
+                          ),
                         ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 14.0),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide.none,
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        letterSpacing: -.5,
                       ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 14.0),
-                    ),
-                    style: const TextStyle(
-                      fontSize: 15.0,
-                      letterSpacing: -.5,
                     ),
                   ),
                 ),
-                const Spacer(),
-                Container(
-                  width: 48.0,
-                  height: 48.0,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xff313131),
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: SvgPicture.asset(
-                    'assets/svg/export.svg',
-                    height: 19,
+                SizedBox(
+                  width: 10.0,
+                ),
+                InkWell(
+                  onTap: () {
+                    facilitiesWatch.transactionSearchController.text.isEmpty
+                        ? null
+                        : facilitiesRead.fetchFacilityTransactionList(context);
+                  },
+                  child: Container(
+                    width: 48.0,
+                    height: 48.0,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xff313131),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: SvgPicture.asset(
+                      'assets/svg/search.svg',
+                      height: 20,
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  width: 15,
+                SizedBox(
+                  width: 10.0,
                 ),
-                Container(
-                  width: 48.0,
-                  height: 48.0,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffDC1D3C),
-                  ),
-                  padding: const EdgeInsets.all(13),
-                  child: SvgPicture.asset(
-                    'assets/svg/add.svg',
-                    height: 10,
-                    width: 10,
+                InkWell(
+                  onTap: () {
+                    facilitiesRead.shareTransactionSheet(context);
+                  },
+                  child: Container(
+                    width: 48.0,
+                    height: 48.0,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xff313131),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: facilitiesWatch.isShareLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.0,
+                            ),
+                          )
+                        : SvgPicture.asset(
+                            'assets/svg/export.svg',
+                            height: 19,
+                          ),
                   ),
                 ),
+                // const SizedBox(
+                //   width: 15,
+                // ),
+                // Container(
+                //   width: 48.0,
+                //   height: 48.0,
+                //   decoration: const BoxDecoration(
+                //     shape: BoxShape.circle,
+                //     color: Color(0xffDC1D3C),
+                //   ),
+                //   padding: const EdgeInsets.all(13),
+                //   child: SvgPicture.asset(
+                //     'assets/svg/add.svg',
+                //     height: 10,
+                //     width: 10,
+                //   ),
+                // ),
               ],
             ),
             SizedBox(
