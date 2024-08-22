@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:misau/models/expense_category.dart';
-import 'package:misau/widget/expense_widget.dart';
+import 'package:isuna/models/expense_category.dart';
+import 'package:isuna/widget/expense_widget.dart';
 
 class CustomPieChart extends StatelessWidget {
   final List<CategoryData> categoriesList;
@@ -66,11 +66,13 @@ class CustomPieChart extends StatelessWidget {
   }
 
   List<PieChartSectionData> getSections() {
-    return categoriesList.map((category) => PieChartSectionData(
-        color:  getColorForCategory(category.category),
-        value: category.amount.toDouble(),
-        title: '',
-        radius: 30,
-      )).toList() ;
+    return categoriesList
+        .map((category) => PieChartSectionData(
+              color: colorMap[category.category],
+              value: category.amount.toDouble(),
+              title: '',
+              radius: 30,
+            ))
+        .toList();
   }
 }

@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/exceptions/misau_exception.dart';
-import 'package:misau/models/balances_model.dart';
-import 'package:misau/models/expense_analysis_model.dart';
-import 'package:misau/models/expense_category.dart';
-import 'package:misau/models/income_analysis_model.dart';
-import 'package:misau/models/summary_model.dart';
-import 'package:misau/models/tranx_list_model.dart';
-import 'package:misau/service/encryption_service.dart';
-import 'package:misau/service/network_service.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/models/balances_model.dart';
+import 'package:isuna/models/expense_analysis_model.dart';
+import 'package:isuna/models/expense_category.dart';
+import 'package:isuna/models/income_analysis_model.dart';
+import 'package:isuna/models/summary_model.dart';
+import 'package:isuna/models/tranx_list_model.dart';
+import 'package:isuna/service/encryption_service.dart';
+import 'package:isuna/service/network_service.dart';
 
 class DashboardService {
   final NetworkService _networkService = getIt<NetworkService>();
@@ -115,11 +115,14 @@ class DashboardService {
       String? lga,
       String? facility,
       String? fromDate,
+      String? next,
+      String? prev,
+      String? limit,
       String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute?state=$state&lga=$lga&facility=$facility&fromDate=$fromDate&toDate=$toDate',
+        '/wallet/v1/health-institute?state=$state&lga=$lga&facility=$facility&prev=$prev&next=$next&fromDate=$fromDate&toDate=$toDate&limit=$limit',
       );
 
       final encryptedResponsePayload = response['data'];

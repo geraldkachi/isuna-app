@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1043812735518",
-    "project_id": "misau-2a340",
-    "storage_bucket": "misau-2a340.appspot.com"
+    "project_number": "378436886136",
+    "project_id": "isuna-d8c30",
+    "storage_bucket": "isuna-d8c30.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1043812735518:android:ea3184b811a817d2906c0f",
+        "mobilesdk_app_id": "1:378436886136:android:28e7124e3608ed54bc578d",
         "android_client_info": {
-          "package_name": "com.misau.misau"
+          "package_name": "com.isuna.isuna"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC2gYzioF0Qm-b5mX8UImHxXOfH-0QgbkI"
+          "current_key": "AIzaSyCImWedUaQ8c65d6ABQ-5mnWYtfg4WUtB4"
         }
       ],
       "services": {

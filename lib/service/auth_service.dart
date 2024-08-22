@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/exceptions/misau_exception.dart';
-import 'package:misau/models/admin_model.dart';
-import 'package:misau/models/error_model.dart';
-import 'package:misau/service/encryption_service.dart';
-import 'package:misau/service/network_service.dart';
-import 'package:misau/service/secure_storage_service.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/app/router.dart';
+import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/models/admin_model.dart';
+import 'package:isuna/models/error_model.dart';
+import 'package:isuna/service/encryption_service.dart';
+import 'package:isuna/service/network_service.dart';
+import 'package:isuna/service/secure_storage_service.dart';
 
 class AuthService {
   final NetworkService _networkService = getIt<NetworkService>();
@@ -46,13 +47,17 @@ class AuthService {
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
       debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
-      _userData =
-          AdminModel.fromJson(json.decode(decryptedResponsePayload.toString()));
+      _userData = AdminModel.fromJson(json.decode(decryptedResponsePayload));
       _secureStorageService.writeAccessToken(token: token);
     } on MisauException {
       rethrow;
     } catch (e) {
       rethrow;
     }
+  }
+
+  void logout() {
+    _secureStorageService.deleteAccessToken();
+    router.go('/');
   }
 }

@@ -2,16 +2,16 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/admin/add_admin.dart';
-import 'package:misau/features/admin/admin_view_model.dart';
-import 'package:misau/features/health/health_details.dart';
-import 'package:misau/features/home/homepage.dart';
-import 'package:misau/utils/utils.dart';
-import 'package:misau/widget/custom_dropdown.dart';
-import 'package:misau/widget/custom_pie_chart.dart';
-import 'package:misau/widget/shimmer.dart';
-import 'package:misau/widget/user_avarta.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/admin/add_admin.dart';
+import 'package:isuna/features/admin/admin_view_model.dart';
+import 'package:isuna/features/health/health_details.dart';
+import 'package:isuna/features/home/homepage.dart';
+import 'package:isuna/utils/utils.dart';
+import 'package:isuna/widget/custom_dropdown.dart';
+import 'package:isuna/widget/custom_pie_chart.dart';
+import 'package:isuna/widget/shimmer.dart';
+import 'package:isuna/widget/user_avarta.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminHomePage extends ConsumerStatefulWidget {
@@ -65,7 +65,7 @@ class _AdminHomePageState extends ConsumerState<AdminHomePage>
                         lastName: adminWatch.userData?.lastName ?? ''),
                     const Spacer(),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => adminRead.logout,
                       child: Container(
                         width: 43.0,
                         height: 43.0,

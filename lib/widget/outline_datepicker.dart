@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:misau/app/theme/colors.dart';
+import 'package:isuna/app/theme/colors.dart';
 
 class OutlineDatePicker extends StatelessWidget {
   const OutlineDatePicker({super.key, this.onTap, this.controller});

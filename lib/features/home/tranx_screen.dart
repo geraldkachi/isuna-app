@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:misau/features/home/home_viemodel.dart';
-import 'package:misau/utils/string_utils.dart';
-import 'package:misau/widget/shimmer.dart';
+import 'package:isuna/features/home/home_viemodel.dart';
+import 'package:isuna/utils/string_utils.dart';
+import 'package:isuna/widget/shimmer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class TransactionsScreen extends ConsumerStatefulWidget {
@@ -29,9 +29,11 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 
     return SmartRefresher(
       enablePullDown: true,
+      enablePullUp: true,
       header: WaterDropHeader(),
       controller: homeWatch.transactionRefreshController,
       onRefresh: () => homeRead.onRefresh(context),
+      onLoading: () => homeRead.onTransactionLoading(context),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -70,34 +72,48 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                   ),
                 ),
                 SizedBox(width: 10.0),
-                Container(
-                  width: 50.0,
-                  height: 50.0,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xff313131),
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: SvgPicture.asset(
-                    'assets/svg/export.svg',
-                    height: 19,
+                InkWell(
+                  onTap: () {
+                    homeRead.shareTransactionSheet(context);
+                  },
+                  child: Container(
+                    width: 48.0,
+                    height: 48.0,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xff313131),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: homeWatch.isShareLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.0,
+                            ),
+                          )
+                        : SvgPicture.asset(
+                            'assets/svg/export.svg',
+                            height: 19,
+                          ),
                   ),
                 ),
-                const SizedBox(width: 15),
-                Container(
-                  width: 50.0,
-                  height: 50.0,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffDC1D3C),
-                  ),
-                  padding: const EdgeInsets.all(13),
-                  child: SvgPicture.asset(
-                    'assets/svg/add.svg',
-                    height: 10,
-                    width: 10,
-                  ),
-                )
+                // const SizedBox(width: 15),
+                // Container(
+                //   width: 48.0,
+                //   height: 48.0,
+                //   decoration: const BoxDecoration(
+                //     shape: BoxShape.circle,
+                //     color: Color(0xffDC1D3C),
+                //   ),
+                //   padding: const EdgeInsets.all(13),
+                //   child: SvgPicture.asset(
+                //     'assets/svg/add.svg',
+                //     height: 10,
+                //     width: 10,
+                //   ),
+                // )
               ],
             ),
             SizedBox(

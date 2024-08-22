@@ -14,26 +14,21 @@ class UserAvarta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.go('/profile');
-      },
-      child: Container(
-        width: 43.0,
-        height: 43.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: const Color(0xffE7FCF0),
-        ),
-        child: Center(
-          child: Text(
-            (firstName.isNotEmpty ? firstName[0] : '') +
-                (lastName.isNotEmpty ? lastName[0] : ''),
-            style: TextStyle(
-              color: Color(0xff2AAC95),
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0, // Adjust size if necessary
-            ),
+    return Container(
+      width: 43.0,
+      height: 43.0,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: const Color(0xffE7FCF0),
+      ),
+      child: Center(
+        child: Text(
+          (firstName.isNotEmpty ? firstName[0] : '') +
+              (lastName.isNotEmpty ? lastName[0] : ''),
+          style: TextStyle(
+            color: Color(0xff2AAC95),
+            fontWeight: FontWeight.bold,
+            fontSize: 18.0, // Adjust size if necessary
           ),
         ),
       ),

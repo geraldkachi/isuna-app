@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/features/admin/admin_homepage.dart';
-import 'package:misau/features/health/health_home_page.dart';
-import 'package:misau/features/home/home_viemodel.dart';
-import 'package:misau/features/home/homepage.dart';
-import 'package:misau/features/main_screen/main_screen_view_model.dart';
-import 'package:misau/features/profile/profile_page.dart';
+import 'package:isuna/features/admin/admin_homepage.dart';
+import 'package:isuna/features/health/health_home_page.dart';
+import 'package:isuna/features/home/home_viemodel.dart';
+import 'package:isuna/features/home/homepage.dart';
+import 'package:isuna/features/main_screen/main_screen_view_model.dart';
+import 'package:isuna/features/profile/profile_page.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   @override
@@ -46,19 +46,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ),
             label: 'Facilities',
           ),
-          BottomNavigationBarItem(
-            icon: mainRead.getIcon(
-              'assets/svg/selected_admin.svg',
-              'assets/svg/unselected_admin.svg',
-              2,
-            ),
-            label: 'Admin',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: mainRead.getIcon(
+          //     'assets/svg/selected_admin.svg',
+          //     'assets/svg/unselected_admin.svg',
+          //     2,
+          //   ),
+          //   label: 'Admin',
+          // ),
           BottomNavigationBarItem(
             icon: mainRead.getIcon(
               'assets/svg/selected_profile.svg',
               'assets/svg/unselected_profile.svg',
-              3,
+              2,
             ),
             label: 'Profile',
           ),

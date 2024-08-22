@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/app/router.dart';
-import 'package:misau/exceptions/misau_exception.dart';
-import 'package:misau/models/admin_model.dart';
-import 'package:misau/models/role_model.dart';
-import 'package:misau/models/states_and_lga_model.dart';
-import 'package:misau/service/admin_service.dart';
-import 'package:misau/service/auth_service.dart';
-import 'package:misau/service/state_and_lga_service.dart';
-import 'package:misau/service/toast_service.dart';
-import 'package:misau/utils/utils.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/app/router.dart';
+import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/models/admin_model.dart';
+import 'package:isuna/models/role_model.dart';
+import 'package:isuna/models/states_and_lga_model.dart';
+import 'package:isuna/service/admin_service.dart';
+import 'package:isuna/service/auth_service.dart';
+import 'package:isuna/service/state_and_lga_service.dart';
+import 'package:isuna/service/toast_service.dart';
+import 'package:isuna/utils/utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 final adminViewModelProvider =
@@ -52,6 +52,8 @@ class AdminViewModel extends ChangeNotifier {
     await fetchAdmins(context);
     await getRoles(context);
   }
+
+  void logout() => _authService.logout();
 
   void togglePassword() {
     obscurePassword = !obscurePassword;

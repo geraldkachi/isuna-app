@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/service/toast_service.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/service/toast_service.dart';
 
 class Toast extends StatelessWidget {
   final String title;

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:misau/app/theme/colors.dart';
-import 'package:misau/features/health/health_details.dart';
-import 'package:misau/features/profile/personal_info.dart';
-import 'package:misau/features/profile/preferences.dart';
-import 'package:misau/features/profile/profile_view_model.dart';
-import 'package:misau/utils/utils.dart';
-import 'package:misau/widget/user_avarta.dart';
+import 'package:go_router/go_router.dart';
+import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/health/health_details.dart';
+import 'package:isuna/features/profile/personal_info.dart';
+import 'package:isuna/features/profile/preferences.dart';
+import 'package:isuna/features/profile/profile_view_model.dart';
+import 'package:isuna/utils/utils.dart';
+import 'package:isuna/widget/user_avarta.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({
@@ -27,6 +28,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    final profileRead = ref.read(profileViewModelProvider.notifier);
+    profileRead.setInitState();
   }
 
   @override
@@ -51,12 +54,27 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
               children: [
                 Row(
                   children: [
-                    UserAvarta(
-                        firstName: profileRead.userData.firstName ?? '-',
-                        lastName: profileRead.userData.lastName ?? '-'),
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/png/isuna_logo.png',
+                          scale: 2.5,
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Text(
+                          'Isuna',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22.0,
+                              color: white100),
+                        )
+                      ],
+                    ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: profileRead.logout,
                       child: Container(
                         width: 43.0,
                         height: 43.0,
@@ -73,6 +91,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         ),
                       ),
                     ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    UserAvarta(
+                        firstName: profileRead.userData.firstName ?? '-',
+                        lastName: profileRead.userData.lastName ?? '-'),
                     // Container(
                     //   width: 43.0,
                     //   height: 43.0,
@@ -150,58 +174,58 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
                   child: Column(children: [
-                    InkWell(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        width: double.infinity,
-                        height: 65,
-                        decoration: BoxDecoration(
-                          color: const Color(0xffDC1D3D),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 35,
-                              height: 35,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              padding: const EdgeInsets.all(9),
-                              child: SvgPicture.asset(
-                                'assets/svg/user.svg',
-                                height: 24,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            const Text(
-                              "Personal Information",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 17,
-                                color: Colors.white,
-                                letterSpacing: -.5,
-                              ),
-                            ),
-                            const Spacer(),
-                            SvgPicture.asset(
-                              'assets/svg/arrow-right.svg',
-                              height: 20,
-                            )
-                          ],
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const PersonalInfoPage()));
-                      },
-                    ),
+                    // InkWell(
+                    //   child: Container(
+                    //     padding: const EdgeInsets.symmetric(horizontal: 15),
+                    //     width: double.infinity,
+                    //     height: 65,
+                    //     decoration: BoxDecoration(
+                    //       color: const Color(0xffDC1D3D),
+                    //       borderRadius: BorderRadius.circular(14),
+                    //     ),
+                    //     child: Row(
+                    //       children: [
+                    //         Container(
+                    //           width: 35,
+                    //           height: 35,
+                    //           decoration: const BoxDecoration(
+                    //             shape: BoxShape.circle,
+                    //             color: Colors.white,
+                    //           ),
+                    //           padding: const EdgeInsets.all(9),
+                    //           child: SvgPicture.asset(
+                    //             'assets/svg/user.svg',
+                    //             height: 24,
+                    //           ),
+                    //         ),
+                    //         const SizedBox(
+                    //           width: 12,
+                    //         ),
+                    //         const Text(
+                    //           "Personal Information",
+                    //           style: TextStyle(
+                    //             fontWeight: FontWeight.w700,
+                    //             fontSize: 17,
+                    //             color: Colors.white,
+                    //             letterSpacing: -.5,
+                    //           ),
+                    //         ),
+                    //         const Spacer(),
+                    //         SvgPicture.asset(
+                    //           'assets/svg/arrow-right.svg',
+                    //           height: 20,
+                    //         )
+                    //       ],
+                    //     ),
+                    //   ),
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) =>
+                    //                 const PersonalInfoPage()));
+                    //   },
+                    // ),
                     const SizedBox(
                       height: 30,
                     ),
@@ -245,51 +269,51 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                         ),
                       ),
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PreferencesPage()));
+                        context.go('/main_screen/preferences');
                       },
                     ),
                     const SizedBox(
                       height: 30,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 35,
-                            height: 35,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xffECF1F3),
+                    InkWell(
+                      onTap: () => context.go('/main_screen/change_password'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 35,
+                              height: 35,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffECF1F3),
+                              ),
+                              padding: const EdgeInsets.all(9),
+                              child: SvgPicture.asset(
+                                'assets/svg/lock.svg',
+                                height: 24,
+                              ),
                             ),
-                            padding: const EdgeInsets.all(9),
-                            child: SvgPicture.asset(
-                              'assets/svg/lock.svg',
-                              height: 24,
+                            const SizedBox(
+                              width: 12,
                             ),
-                          ),
-                          const SizedBox(
-                            width: 12,
-                          ),
-                          const Text(
-                            "Change Password",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 17,
-                              color: Color(0xff1B1C1E),
-                              letterSpacing: -.5,
+                            const Text(
+                              "Change Password",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17,
+                                color: Color(0xff1B1C1E),
+                                letterSpacing: -.5,
+                              ),
                             ),
-                          ),
-                          const Spacer(),
-                          SvgPicture.asset(
-                            'assets/svg/arrow-right.svg',
-                            height: 20,
-                            color: const Color(0xffABB5BC),
-                          )
-                        ],
+                            const Spacer(),
+                            SvgPicture.asset(
+                              'assets/svg/arrow-right.svg',
+                              height: 20,
+                              color: const Color(0xffABB5BC),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(

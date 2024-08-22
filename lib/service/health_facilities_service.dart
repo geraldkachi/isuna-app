@@ -2,21 +2,22 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/exceptions/misau_exception.dart';
-import 'package:misau/models/balance_expense_model.dart';
-import 'package:misau/models/balance_income_model.dart';
-import 'package:misau/models/categories_model.dart';
-import 'package:misau/models/expense_category.dart';
-import 'package:misau/models/expense_payment_model.dart';
-import 'package:misau/models/facility_balances_model.dart';
-import 'package:misau/models/audit_details.dart';
-import 'package:misau/models/facilities_model.dart';
-import 'package:misau/models/inflow_payment_model.dart';
-import 'package:misau/models/page_info_model.dart';
-import 'package:misau/models/tranx_list_model.dart';
-import 'package:misau/service/encryption_service.dart';
-import 'package:misau/service/network_service.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/models/balance_expense_model.dart';
+import 'package:isuna/models/balance_income_model.dart';
+import 'package:isuna/models/categories_model.dart';
+import 'package:isuna/models/expense_category.dart';
+import 'package:isuna/models/expense_payment_model.dart';
+import 'package:isuna/models/facility_balances_model.dart';
+import 'package:isuna/models/audit_details.dart';
+import 'package:isuna/models/facilities_model.dart';
+import 'package:isuna/models/income_analysis_model.dart';
+import 'package:isuna/models/inflow_payment_model.dart';
+import 'package:isuna/models/page_info_model.dart';
+import 'package:isuna/models/tranx_list_model.dart';
+import 'package:isuna/service/encryption_service.dart';
+import 'package:isuna/service/network_service.dart';
 
 class HealthFacilitiesService {
   final NetworkService _networkService = getIt<NetworkService>();
@@ -31,6 +32,7 @@ class HealthFacilitiesService {
   BalanceIncomeModel? _balanceIncomeModel;
   ExpenseCategory? _expenseCategory;
   PageInfoModel? _pageInfoModel;
+  IncomeAnalysis? _incomeAnalysis;
 
   List<FacilitiesModel>? get facilitiesModel => _facilitiesModel;
   List<AuditTrailsModel>? get auditTrailsModel => _auditTrailsModel;
@@ -39,16 +41,44 @@ class HealthFacilitiesService {
   BalanceIncomeModel? get balanceIncomeModel => _balanceIncomeModel;
   ExpenseCategory? get expenseCategory => _expenseCategory;
   PageInfoModel? get pageInfoModel => _pageInfoModel;
+  IncomeAnalysis? get incomeAnalysis => _incomeAnalysis;
 
   TransactionList? get transactionList => _transactionList;
   List<CategoriesModel>? get categoriesModel => _categoriesModel;
 
-  Future<void> fetchFacilitiesPagnated(
-      {String? prev = '', String? next = ''}) async {
+  Future<void> fetchIncome(
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/user/v1/facilities/all?search=&prev=$prev&next=$next',
+        '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=incomeAnalysis&fromDate=$fromDate&toDate=$toDate',
+      );
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: $decryptedResponsePayload');
+      final Map<String, dynamic> jsonDecodedPayload =
+          json.decode(decryptedResponsePayload);
+      _incomeAnalysis = IncomeAnalysis.fromJson(
+          jsonDecodedPayload['incomeAnalysis']['total']);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchFacilitiesPagnated(
+      {String? prev = '', String? next = '', String? search}) async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/user/v1/facilities/all?search=$search&prev=$prev&next=$next',
       );
       final encryptedResponsePayload = response['data'];
       debugPrint('encrypted response: $encryptedResponsePayload');
@@ -181,11 +211,17 @@ class HealthFacilitiesService {
   }
 
   Future<void> fetchFacilityTransactionList(
-      String facility, String state, String lga) async {
+      {String? facility,
+      String? state,
+      String? lga,
+      String? search,
+      String? prev,
+      String? next,
+      String? limit}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute?state=$state&lga=$lga&facility=$facility',
+        '/wallet/v1/health-institute?state=$state&lga=$lga&facility=$facility&prev=&next=&search=$search&limit=$limit',
       );
 
       final encryptedResponsePayload = response['data'];

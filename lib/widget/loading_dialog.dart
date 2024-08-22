@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:misau/app/theme/colors.dart';
+import 'package:isuna/app/theme/colors.dart';
 
 class LoadingDialog extends StatefulWidget {
   LoadingDialog({Key? key}) : super(key: key);

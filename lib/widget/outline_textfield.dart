@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:misau/app/theme/colors.dart';
+import 'package:isuna/app/theme/colors.dart';
 
 class OutlineTextField extends StatefulWidget {
   final TextEditingController controller;

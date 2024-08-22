@@ -1,23 +1,23 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:misau/app/locator.dart';
-import 'package:misau/service/secure_storage_service.dart';
-import 'package:misau/utils/string_utils.dart';
+import 'package:isuna/app/locator.dart';
+import 'package:isuna/service/secure_storage_service.dart';
+import 'package:isuna/utils/string_utils.dart';
 
 class AppInterceptor extends Interceptor {
-    final SecureStorageService _secureStorageService = getIt<SecureStorageService>();
+  final SecureStorageService _secureStorageService =
+      getIt<SecureStorageService>();
 
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-  
-      String? token = await _secureStorageService.readAccessToken();
+    String? token = await _secureStorageService.readAccessToken();
 
     if (StringUtils.isNotEmpty(token)) {
       options.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }
-        
+
     options.headers.addAll({
       HttpHeaders.contentTypeHeader: 'application/json',
       'User-Agent': 'insomnia/2023.5.8'

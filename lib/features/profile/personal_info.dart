@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:misau/widget/outline_dropdown.dart';
-import 'package:misau/widget/outline_textfield.dart';
+import 'package:isuna/widget/outline_dropdown.dart';
+import 'package:isuna/widget/outline_textfield.dart';
 
 class PersonalInfoPage extends StatefulWidget {
   const PersonalInfoPage({super.key});
@@ -181,7 +181,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     const OutlineDropdown(options: ['Boluwaduro']),
                     const SizedBox(height: 12),
                     _buildLabel("Facility"),
-                    const OutlineDropdown(options: ['Afao Primary Health Clinic']),
+                    const OutlineDropdown(
+                        options: ['Afao Primary Health Clinic']),
                   ],
                 ),
               ),
