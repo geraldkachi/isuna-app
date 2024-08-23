@@ -147,6 +147,7 @@ class HomeViemodel extends ChangeNotifier {
         prev: prev,
         next: next,
         limit: '10',
+        clearList: () => filteredTransactions?.clear(),
         toDate: toDate);
     await fetchExpenseAnalysis(context,
         state: state,
@@ -226,6 +227,7 @@ class HomeViemodel extends ChangeNotifier {
         fromDate: '',
         toDate: '',
         prev: '',
+        limit: '10',
         next: transactionList.pageInfo.hasNextPage
             ? transactionList.pageInfo.endCursor
             : '');
@@ -347,6 +349,7 @@ class HomeViemodel extends ChangeNotifier {
       String? prev,
       String? next,
       String? limit,
+      VoidCallback? clearList,
       String? toDate}) async {
     try {
       isLoading = true;
@@ -360,6 +363,7 @@ class HomeViemodel extends ChangeNotifier {
           next: next,
           limit: limit,
           toDate: toDate);
+      clearList;
       filteredTransactions?.addAll(_dashboardService.transactionList!.edges);
       isLoading = false;
       notifyListeners();

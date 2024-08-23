@@ -3,37 +3,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isuna/app/locator.dart';
 import 'package:isuna/app/router.dart';
 import 'package:isuna/exceptions/misau_exception.dart';
-import 'package:isuna/models/error_model.dart';
 import 'package:isuna/service/auth_service.dart';
-import 'package:isuna/service/secure_storage_service.dart';
 import 'package:isuna/service/toast_service.dart';
 
-final loginViewModelProvider =
-    ChangeNotifierProvider.autoDispose<LoginViewModel>(
-        (ref) => LoginViewModel());
+final forgotPasswordViewModelProvider =
+    ChangeNotifierProvider.autoDispose<ForgotPasswordViewModel>(
+        (ref) => ForgotPasswordViewModel());
 
-class LoginViewModel extends ChangeNotifier {
+class ForgotPasswordViewModel extends ChangeNotifier {
   final AuthService _authService = getIt<AuthService>();
   final ToastService _toastService = getIt<ToastService>();
- 
 
-  bool obscureText = true;
   bool isLoading = false;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  Future login(context) async {
+  TextEditingController emailController = TextEditingController();
+
+  void clearField() {
+    emailController.text = '';
+  }
+
+  Future<void> forgotPassword(context) async {
     try {
       if (formKey.currentState!.validate()) {
         formKey.currentState!.save();
         isLoading = true;
         notifyListeners();
-        await _authService.login(
-            emailController.text.toLowerCase(), passController.text);
+        await _authService.forgotPassword(emailController.text.toLowerCase());
         emailController.clear();
-        passController.clear();
-        router.go('/main_screen');
+        router.go('/forgot_password/reset_password');
+        clearField();
         isLoading = false;
         notifyListeners();
       }
@@ -48,10 +47,5 @@ class LoginViewModel extends ChangeNotifier {
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
     }
-  }
-
-  void togglePassword() {
-    obscureText = !obscureText;
-    notifyListeners();
   }
 }

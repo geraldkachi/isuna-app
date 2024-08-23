@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:isuna/app/locator.dart';
 import 'package:isuna/app/router.dart';
 import 'package:isuna/exceptions/misau_exception.dart';
@@ -107,6 +108,11 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   bool hideAmounts = false;
   bool isReasonVisible = false;
   bool isShareLoading = false;
+
+  DateTime now = DateTime.now();
+  String get threeMonthsAgo => DateFormat('yyyy-MM-dd')
+      .format(DateTime(now.year, now.month - 3, now.day));
+  String get dateNow => DateFormat('yyyy-MM-dd').format(now);
 
   Future<void> onBuild(context) async {
     // getAuditTrails(context);
@@ -424,7 +430,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await _healthFacilitiesService.getBalanceIncome(selectedFacility!.name!,
-          selectedFacility!.state!, selectedFacility!.lga!);
+          selectedFacility!.state!, selectedFacility!.lga!, '', '');
       searchFacilities = _healthFacilitiesService.facilitiesModel!;
       isLoading = false;
       onInit = true;
@@ -448,7 +454,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await _healthFacilitiesService.getBalanceExpense(selectedFacility!.name!,
-          selectedFacility!.state!, selectedFacility!.lga!);
+          selectedFacility!.state!, selectedFacility!.lga!, '', '');
       searchFacilities = _healthFacilitiesService.facilitiesModel!;
       isLoading = false;
       onInit = true;
