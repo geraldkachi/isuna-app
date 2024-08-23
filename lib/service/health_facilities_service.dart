@@ -167,11 +167,11 @@ class HealthFacilitiesService {
   }
 
   Future<void> getBalanceIncome(
-      String facility, String state, String lga) async {
+      String facility, String state, String lga, String fromDate, String toDate) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-          '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=balanceIncome');
+          '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=balanceIncome&fromDate=$fromDate&toDate=$toDate');
       final encryptedResponsePayload = response['data'];
       debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =
@@ -189,11 +189,11 @@ class HealthFacilitiesService {
   }
 
   Future<void> getBalanceExpense(
-      String facility, String state, String lga) async {
+      String facility, String state, String lga, String fromDate,String toDate) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-          '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=balanceExpense');
+          '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=balanceExpense&fromDate=$fromDate&toDate=$toDate');
       final encryptedResponsePayload = response['data'];
       debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =

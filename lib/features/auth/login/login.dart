@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:isuna/app/theme/colors.dart';
 import 'package:isuna/features/auth/login/login_view_model.dart';
 import 'package:isuna/utils/string_utils.dart';
@@ -103,7 +104,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
               ),
               const SizedBox(height: 15),
-              const Row(
+              Row(
                 children: [
                   Text(
                     "Password",
@@ -113,13 +114,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  // Spacer(),
-                  // Text(
-                  //   "Forgot Password?",
-                  //   style: TextStyle(
-                  //     color: Color(0xff31AF99),
-                  //     fontSize: 14,
-                  //     fontWeight: FontWeight.w700,
+                  Spacer(),
+                  // InkWell(
+                  //   onTap: () {
+                  //     context.go('/forgot_password');
+                  //   },
+                  //   child: Text(
+                  //     "Forgot Password?",
+                  //     style: TextStyle(
+                  //       color: Color(0xff31AF99),
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
                   //   ),
                   // ),
                 ],

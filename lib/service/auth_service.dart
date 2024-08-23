@@ -21,8 +21,6 @@ class AuthService {
 
   ErrorModel? errorModel;
 
-  // final ApiService _apiService = ApiService();
-
   Future<void> login(String email, String password) async {
     try {
       // Create the payload
@@ -59,5 +57,71 @@ class AuthService {
   void logout() {
     _secureStorageService.deleteAccessToken();
     router.go('/');
+  }
+
+  Future<void> forgotPassword(
+    String email,
+  ) async {
+    try {
+      // Create the payload
+      final payload = jsonEncode({
+        'email': email.trim(),
+      });
+
+      debugPrint('Raw payload $payload');
+      // Encrypt the payload
+      final encryptedPayload = _encryptionService.encrypt(payload);
+
+      // Send the encrypted payload to the backend
+      final response = await _networkService.post(
+        '/user/v1/admin/forgot-password',
+        data: {'payload': encryptedPayload},
+      );
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
+      // _userData = AdminModel.fromJson(json.decode(decryptedResponsePayload));
+      // _secureStorageService.writeAccessToken(token: token);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+    Future<void> resetPassword(
+    String password,
+    String reenteredPassword
+  ) async {
+    try {
+      // Create the payload
+      final payload = jsonEncode({
+        'password': password.trim(),
+        're-enterPassword': reenteredPassword
+      });
+
+      debugPrint('Raw payload $payload');
+      // Encrypt the payload
+      final encryptedPayload = _encryptionService.encrypt(payload);
+
+      // Send the encrypted payload to the backend
+      final response = await _networkService.post(
+        '/user/v1/admin/forgot-password',
+        data: {'payload': encryptedPayload},
+      );
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
+      // _userData = AdminModel.fromJson(json.decode(decryptedResponsePayload));
+      // _secureStorageService.writeAccessToken(token: token);
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
   }
 }

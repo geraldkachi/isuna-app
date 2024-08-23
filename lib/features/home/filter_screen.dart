@@ -382,7 +382,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen>
 
                                 homeRead.fetchWalletData(context,
                                     state: homeWatch.selectedState ?? '',
-                                    lga: homeWatch.selectedLga ?? '',
+                                    lga: homeWatch.selectedLga
+                                            ?.replaceAll('-', ' ') ??
+                                        '',
                                     facilitys: homeWatch.selectedFacility ?? '',
                                     fromDate: homeWatch.fromDate ?? '',
                                     toDate: homeWatch.toDate ?? '');

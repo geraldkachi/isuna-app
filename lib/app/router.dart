@@ -3,6 +3,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:isuna/features/admin/add_admin.dart';
 import 'package:isuna/features/auth/login/login.dart';
+import 'package:isuna/features/auth/forgot_password/forgot_password_screen.dart';
+import 'package:isuna/features/auth/reset_password/reset_password_screen.dart';
 import 'package:isuna/features/health/health_details.dart';
 import 'package:isuna/features/health/health_home_page.dart';
 import 'package:isuna/features/health/record_expense_payment.dart';
@@ -14,7 +16,17 @@ import 'package:isuna/features/profile/preferences.dart';
 import 'package:isuna/features/profile/profile_page.dart';
 
 final GoRouter router = GoRouter(routes: [
-  GoRoute(path: '/', builder: (context, state) => LoginPage(), routes: []),
+  GoRoute(path: '/', builder: (context, state) => LoginPage(), routes: [
+    GoRoute(
+        path: 'forgot_password',
+        builder: (context, state) => ForgotPasswordScreen(),
+        routes: [
+          GoRoute(
+            path: 'reset_password',
+            builder: (context, state) => ResetPasswordScreen(),
+          ),
+        ]),
+  ]),
   GoRoute(
       path: '/main_screen',
       builder: (context, state) => MainScreen(),
