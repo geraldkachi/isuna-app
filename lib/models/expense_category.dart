@@ -1,80 +1,45 @@
+// To parse this JSON data, do
+//
+//     final ExpenseCategoryModel = ExpenseCategoryModelFromJson(jsonString);
+
 import 'dart:convert';
 
-class ExpenseCategory {
-  final String? name;
-  final List<String>? categories;
-  final List? records;
+ExpenseCategoryModel ExpenseCategoryModelFromJson(String str) => ExpenseCategoryModel.fromJson(json.decode(str));
 
-  ExpenseCategory({
-    this.name,
-    this.categories,
-    this.records,
-  });
+String ExpenseCategoryModelToJson(ExpenseCategoryModel data) => json.encode(data.toJson());
 
-  // Method to calculate the total expense
-  get total => records!.reduce((a, b) => a + b);
+class ExpenseCategoryModel {
+    final String? name;
+    final List<String>? data;
+    final int? totalFacilities;
+    final int? totalState;
+    final int? totalLga;
+    final List<double>? records;
 
-  // Method to get category data with percentages
-  List<CategoryData> get categoriesWithPercentages {
-    return categories!.asMap().entries.map((entry) {
-      final index = entry.key;
-      final category = entry.value;
-      final amount = records![index];
-      final percentage =
-          total > 0 ? (amount / total * 100).toStringAsFixed(1) : '0.0';
-      return CategoryData(
-        category: category,
-        amount: amount,
-        percentage: percentage,
-      );
-    }).toList();
-  }
+    ExpenseCategoryModel({
+        this.name,
+        this.data,
+        this.totalFacilities,
+        this.totalState,
+        this.totalLga,
+        this.records,
+    });
 
-  // Convert JSON to ExpenseCategory
-  factory ExpenseCategory.fromJson(Map<String, dynamic> json) {
-    return ExpenseCategory(
-      name: json['name'] as String,
-      categories: List<String>.from(json['data'] as List),
-      records: List.from(json['records'] as List),
+    factory ExpenseCategoryModel.fromJson(Map<String, dynamic> json) => ExpenseCategoryModel(
+        name: json["name"],
+        data: json["data"] == null ? [] : List<String>.from(json["data"]!.map((x) => x)),
+        totalFacilities: json["totalFacilities"],
+        totalState: json["totalState"],
+        totalLga: json["totalLga"],
+        records: json["records"] == null ? [] : List<double>.from(json["records"]!.map((x) => x?.toDouble())),
     );
-  }
 
-  // Convert ExpenseCategory to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'data': categories,
-      'records': records,
+    Map<String, dynamic> toJson() => {
+        "name": name,
+        "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x)),
+        "totalFacilities": totalFacilities,
+        "totalState": totalState,
+        "totalLga": totalLga,
+        "records": records == null ? [] : List<dynamic>.from(records!.map((x) => x)),
     };
-  }
-}
-
-class CategoryData {
-  final String category;
-  final dynamic amount;
-  final String percentage;
-
-  CategoryData({
-    required this.category,
-    required this.amount,
-    required this.percentage,
-  });
-
-  // Convert JSON to CategoryData
-  factory CategoryData.fromJson(Map<String, dynamic> json) {
-    return CategoryData(
-      category: json['category'] as String,
-      amount: json['amount'] as int,
-      percentage: json['percentage'] as String,
-    );
-  }
-
-  // Convert CategoryData to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'category': category,
-      'amount': amount,
-      'percentage': percentage,
-    };
-  }
 }

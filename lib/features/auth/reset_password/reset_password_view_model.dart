@@ -16,10 +16,22 @@ class ResetPasswordViewModel extends ChangeNotifier {
   final ToastService _toastService = getIt<ToastService>();
 
   bool isLoading = false;
+  bool isPasswordVisible = false;
+  bool isReenterPasswordVisible = false;
   final GlobalKey<FormState> formKey = GlobalKey();
 
   TextEditingController passwordController = TextEditingController();
   TextEditingController reenterPasswordController = TextEditingController();
+
+  void togglePassword() {
+    isPasswordVisible = !isPasswordVisible;
+    notifyListeners();
+  }
+
+  void toggleReenterPassword() {
+    isReenterPasswordVisible = !isReenterPasswordVisible;
+    notifyListeners();
+  }
 
   Future<void> resetPassword(context) async {
     try {
@@ -44,5 +56,10 @@ class ResetPasswordViewModel extends ChangeNotifier {
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
     }
+  }
+
+  void clearFields() {
+    passwordController.text = '';
+    reenterPasswordController.text = '';
   }
 }

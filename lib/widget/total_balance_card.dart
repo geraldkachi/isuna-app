@@ -35,7 +35,7 @@ class TotalBalanceCard extends ConsumerWidget {
           Row(
             children: [
               const Text(
-                "Total Balance ",
+                "Book Balance ",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 17,
@@ -44,7 +44,12 @@ class TotalBalanceCard extends ConsumerWidget {
                 ),
               ),
               const SizedBox(width: 3),
-              SvgPicture.asset('assets/svg/info_circle.svg'),
+              Tooltip(
+                  richMessage: TextSpan(text: 'Book Balance:  \n', children: [
+                    TextSpan(
+                        text: 'Actual Balance: Total inflow - Total Expense')
+                  ]),
+                  child: SvgPicture.asset('assets/svg/info_circle.svg')),
             ],
           ),
           const SizedBox(height: 13),
@@ -147,7 +152,7 @@ class TotalBalanceCard extends ConsumerWidget {
               ),
               const Spacer(),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   const Text(
                     "Pending Transactions",
@@ -190,6 +195,61 @@ class TotalBalanceCard extends ConsumerWidget {
                         )
                 ],
               ),
+            ],
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Number of Facilities",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12.8,
+                      color: Color(0xff1B1C1E),
+                      letterSpacing: -.5,
+                    ),
+                  ),
+                  Text(
+                    "${homeWatch.balances.totalFacilities} ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 20.0,
+                      color: Color(0xff1B1C1E),
+                      letterSpacing: -.5,
+                    ),
+                  ),
+                ],
+              ),
+              Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const Text(
+                    "States",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12.8,
+                      color: Color(0xff1B1C1E),
+                      letterSpacing: -.5,
+                    ),
+                  ),
+                  Text(
+                    "${homeWatch.balances.totalState} ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 20.0,
+                      color: Color(0xff1B1C1E),
+                      letterSpacing: -.5,
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ],

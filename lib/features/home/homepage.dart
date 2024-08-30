@@ -156,17 +156,17 @@ class _HomePageState extends ConsumerState<HomePage>
                                       options: options,
                                     ),
                               const SizedBox(height: 20),
-                              // homeWatch.isLoading
-                              //     ? const ShimmerScreenLoading(
-                              //         height: 350.0,
-                              //         width: double.infinity,
-                              //         radius: 14.0,
-                              //       )
-                              //     : ExpenseWidget(
-                              //         expenseCategory:
-                              //             homeWatch.expenseCategory,
-                              //       ),
-                              // const SizedBox(height: 20),
+                              homeWatch.isLoading
+                                  ? const ShimmerScreenLoading(
+                                      height: 350.0,
+                                      width: double.infinity,
+                                      radius: 14.0,
+                                    )
+                                  : ExpenseWidget(
+                                      // expenseCategory:
+                                      //     homeWatch.expenseCategory,
+                                    ),
+                              const SizedBox(height: 20),
                               AccountsCard(
                                 managersCount:
                                     homeWatch.summaryModel.admin.toString(),

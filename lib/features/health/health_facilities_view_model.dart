@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:isuna/app/locator.dart';
 import 'package:isuna/app/router.dart';
 import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/models/Income_expense_chart_model.dart';
 import 'package:isuna/models/admin_model.dart';
 import 'package:isuna/models/audit_details.dart';
 import 'package:isuna/models/balance_expense_model.dart';
@@ -20,6 +21,7 @@ import 'package:isuna/models/facility_balances_model.dart';
 import 'package:isuna/models/income_analysis_model.dart';
 import 'package:isuna/models/inflow_payment_model.dart';
 import 'package:isuna/models/page_info_model.dart';
+import 'package:isuna/models/pie_chart_model.dart';
 import 'package:isuna/models/tranx_list_model.dart';
 import 'package:isuna/service/auth_service.dart';
 import 'package:isuna/service/excel_service.dart';
@@ -74,8 +76,12 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   PageInfoModel get pageInfoModel =>
       _healthFacilitiesService.pageInfoModel ?? PageInfoModel();
 
-  ExpenseCategory get expenseCategory =>
-      _healthFacilitiesService.expenseCategory ?? ExpenseCategory();
+  ExpenseCategoryModel get expenseCategory =>
+      _healthFacilitiesService.expenseCategoryModel ?? ExpenseCategoryModel();
+
+  // PieChartModel? pieChartModel;
+  // List<ChartData>? chartDataList = [];
+  List<GraphChartData> graphChartData = [];
 
   TextEditingController searchController = TextEditingController();
   TextEditingController transactionSearchController = TextEditingController();
@@ -110,14 +116,14 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   bool isShareLoading = false;
 
   DateTime now = DateTime.now();
-  String get threeMonthsAgo => DateFormat('yyyy-MM-dd')
+  String get threeMonthsAgo => DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
       .format(DateTime(now.year, now.month - 3, now.day));
-  String get dateNow => DateFormat('yyyy-MM-dd').format(now);
 
   Future<void> onBuild(context) async {
     // getAuditTrails(context);
     Future(() {
-      hideAmounts = _sharedPreferenceService.getBool('isFacilityAmountHidden')!;
+      hideAmounts =
+          _sharedPreferenceService.getBool('isFacilityAmountHidden') ?? false;
       notifyListeners();
     });
     await facilitiesBalances(context);
@@ -161,6 +167,18 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   double calculatePercentage(dynamic incomeDiff) {
     double baseValue = 1000000;
     return (incomeDiff / baseValue.toInt()) * 100;
+  }
+
+  void populateGraphChart() {
+    for (int i = 0; i < balanceIncomeModel.categories!.length; i++) {
+      String category = balanceIncomeModel.categories![i];
+      double income = balanceIncomeModel.data![i].toDouble();
+      double expense = balanceExpenseModel.data![i].toString() != "null"
+          ? double.parse(balanceExpenseModel.data![i])
+          : 0.0;
+
+      graphChartData.add(GraphChartData(category, income, expense));
+    }
   }
 
   void onLoadingTransactions(context) async {
@@ -383,6 +401,8 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
         lga: selectedFacility!.lga,
         facility: selectedFacility!.name,
       );
+      // pieChartModel = PieChartModel.fromExpenseCategoryModel(expenseCategory);
+      // chartDataList = convertToChartData(pieChartModel!);
       isLoading = false;
       notifyListeners();
     } on MisauException catch (e) {
@@ -429,8 +449,12 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
-      await _healthFacilitiesService.getBalanceIncome(selectedFacility!.name!,
-          selectedFacility!.state!, selectedFacility!.lga!, '', '');
+      await _healthFacilitiesService.getBalanceIncome(
+          selectedFacility!.name!,
+          selectedFacility!.state!,
+          selectedFacility!.lga!,
+          threeMonthsAgo,
+          now.toUtc().toIso8601String());
       searchFacilities = _healthFacilitiesService.facilitiesModel!;
       isLoading = false;
       onInit = true;
@@ -453,9 +477,14 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
-      await _healthFacilitiesService.getBalanceExpense(selectedFacility!.name!,
-          selectedFacility!.state!, selectedFacility!.lga!, '', '');
+      await _healthFacilitiesService.getBalanceExpense(
+          selectedFacility!.name!,
+          selectedFacility!.state!,
+          selectedFacility!.lga!,
+          threeMonthsAgo,
+          now.toUtc().toIso8601String());
       searchFacilities = _healthFacilitiesService.facilitiesModel!;
+      populateGraphChart();
       isLoading = false;
       onInit = true;
       notifyListeners();

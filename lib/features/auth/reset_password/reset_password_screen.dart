@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/auth/reset_password/reset_password_view_model.dart';
 import 'package:isuna/features/profile/profile_view_model.dart';
 
 class ResetPasswordScreen extends ConsumerWidget {
@@ -10,8 +11,8 @@ class ResetPasswordScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileWatch = ref.watch(profileViewModelProvider);
-    final profileRead = ref.read(profileViewModelProvider.notifier);
+    final resetPasswordWatch = ref.watch(resetPasswordViewModelProvider);
+    final resetPasswordRead = ref.read(resetPasswordViewModelProvider.notifier);
 
     return Scaffold(
       backgroundColor: const Color(0xffF4F4F7),
@@ -42,7 +43,7 @@ class ResetPasswordScreen extends ConsumerWidget {
               ),
               onTap: () {
                 context.pop();
-                profileRead.clearFields();
+                resetPasswordRead.clearFields();
               },
             ),
             const SizedBox(height: 26),
@@ -56,8 +57,8 @@ class ResetPasswordScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 7),
             TextFormField(
-              controller: profileWatch.currentPassController,
-              obscureText: profileWatch.currentPassObscureText,
+              controller: resetPasswordRead.passwordController,
+              obscureText: resetPasswordRead.isPasswordVisible,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 18.0,
@@ -91,14 +92,14 @@ class ResetPasswordScreen extends ConsumerWidget {
                 ),
                 suffixIcon: IconButton(
                   icon: SvgPicture.asset(
-                    profileWatch.currentPassObscureText
+                    resetPasswordWatch.isPasswordVisible
                         ? 'assets/svg/view-off-slash-stroke-rounded.svg'
                         : 'assets/svg/view-stroke-rounded.svg',
                     width: 25.0,
                     height: 25.0,
                   ),
                   onPressed: () {
-                    profileWatch.toggleCurrentPass();
+                    resetPasswordRead.togglePassword();
                   },
                 ),
               ),
@@ -114,8 +115,8 @@ class ResetPasswordScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 7),
             TextFormField(
-              controller: profileWatch.newPassController,
-              obscureText: profileWatch.newPassObscureText,
+              controller: resetPasswordWatch.reenterPasswordController,
+              obscureText: resetPasswordWatch.isReenterPasswordVisible,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 18.0,
@@ -149,14 +150,14 @@ class ResetPasswordScreen extends ConsumerWidget {
                 ),
                 suffixIcon: IconButton(
                   icon: SvgPicture.asset(
-                    profileWatch.newPassObscureText
+                    resetPasswordRead.isReenterPasswordVisible
                         ? 'assets/svg/view-off-slash-stroke-rounded.svg'
                         : 'assets/svg/view-stroke-rounded.svg',
                     width: 25.0,
                     height: 25.0,
                   ),
                   onPressed: () {
-                    profileWatch.toggletNewPass();
+                    resetPasswordRead.toggleReenterPassword();
                   },
                 ),
               ),
@@ -167,8 +168,8 @@ class ResetPasswordScreen extends ConsumerWidget {
               width: double.infinity,
               child: TextButton(
                 onPressed: () async {
-                  profileRead.updatePassword(context);
-                  profileRead.clearFields();
+                  resetPasswordRead.resetPassword(context);
+                  resetPasswordRead.clearFields();
                 },
                 style: TextButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -176,7 +177,7 @@ class ResetPasswordScreen extends ConsumerWidget {
                   ),
                   backgroundColor: red,
                 ),
-                child: profileWatch.isLoading
+                child: resetPasswordWatch.isLoading
                     ? const SizedBox(
                         width: 24,
                         height: 24,

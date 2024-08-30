@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/home/home_viemodel.dart';
+import 'package:isuna/models/categories_model.dart';
 import 'package:isuna/models/expense_category.dart';
-import 'package:isuna/widget/custom_dropdown.dart';
-import 'package:isuna/widget/custom_pie_chart.dart';
+import 'package:isuna/models/pie_chart_model.dart';
+import 'package:isuna/utils/string_utils.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
-class ExpenseWidget extends StatefulWidget {
-  final ExpenseCategory expenseCategory;
-
-  const ExpenseWidget({super.key, required this.expenseCategory});
-
+class ExpenseWidget extends ConsumerStatefulWidget {
   @override
-  State<ExpenseWidget> createState() => _ExpenseWidgetState();
+  ConsumerState<ExpenseWidget> createState() => _ExpenseWidgetState();
 }
 
-class _ExpenseWidgetState extends State<ExpenseWidget> {
+class _ExpenseWidgetState extends ConsumerState<ExpenseWidget> {
   @override
   void initState() {
     // TODO: implement initState
@@ -24,6 +25,21 @@ class _ExpenseWidgetState extends State<ExpenseWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final homeWatch = ref.watch(homeViemodelProvider);
+    final homeRead = ref.read(homeViemodelProvider.notifier);
+
+    double total = homeWatch.categoryDataList!
+        .fold(0, (sum, item) => sum + item.totalAmount);
+    // Generate and assign colors
+    List<Color> mainColors =
+        generateDistinctColors(homeWatch.categoryDataList!.length);
+    for (int i = 0; i < homeWatch.categoryDataList!.length; i++) {
+      homeWatch.categoryDataList![i].setColor(mainColors[i]);
+      // Generate and assign colors for subcategories
+      List<Color> subColors = generateDistinctColors(
+          homeWatch.categoryDataList![i].subCategories.length);
+      homeWatch.categoryDataList![i].setSubColors(subColors);
+    }
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -51,81 +67,172 @@ class _ExpenseWidgetState extends State<ExpenseWidget> {
             ],
           ),
           const SizedBox(height: 13),
-          Center(
-              child: CustomPieChart(widget.expenseCategory
-                  .categoriesWithPercentages)), // Replace with actual data
-          const SizedBox(height: 35),
-          ...widget.expenseCategory.categoriesWithPercentages.map((entry) {
-            final color = assignColors(entry.category);
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 23),
-              child: Row(
-                children: [
-                  Container(
-                    width: 13,
-                    height: 13,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: colorMap[entry.category],
-                    ),
-                    margin: const EdgeInsets.only(right: 5),
+
+          SfCircularChart(
+              title: ChartTitle(
+                  text:
+                      homeWatch.selectedCategory?.category ?? 'All Categories'),
+              legend: Legend(isVisible: true, position: LegendPosition.bottom),
+              series: <CircularSeries>[
+                // Render pie chart
+                PieSeries<dynamic, String>(
+                  dataLabelSettings: DataLabelSettings(
+                    isVisible: true,
+                    showCumulativeValues: true,
                   ),
-                  Expanded(
-                    child: Text(
-                      '${entry.category} (${entry.percentage}%)',
-                      style: const TextStyle(
-                        color: Color(0xff6C7278),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -.1,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+                  dataLabelMapper: (dynamic data, _) => NumberFormat('#,##0')
+                      .format(data is CategoryData
+                          ? data.totalAmount.toDouble()
+                          : double.parse((data as SubCategoryData).amount)),
+                  explode: true,
+                  dataSource: homeWatch.selectedCategory?.subCategories ??
+                      homeWatch.categoryDataList,
+                  pointColorMapper: (dynamic data, _) =>
+                      data is CategoryData ? data.color : data.color,
+                  xValueMapper: (dynamic data, _) => data is CategoryData
+                      ? data.category
+                      : (data as SubCategoryData).name,
+                  yValueMapper: (dynamic data, _) => data is CategoryData
+                      ? data.totalAmount.toInt()
+                      : double.parse((data as SubCategoryData).amount),
+                  onPointTap: (ChartPointDetails details) {
+                    if (homeWatch.selectedCategory == null) {
+                      setState(() {
+                        homeRead.onCategoryTap(
+                            homeWatch.categoryDataList![details.pointIndex!]);
+                      });
+                    }
+                  },
+                )
+              ]),
+          if (homeWatch.selectedCategory != null)
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: red),
+              child: Text(
+                'Reset',
+                style: TextStyle(color: white100),
               ),
-            );
-          }).toList(),
+              onPressed: () {
+                setState(() {
+                  homeWatch.selectedCategory = null;
+                });
+              },
+            ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: (homeWatch.selectedCategory?.subCategories ??
+                    homeWatch.categoryDataList)
+                ?.length,
+            itemBuilder: (context, index) {
+              final item = homeWatch.selectedCategory?.subCategories[index] ??
+                  homeWatch.categoryDataList?[index];
+              final name = item is CategoryData
+                  ? item.category
+                  : (item as SubCategoryData).name;
+              final amount = item is CategoryData
+                  ? item.totalAmount
+                  : (item as SubCategoryData).amount;
+              final color = item is CategoryData
+                  ? item.color
+                  : (item as SubCategoryData).color;
+              double percentage = item is CategoryData
+                  ? (item.totalAmount / total) * 100
+                  : (double.parse((item as SubCategoryData).amount) / total) *
+                      100;
+              return LegendItem(
+                onTap: item is CategoryData
+                    ? () => homeRead.onCategoryTap(item)
+                    : null,
+                name: name,
+                percentage: percentage,
+                color: color!,
+                amount: amount,
+              );
+            },
+          ),
+          // Legend
+          // ListView.builder(
+          //   shrinkWrap: true,
+          //   physics: NeverScrollableScrollPhysics(),
+          //   itemCount: homeWatch.chartDataList?.length,
+          //   itemBuilder: (context, index) {
+          //     final item = homeWatch.chartDataList![index];
+          //     double percentage = (item.y / total) * 100;
+          //     return LegendItem(
+          //       name: item.x,
+          //       percentage: percentage,
+          //       color: item.color,
+          //       amount: item.y,
+          //     );
+          //   },
+          // ) // Center(
         ],
       ),
     );
   }
 }
 
-final Map<String, Color> colorMap = {};
+class LegendItem extends StatelessWidget {
+  final String name;
+  final double percentage;
+  final Color color;
+  final dynamic amount;
+  final VoidCallback? onTap;
 
-Color getColorForCategory(String category) {
-  return category.contains("UTILITIES")
-      ? const Color(0xffE6844D)
-      : category.contains("FUEL & LUBRICANTS")
-          ? blue
-          : category.contains("Other")
-              ? red700
-              : Colors.grey;
-}
+  LegendItem(
+      {required this.name,
+      required this.percentage,
+      required this.color,
+      required this.amount,
+      this.onTap});
 
-final List<Color> _availableColors = [
-  Colors.green,
-  Colors.orange,
-  Colors.red,
-  Colors.blue,
-  Colors.purple,
-  Colors.yellow,
-  Colors.cyan,
-  Colors.pink,
-];
-
-void assignColors(String categoryName) {
-  if (!colorMap.containsKey(categoryName)) {
-    colorMap[categoryName] = _getNextColor();
-  }
-}
-
-Color _getNextColor() {
-  // Get the next available color or generate a random one if the list is exhausted.
-  if (_availableColors.isNotEmpty) {
-    return _availableColors.removeAt(0);
-  } else {
-    return Color((0xFF000000 + colorMap.length * 0xFFFFFF) % 0xFFFFFFFF);
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          children: [
+            // Color Indicator
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
+            ),
+            SizedBox(width: 8),
+            // Legend Text
+            SizedBox(
+              width: 200.0,
+              child: Text(
+                '$name )',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+            ),
+            Spacer(),
+            // Amount Text
+            Row(
+              children: [
+                Text(
+                  '₦',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      fontFamily: 'AreaNue'),
+                ),
+                Text(
+                  '${StringUtils.currencyConverter(amount is String ? double.parse(amount).toInt() : amount.toInt())}',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
