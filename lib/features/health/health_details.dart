@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:isuna/app/theme/colors.dart';
 import 'package:isuna/features/health/health_facilities_view_model.dart';
 import 'package:isuna/features/health/record_expense_payment.dart';
 import 'package:isuna/features/health/record_inflow_payment.dart';
+import 'package:isuna/models/Income_expense_chart_model.dart';
+import 'package:isuna/models/pie_chart_model.dart';
 import 'package:isuna/utils/string_utils.dart';
 import 'package:isuna/widget/custom_dropdown.dart';
 import 'package:isuna/widget/custom_pie_chart.dart';
+import 'package:isuna/widget/expense_widget.dart';
 import 'package:isuna/widget/shimmer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HealthDetails extends ConsumerStatefulWidget {
   const HealthDetails({
@@ -45,7 +50,8 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
   Widget build(BuildContext context) {
     final facilitiesWatch = ref.watch(healthFacilitiesViemodelProvider);
     final facilitiesRead = ref.read(healthFacilitiesViemodelProvider.notifier);
-
+    // double total =
+    //     facilitiesWatch.chartDataList!.fold(0, (sum, item) => sum + item.y);
     final appSize = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color(0xffF4F4F7),
@@ -185,7 +191,7 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                           Row(
                                             children: [
                                               const Text(
-                                                "Total Balance ",
+                                                "Book Balance ",
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 17,
@@ -271,49 +277,49 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                   ))
                                             ],
                                           ),
-                                          const SizedBox(
-                                            height: 13,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  color: green400,
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
-                                                margin: const EdgeInsets.only(
-                                                    right: 14),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 4,
-                                                        vertical: 4),
-                                                child: Row(children: [
-                                                  SvgPicture.asset(
-                                                      'assets/svg/arrow_up.svg'),
-                                                  Text(
-                                                    '${facilitiesWatch.incomPercentageIncrease?.abs().toStringAsFixed(3)}',
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 14,
-                                                      color: Color(0xff31AF99),
-                                                      letterSpacing: -.5,
-                                                    ),
-                                                  )
-                                                ]),
-                                              ),
-                                              const Text(
-                                                "Increase this month",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 16,
-                                                  color: Color(0xff1B1C1E),
-                                                  letterSpacing: -.5,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                          // const SizedBox(
+                                          //   height: 13,
+                                          // ),
+                                          // Row(
+                                          //   children: [
+                                          //     Container(
+                                          //       decoration: BoxDecoration(
+                                          //         color: green400,
+                                          //         borderRadius:
+                                          //             BorderRadius.circular(5),
+                                          //       ),
+                                          //       margin: const EdgeInsets.only(
+                                          //           right: 14),
+                                          //       padding:
+                                          //           const EdgeInsets.symmetric(
+                                          //               horizontal: 4,
+                                          //               vertical: 4),
+                                          //       child: Row(children: [
+                                          //         SvgPicture.asset(
+                                          //             'assets/svg/arrow_up.svg'),
+                                          //         Text(
+                                          //           '${facilitiesWatch.incomPercentageIncrease?.abs().toStringAsFixed(3)}',
+                                          //           style: TextStyle(
+                                          //             fontWeight:
+                                          //                 FontWeight.w600,
+                                          //             fontSize: 14,
+                                          //             color: Color(0xff31AF99),
+                                          //             letterSpacing: -.5,
+                                          //           ),
+                                          //         )
+                                          //       ]),
+                                          //     ),
+                                          //     const Text(
+                                          //       "Increase this month",
+                                          //       style: TextStyle(
+                                          //         fontWeight: FontWeight.w500,
+                                          //         fontSize: 16,
+                                          //         color: Color(0xff1B1C1E),
+                                          //         letterSpacing: -.5,
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
                                           const SizedBox(
                                             height: 18,
                                           ),
@@ -468,13 +474,260 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 18, vertical: 24),
                                       child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Text(
+                                                  "Balance Statistics ",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 17,
+                                                    color: Color(0xff1B1C1E),
+                                                    letterSpacing: -.5,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 3,
+                                                ),
+                                                SvgPicture.asset(
+                                                    'assets/svg/info_circle.svg')
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 13,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Switch(
+                                                      value: showGreenLine,
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          showGreenLine = value;
+                                                        });
+                                                      },
+                                                      activeColor: const Color(
+                                                          0xFF34B77F),
+                                                      trackOutlineColor:
+                                                          MaterialStateProperty
+                                                              .resolveWith(
+                                                        (final Set<
+                                                                MaterialState>
+                                                            states) {
+                                                          if (states.contains(
+                                                              MaterialState
+                                                                  .selected)) {
+                                                            return const Color(
+                                                                0xFF34B77F);
+                                                          }
+
+                                                          return const Color(
+                                                              0xff6C7278);
+                                                        },
+                                                      ),
+                                                      activeTrackColor:
+                                                          Colors.white,
+                                                      inactiveTrackColor:
+                                                          Colors.white,
+                                                      inactiveThumbColor:
+                                                          const Color(
+                                                              0xff6C7278),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    const Text(
+                                                      'Income\nStatistics',
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        letterSpacing: -.5,
+                                                        height: 1.2,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xff6C7278),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const Spacer(),
+                                                Row(
+                                                  children: [
+                                                    Switch(
+                                                      value: showOrangeLine,
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          showOrangeLine =
+                                                              value;
+                                                        });
+                                                      },
+                                                      activeColor: const Color(
+                                                          0xFFE7844E),
+                                                      trackOutlineColor:
+                                                          MaterialStateProperty
+                                                              .resolveWith(
+                                                        (final Set<
+                                                                MaterialState>
+                                                            states) {
+                                                          if (states.contains(
+                                                              MaterialState
+                                                                  .selected)) {
+                                                            return const Color(
+                                                                0xFFE7844E);
+                                                          }
+
+                                                          return const Color(
+                                                              0xff6C7278);
+                                                        },
+                                                      ),
+                                                      activeTrackColor:
+                                                          Colors.white,
+                                                      inactiveTrackColor:
+                                                          Colors.white,
+                                                      inactiveThumbColor:
+                                                          const Color(
+                                                              0xff6C7278),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    const Text(
+                                                      'Expense\nStatistics',
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        letterSpacing: -.5,
+                                                        height: 1.2,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xff6C7278),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            SfCartesianChart(
+                                                primaryXAxis: CategoryAxis(),
+                                                primaryYAxis: NumericAxis(
+                                                  numberFormat:
+                                                      NumberFormat.compact(),
+                                                ),
+                                                tooltipBehavior:
+                                                    TooltipBehavior(
+                                                        enable: true),
+                                                series: <CartesianSeries<
+                                                    GraphChartData, String>>[
+                                                  showGreenLine
+                                                      ? ColumnSeries<GraphChartData, String>(
+                                                          dataSource: facilitiesWatch
+                                                              .graphChartData,
+                                                          xValueMapper:
+                                                              (GraphChartData data, _) =>
+                                                                  data.x,
+                                                          yValueMapper:
+                                                              (GraphChartData data, _) =>
+                                                                  data.y1,
+                                                          borderRadius: BorderRadius.only(
+                                                              topRight:
+                                                                  Radius.circular(
+                                                                      5.0),
+                                                              topLeft:
+                                                                  Radius.circular(
+                                                                      5.0)),
+                                                          color:
+                                                              Color(0xFF34B77F))
+                                                      : ColumnSeries<GraphChartData, String>(
+                                                          dataSource: [],
+                                                          xValueMapper:
+                                                              (GraphChartData data, _) =>
+                                                                  data.x,
+                                                          yValueMapper: (GraphChartData data, _) => data.y1,
+                                                          borderRadius: BorderRadius.only(topRight: Radius.circular(5.0), topLeft: Radius.circular(5.0)),
+                                                          color: Color(0xFF34B77F)),
+                                                  showOrangeLine
+                                                      ? ColumnSeries<
+                                                          GraphChartData, String>(
+                                                          dataSource:
+                                                              facilitiesWatch
+                                                                  .graphChartData,
+                                                          xValueMapper:
+                                                              (GraphChartData
+                                                                          data,
+                                                                      _) =>
+                                                                  data.x,
+                                                          yValueMapper:
+                                                              (GraphChartData
+                                                                          data,
+                                                                      _) =>
+                                                                  data.y2,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          5.0),
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          5.0)),
+                                                          color:
+                                                              Color(0xFFE7844E),
+                                                          name: 'Expense',
+                                                        )
+                                                      : ColumnSeries<GraphChartData,
+                                                              String>(
+                                                          dataSource: [],
+                                                          xValueMapper:
+                                                              (GraphChartData data,
+                                                                      _) =>
+                                                                  data.x,
+                                                          yValueMapper:
+                                                              (GraphChartData data,
+                                                                      _) =>
+                                                                  data.y2,
+                                                          borderRadius: BorderRadius.only(
+                                                              topRight:
+                                                                  Radius.circular(
+                                                                      5.0),
+                                                              topLeft:
+                                                                  Radius.circular(
+                                                                      5.0)),
+                                                          color: Color(0xFFE7844E))
+                                                ]),
+                                          ]),
+                                    ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              facilitiesWatch.isLoading
+                                  ? const ShimmerScreenLoading(
+                                      height: 500.0,
+                                      width: double.infinity,
+                                      radius: 14.0,
+                                    )
+                                  : Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 18, vertical: 13),
+                                      child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Row(
                                             children: [
                                               const Text(
-                                                "Balance Statistics ",
+                                                "Expense Category ",
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 17,
@@ -482,612 +735,65 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                                   letterSpacing: -.5,
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
+                                              const SizedBox(width: 3),
                                               SvgPicture.asset(
-                                                  'assets/svg/info_circle.svg')
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 13,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Switch(
-                                                    value: showGreenLine,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        showGreenLine = value;
-                                                      });
-                                                    },
-                                                    activeColor:
-                                                        const Color(0xFF34B77F),
-                                                    trackOutlineColor:
-                                                        MaterialStateProperty
-                                                            .resolveWith(
-                                                      (final Set<MaterialState>
-                                                          states) {
-                                                        if (states.contains(
-                                                            MaterialState
-                                                                .selected)) {
-                                                          return const Color(
-                                                              0xFF34B77F);
-                                                        }
-
-                                                        return const Color(
-                                                            0xff6C7278);
-                                                      },
-                                                    ),
-                                                    activeTrackColor:
-                                                        Colors.white,
-                                                    inactiveTrackColor:
-                                                        Colors.white,
-                                                    inactiveThumbColor:
-                                                        const Color(0xff6C7278),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  const Text(
-                                                    'Income\nStatistics',
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      letterSpacing: -.5,
-                                                      height: 1.2,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Color(0xff6C7278),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                  'assets/svg/info_circle.svg'),
                                               const Spacer(),
-                                              Row(
-                                                children: [
-                                                  Switch(
-                                                    value: showOrangeLine,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        showOrangeLine = value;
-                                                      });
-                                                    },
-                                                    activeColor:
-                                                        const Color(0xFFE7844E),
-                                                    trackOutlineColor:
-                                                        MaterialStateProperty
-                                                            .resolveWith(
-                                                      (final Set<MaterialState>
-                                                          states) {
-                                                        if (states.contains(
-                                                            MaterialState
-                                                                .selected)) {
-                                                          return const Color(
-                                                              0xFFE7844E);
-                                                        }
-
-                                                        return const Color(
-                                                            0xff6C7278);
-                                                      },
-                                                    ),
-                                                    activeTrackColor:
-                                                        Colors.white,
-                                                    inactiveTrackColor:
-                                                        Colors.white,
-                                                    inactiveThumbColor:
-                                                        const Color(0xff6C7278),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  const Text(
-                                                    'Expense\nStatistics',
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      letterSpacing: -.5,
-                                                      height: 1.2,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Color(0xff6C7278),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
                                             ],
                                           ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          SizedBox(
-                                              width: appSize.width,
-                                              height: 400,
-                                              child: LineChart(
-                                                LineChartData(
-                                                  maxY: 100000,
-                                                  maxX: facilitiesRead
-                                                          .balanceIncomeModel
-                                                          .categories!
-                                                          .length
-                                                          .toDouble() -
-                                                      1,
-                                                  titlesData: FlTitlesData(
-                                                    show: true,
-                                                    bottomTitles: AxisTitles(
-                                                      sideTitles: SideTitles(
-                                                        showTitles: true,
-                                                        reservedSize: 40,
-                                                        interval: 3,
-                                                        getTitlesWidget: (double
-                                                                value,
-                                                            TitleMeta meta) {
-                                                          int index =
-                                                              value.toInt();
-                                                          if (index >= 0 &&
-                                                              index <
-                                                                  facilitiesRead
-                                                                      .balanceIncomeModel
-                                                                      .categories!
-                                                                      .length) {
-                                                            return Text(
-                                                                facilitiesRead
-                                                                    .balanceIncomeModel
-                                                                    .categories![index],
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      black400,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w100,
-                                                                  fontSize: 14,
-                                                                ));
-                                                          }
-                                                          return SizedBox
-                                                              .shrink();
+                                          const SizedBox(height: 13),
 
-                                                          // const style = TextStyle(
-                                                          //   color: black400,
-                                                          //   fontWeight:
-                                                          //       FontWeight.w100,
-                                                          //   fontSize: 14,
-                                                          // );
-                                                          // Widget text;
-                                                          // switch (value.toInt()) {
-                                                          //   case 0:
-                                                          //     text = const Text(
-                                                          //         'Jan',
-                                                          //         style: style);
-                                                          //     break;
-                                                          //   case 1:
-                                                          //     text = const Text(
-                                                          //         'Feb',
-                                                          //         style: style);
-                                                          //     break;
-                                                          //   case 2:
-                                                          //     text = const Text(
-                                                          //         'Mar',
-                                                          //         style: style);
-                                                          //     break;
-                                                          //   case 3:
-                                                          //     text = const Text(
-                                                          //         'Apr',
-                                                          //         style: style);
-                                                          //     break;
-                                                          //   case 4:
-                                                          //     text = const Text(
-                                                          //         'May',
-                                                          //         style: style);
-                                                          //     break;
-                                                          //   default:
-                                                          //     text = const Text(
-                                                          //         '',
-                                                          //         style: style);
-                                                          //     break;
-                                                          // }
-                                                          // return SideTitleWidget(
-                                                          //   axisSide:
-                                                          //       meta.axisSide,
-                                                          //   space: 8,
-                                                          //   child: text,
-                                                          // );
-                                                        },
-                                                      ),
-                                                    ),
-                                                    leftTitles: AxisTitles(
-                                                      sideTitles: SideTitles(
-                                                        showTitles: true,
-                                                        reservedSize: 45,
-                                                        getTitlesWidget: (double
-                                                                value,
-                                                            TitleMeta meta) {
-                                                          const style =
-                                                              TextStyle(
-                                                            color: Color(
-                                                                0xffABB5BC),
-                                                            fontWeight:
-                                                                FontWeight.w100,
-                                                            fontSize: 14,
-                                                          );
-                                                          const nairaStyle =
-                                                              TextStyle(
-                                                                  color: Color(
-                                                                      0xffABB5BC),
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w100,
-                                                                  fontSize: 12,
-                                                                  fontFamily:
-                                                                      'AreaNeu');
-                                                          Widget text;
-                                                          switch (
-                                                              value.toInt()) {
-                                                            case 100000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '100k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 200000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '200k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 300000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '300k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 400000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '400k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 500000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '500k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-
-                                                            case 600000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '600k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-
-                                                            case 700000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '700k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-
-                                                            case 800000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '800k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-
-                                                            case 900000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '900k',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            case 1000000:
-                                                              text = Row(
-                                                                children: [
-                                                                  Text('₦',
-                                                                      style:
-                                                                          nairaStyle),
-                                                                  const Text(
-                                                                      '1M',
-                                                                      style:
-                                                                          style),
-                                                                ],
-                                                              );
-                                                              break;
-                                                            default:
-                                                              text = const Text(
-                                                                  '',
-                                                                  style: style);
-                                                              break;
-                                                          }
-                                                          return SideTitleWidget(
-                                                            axisSide:
-                                                                meta.axisSide,
-                                                            space: 7,
-                                                            child: text,
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                    rightTitles:
-                                                        const AxisTitles(
-                                                      sideTitles: SideTitles(
-                                                          showTitles: false),
-                                                    ),
-                                                    topTitles: const AxisTitles(
-                                                      sideTitles: SideTitles(
-                                                          showTitles: false),
-                                                    ),
-                                                  ),
-                                                  gridData: FlGridData(
-                                                    show: true,
-                                                    drawHorizontalLine: true,
-                                                    horizontalInterval: 5,
-                                                    getDrawingHorizontalLine:
-                                                        (value) {
-                                                      return const FlLine(
-                                                        color:
-                                                            Color(0xffE5EAED),
-                                                        strokeWidth: 1,
-                                                      );
-                                                    },
-                                                    drawVerticalLine: false,
-                                                  ),
-                                                  borderData: FlBorderData(
-                                                    show: false,
-                                                  ),
-                                                  lineBarsData: [
-                                                    if (showGreenLine)
-                                                      LineChartBarData(
-                                                        spots: List.generate(
-                                                            facilitiesRead
-                                                                .balanceIncomeModel
-                                                                .data!
-                                                                .length,
-                                                            (index) {
-                                                          return FlSpot(
-                                                            index.toDouble(),
-                                                            facilitiesRead
-                                                                .balanceIncomeModel
-                                                                .data![index]
-                                                                .toDouble(),
-                                                          );
-                                                        }),
-
-                                                        // [
-                                                        //   const FlSpot(0, 8),
-                                                        //   const FlSpot(1, 10),
-                                                        //   const FlSpot(2, 14),
-                                                        //   const FlSpot(3, 15),
-                                                        //   const FlSpot(4, 13),
-                                                        // ],
-                                                        isCurved: true,
-                                                        color: const Color(
-                                                            0xFF34B77F),
-                                                        barWidth: 4,
-                                                        belowBarData:
-                                                            BarAreaData(
-                                                          show: true,
-                                                          color: const Color(
-                                                                  0xFF34B77F)
-                                                              .withOpacity(0.3),
-                                                        ),
-                                                        dotData:
-                                                            const FlDotData(
-                                                          show: false,
-                                                        ),
-                                                      ),
-                                                    if (showOrangeLine)
-                                                      LineChartBarData(
-                                                        spots: List.generate(
-                                                            facilitiesRead
-                                                                .balanceExpenseModel
-                                                                .data!
-                                                                .length,
-                                                            (index) {
-                                                          return FlSpot(
-                                                            index.toDouble(),
-                                                            facilitiesRead
-                                                                        .balanceExpenseModel
-                                                                        .data![index]
-                                                                    is int
-                                                                ? facilitiesRead
-                                                                    .balanceExpenseModel
-                                                                    .data![
-                                                                        index]
-                                                                    .toDouble
-                                                                : double.parse(
-                                                                    facilitiesRead
-                                                                        .balanceExpenseModel
-                                                                        .data![index]),
-                                                          );
-                                                        }),
-                                                        // [
-                                                        //   const FlSpot(0, 12),
-                                                        //   const FlSpot(1, 14),
-                                                        //   const FlSpot(2, 18),
-                                                        //   const FlSpot(3, 19),
-                                                        //   const FlSpot(4, 17),
-                                                        // ],
-                                                        isCurved: true,
-                                                        color: const Color(
-                                                            0xFFE7844E),
-                                                        barWidth: 4,
-                                                        belowBarData:
-                                                            BarAreaData(
-                                                          show: true,
-                                                          color: const Color(
-                                                                  0xFFE7844E)
-                                                              .withOpacity(0.3),
-                                                        ),
-                                                        dotData:
-                                                            const FlDotData(
-                                                          show: false,
-                                                        ),
-                                                      ),
-                                                  ],
-                                                ),
-                                              )),
+                                          // SfCircularChart(
+                                          //     series: <CircularSeries>[
+                                          //       // Render pie chart
+                                          //       PieSeries<ChartData, String>(
+                                          //           dataLabelSettings:
+                                          //               DataLabelSettings(
+                                          //             isVisible: true,
+                                          //             showCumulativeValues:
+                                          //                 true,
+                                          //           ),
+                                          //           dataLabelMapper:
+                                          //               (ChartData data, _) =>
+                                          //                   NumberFormat(
+                                          //                           '#,##0')
+                                          //                       .format(data.y),
+                                          //           explode: true,
+                                          //           dataSource: facilitiesWatch
+                                          //               .chartDataList,
+                                          //           pointColorMapper:
+                                          //               (ChartData data, _) =>
+                                          //                   data.color,
+                                          //           xValueMapper:
+                                          //               (ChartData data, _) =>
+                                          //                   data.x,
+                                          //           yValueMapper:
+                                          //               (ChartData data, _) =>
+                                          //                   data.y)
+                                          //     ]),
+                                          // // Legend
+                                          // ListView.builder(
+                                          //   shrinkWrap: true,
+                                          //   physics:
+                                          //       NeverScrollableScrollPhysics(),
+                                          //   itemCount: facilitiesWatch
+                                          //       .chartDataList?.length,
+                                          //   itemBuilder: (context, index) {
+                                          //     final item = facilitiesWatch
+                                          //         .chartDataList![index];
+                                          //     double percentage =
+                                          //         (item.y / total) * 100;
+                                          //     return LegendItem(
+                                          //       name: item.x,
+                                          //       percentage: percentage,
+                                          //       color: item.color,
+                                          //       amount: item.y,
+                                          //     );
+                                          //   },
+                                          // ) // Center(
                                         ],
                                       ),
                                     ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              // facilitiesWatch.isLoading
-                              //     ? const ShimmerScreenLoading(
-                              //         height: 500.0,
-                              //         width: double.infinity,
-                              //         radius: 14.0,
-                              //       )
-                              //     : Container(
-                              //         width: double.infinity,
-                              //         decoration: BoxDecoration(
-                              //           color: Colors.white,
-                              //           borderRadius: BorderRadius.circular(14),
-                              //         ),
-                              //         padding: const EdgeInsets.symmetric(
-                              //             horizontal: 18, vertical: 13),
-                              //         child: Column(
-                              //           crossAxisAlignment:
-                              //               CrossAxisAlignment.start,
-                              //           children: [
-                              //             Row(
-                              //               children: [
-                              //                 const Text(
-                              //                   "Expense Category ",
-                              //                   style: TextStyle(
-                              //                     fontWeight: FontWeight.w600,
-                              //                     fontSize: 17,
-                              //                     color: Color(0xff1B1C1E),
-                              //                     letterSpacing: -.5,
-                              //                   ),
-                              //                 ),
-                              //                 const SizedBox(
-                              //                   width: 3,
-                              //                 ),
-                              //                 SvgPicture.asset(
-                              //                     'assets/svg/info_circle.svg'),
-                              //                 const Spacer(),
-                              //               ],
-                              //             ),
-                              //             const SizedBox(
-                              //               height: 13,
-                              //             ),
-                              //             Center(
-                              //               child: CustomPieChart(
-                              //                   facilitiesWatch.expenseCategory
-                              //                       .categoriesWithPercentages),
-                              //             ),
-                              //             const SizedBox(
-                              //               height: 35,
-                              //             ),
-                              //             ...facilitiesWatch.expenseCategory
-                              //                 .categoriesWithPercentages
-                              //                 .map((entry) {
-                              //               final color = getColorForCategory(
-                              //                   entry.category);
-                              //               return Padding(
-                              //                 padding: const EdgeInsets.only(
-                              //                     bottom: 23),
-                              //                 child: Row(
-                              //                   children: [
-                              //                     Container(
-                              //                       width: 13,
-                              //                       height: 13,
-                              //                       decoration: BoxDecoration(
-                              //                         shape: BoxShape.circle,
-                              //                         color: color,
-                              //                       ),
-                              //                       margin:
-                              //                           const EdgeInsets.only(
-                              //                               right: 5),
-                              //                     ),
-                              //                     Expanded(
-                              //                       child: Text(
-                              //                         '${entry.category} (${entry.percentage}%)',
-                              //                         style: const TextStyle(
-                              //                           color:
-                              //                               Color(0xff6C7278),
-                              //                           fontSize: 14,
-                              //                           fontWeight:
-                              //                               FontWeight.w600,
-                              //                           letterSpacing: -.1,
-                              //                         ),
-                              //                         overflow:
-                              //                             TextOverflow.ellipsis,
-                              //                       ),
-                              //                     ),
-                              //                   ],
-                              //                 ),
-                              //               );
-                              //             }).toList(),
-                              //           ],
-                              //         )),
                               const SizedBox(
                                 height: 13,
                               ),

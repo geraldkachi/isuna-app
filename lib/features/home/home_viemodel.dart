@@ -1,17 +1,25 @@
+import 'dart:developer';
+
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:isuna/app/locator.dart';
+import 'package:isuna/app/router.dart';
 import 'package:isuna/exceptions/misau_exception.dart';
 import 'package:isuna/features/main_screen/main_screen_view_model.dart';
 import 'package:isuna/models/admin_model.dart';
 import 'package:isuna/models/balances_model.dart';
 import 'package:isuna/models/expense_analysis_model.dart';
 import 'package:isuna/models/expense_category.dart';
+import 'package:isuna/models/expense_category_and%20_sub_category_model.dart';
+import 'package:isuna/models/expense_category_extract_model.dart';
+import 'package:isuna/models/expense_graph_model.dart';
 import 'package:isuna/models/facilities_model.dart';
 import 'package:isuna/models/income_analysis_model.dart';
+import 'package:isuna/models/income_graph_model.dart';
 import 'package:isuna/models/lga_model.dart';
+import 'package:isuna/models/pie_chart_model.dart';
 import 'package:isuna/models/state_model.dart';
 import 'package:isuna/models/states_and_lga_model.dart';
 import 'package:isuna/models/summary_model.dart';
@@ -59,15 +67,27 @@ class HomeViemodel extends ChangeNotifier {
       _dashboardService.incomeAnalysis ?? IncomeAnalysis();
   ExpenseAnalysis get expenseAnalysis =>
       _dashboardService.expenseAnalysis ?? ExpenseAnalysis();
-  ExpenseCategory get expenseCategory =>
-      _dashboardService.expenseCategory ?? ExpenseCategory();
-
+  ExpenseCategoryModel get expenseCategory =>
+      _dashboardService.expenseCategoryModel ?? ExpenseCategoryModel();
+  ExpenseCategoryAndSubCategoryModel get expenseCategoryAndSubCategoryModel =>
+      _dashboardService.expenseCategoryAndSubCategoryModel ??
+      ExpenseCategoryAndSubCategoryModel();
+  List<IncomeGraphModel>? get incomeGraphModel =>
+      _dashboardService.incomeGraphModel;
+  List<ExpenseGraphModel>? get expenseGraphModel =>
+      _dashboardService.expenseGraphModel;
   SummaryModel get summaryModel =>
       _dashboardService.summaryModel ?? SummaryModel();
+  // PieChartModel? pieChartModel;
+  // List<ChartData>? chartDataList;
+  List<CategoryData>? get categoryDataList =>
+      _dashboardService.categoryDataList;
+  CategoryData? selectedCategory;
 
   TextEditingController searchController = TextEditingController();
   TextEditingController fromDateController = TextEditingController();
   TextEditingController toDateController = TextEditingController();
+  TextEditingController reasonController = TextEditingController();
 
   SingleValueDropDownController searchfacilityController =
       SingleValueDropDownController();
@@ -79,6 +99,7 @@ class HomeViemodel extends ChangeNotifier {
       RefreshController(initialRefresh: false);
 
   List<Transaction>? filteredTransactions = [];
+  Transaction? selectedTransaction;
   List<String> states = [];
   TransactionList get transactionList => _dashboardService.transactionList!;
 
@@ -92,15 +113,22 @@ class HomeViemodel extends ChangeNotifier {
   String? fromDate;
   String? toDate;
 
+  String? selectedIncomeChartType = 'Line';
+  String? selectedExpenseChartType = 'Line';
+  String? statusValue = '';
+
   DateTime? selectedFromDate;
   DateTime? selectedToDate;
   String? get selectedFacility => searchfacilityController.dropDownValue?.value;
 
   bool isLoading = false;
   bool isShareLoading = false;
+  bool isDeleted = false;
+  bool isStatus = false;
 
   bool onInit = false;
   bool hideAmounts = false;
+  bool isReasonVisible = false;
 
   int? screenIndex;
 
@@ -110,9 +138,8 @@ class HomeViemodel extends ChangeNotifier {
   List<String>? lgaList = [];
 
   DateTime now = DateTime.now();
-  String get threeMonthsAgo => DateFormat('yyyy-MM-dd')
+  String get threeMonthsAgo => DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
       .format(DateTime(now.year, now.month - 3, now.day));
-  String get dateNow => DateFormat('yyyy-MM-dd').format(now);
 
   Future<void> fetchWalletData(context,
       {String? state = '',
@@ -123,10 +150,12 @@ class HomeViemodel extends ChangeNotifier {
       String? prev = '',
       String? next = ''}) async {
     Future(() {
-      hideAmounts = _sharedPreferenceService.getBool('isAmountHidden')!;
+      hideAmounts = _sharedPreferenceService.getBool('isAmountHidden') ?? false;
       notifyListeners();
     });
+
     states = NigerianStatesAndLGA.allStates;
+
     await fetchBalances(context,
         state: state,
         lga: lga,
@@ -138,7 +167,7 @@ class HomeViemodel extends ChangeNotifier {
         lga: lga,
         facility: facilitys,
         fromDate: fromDate!.isEmpty ? threeMonthsAgo : fromDate,
-        toDate: toDate!.isEmpty ? dateNow : toDate);
+        toDate: toDate!.isEmpty ? now.toUtc().toIso8601String() : toDate);
     await fetchTranxList(context,
         state: state,
         lga: lga,
@@ -153,17 +182,22 @@ class HomeViemodel extends ChangeNotifier {
         state: state,
         lga: lga,
         facility: facilitys,
-        fromDate: fromDate!.isEmpty ? threeMonthsAgo : fromDate,
-        toDate: toDate!.isEmpty ? dateNow : toDate);
+        fromDate: fromDate.isEmpty ? threeMonthsAgo : fromDate,
+        toDate: toDate.isEmpty ? now.toUtc().toIso8601String() : toDate);
     await fetchExpenseCategory(context,
         state: state,
         lga: lga,
         facility: facilitys,
-        fromDate: fromDate,
-        toDate: toDate);
+        fromDate: fromDate.isEmpty ? threeMonthsAgo : fromDate,
+        toDate: toDate.isEmpty ? now.toUtc().toIso8601String() : toDate);
+    await fetchExpenseCategoryAndSubCategory(context,
+        state: state,
+        lga: lga,
+        facility: facilitys,
+        fromDate: fromDate.isEmpty ? threeMonthsAgo : fromDate,
+        toDate: toDate.isEmpty ? now.toUtc().toIso8601String() : toDate);
     await fetchSummary(context);
     await fetchFacilities(context);
-    await getStates(context);
 
     onInit = true;
   }
@@ -180,6 +214,11 @@ class HomeViemodel extends ChangeNotifier {
     _navigatorService.currentIndex = screenIndex!;
     notifyListeners();
     screenIndex = null;
+  }
+
+  void onCategoryTap(CategoryData category) {
+    selectedCategory = category;
+    notifyListeners();
   }
 
   void onRefresh(context) {
@@ -288,11 +327,10 @@ class HomeViemodel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await _dashboardService.fetchBalances(
-          state: state,
-          lga: lga,
-          facility: facility,
-          fromDate: fromDate,
-          toDate: toDate);
+        state: state,
+        lga: lga,
+        facility: facility,
+      );
       isLoading = false;
       notifyListeners();
     } on MisauException catch (e) {
@@ -432,6 +470,42 @@ class HomeViemodel extends ChangeNotifier {
           toDate: toDate);
       isLoading = false;
       notifyListeners();
+      // pieChartModel = PieChartModel.fromExpenseCategoryModel(expenseCategory);
+      // chartDataList = convertToChartData(pieChartModel!);
+    } on MisauException catch (e) {
+      isLoading = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e, stackTrace) {
+      isLoading = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: 'Something went wrong.');
+
+      debugPrint('fecth expense category error: $e/n$stackTrace');
+    }
+  }
+
+  Future<void> fetchExpenseCategoryAndSubCategory(context,
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? toDate}) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+      await _dashboardService.fetchExpenseCategoryAndSubCategory(
+          state: state,
+          lga: lga,
+          facility: facility,
+          fromDate: fromDate,
+          toDate: toDate);
+      isLoading = false;
+      notifyListeners();
+      // pieChartModel = PieChartModel.fromExpenseCategoryModel(expenseCategory);
+      // chartDataList = convertToChartData(pieChartModel!);
     } on MisauException catch (e) {
       isLoading = false;
       notifyListeners();
@@ -565,7 +639,8 @@ class HomeViemodel extends ChangeNotifier {
 
     if (pickedDate != null && pickedDate != selectedFromDate) {
       selectedFromDate = pickedDate;
-      fromDate = DateFormat('dd-MM-yyyy').format(selectedFromDate!);
+      fromDate =
+          DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(selectedFromDate!);
       fromDateController.text = fromDate!;
       notifyListeners();
     }
@@ -581,9 +656,83 @@ class HomeViemodel extends ChangeNotifier {
 
     if (pickedDate != null && pickedDate != selectedFromDate) {
       selectedFromDate = pickedDate;
-      toDate = DateFormat('dd-MM-yyyy').format(selectedFromDate!);
+      toDate =
+          DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(selectedFromDate!);
       toDateController.text = toDate!;
       notifyListeners();
+    }
+  }
+
+  Future<void> deleteTransaction(context) async {
+    try {
+      isDeleted = true;
+      notifyListeners();
+      await _healthFacilitiesService.deleteTransaction(
+          id: selectedTransaction?.id);
+      router.pop();
+      fetchTranxList(context,
+          state: '',
+          lga: '',
+          facility: '',
+          fromDate: '',
+          toDate: '',
+          prev: '',
+          limit: '10',
+          next: '');
+      isDeleted = false;
+      notifyListeners();
+    } on MisauException catch (e) {
+      router.pop();
+
+      isDeleted = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e, stackTrace) {
+      router.pop();
+
+      isDeleted = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('delet transaction error $e/n$stackTrace');
+    }
+  }
+
+  Future<void> flagTransaction(context) async {
+    try {
+      isStatus = true;
+      notifyListeners();
+      await _healthFacilitiesService.flagTransaction(
+          id: selectedTransaction?.id,
+          status: statusValue,
+          reason: reasonController.text);
+      router.pop();
+
+      fetchTranxList(context,
+          state: '',
+          lga: '',
+          facility: '',
+          fromDate: '',
+          toDate: '',
+          prev: '',
+          limit: '10',
+          next: '');
+      isStatus = false;
+      notifyListeners();
+    } on MisauException catch (e) {
+      router.pop();
+      isStatus = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e, stackTrace) {
+      router.pop();
+      isStatus = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('delete transaction error $e/n$stackTrace');
     }
   }
 }

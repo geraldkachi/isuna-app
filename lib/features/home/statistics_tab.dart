@@ -243,9 +243,9 @@ class StatisticsTab extends StatelessWidget {
             options: options,
           ),
           const SizedBox(height: 20),
-          ExpenseWidget(
-            expenseCategory: homeWatch.expenseCategory!,
-          ),
+          // ExpenseWidget(
+          //   expenseCategory: homeWatch.expenseCategory!,
+          // ),
           const SizedBox(height: 13),
         ],
       ),

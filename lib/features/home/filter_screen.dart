@@ -379,7 +379,6 @@ class _FilterScreenState extends ConsumerState<FilterScreen>
                             child: TextButton(
                               onPressed: () {
                                 context.pop();
-
                                 homeRead.fetchWalletData(context,
                                     state: homeWatch.selectedState ?? '',
                                     lga: homeWatch.selectedLga

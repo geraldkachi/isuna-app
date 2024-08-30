@@ -1,29 +1,45 @@
+// To parse this JSON data, do
+//
+//     final balances = balancesFromJson(jsonString);
+
+import 'dart:convert';
+
+Balances balancesFromJson(String str) => Balances.fromJson(json.decode(str));
+
+String balancesToJson(Balances data) => json.encode(data.toJson());
+
 class Balances {
-  final dynamic actualBalance;
-  final dynamic pendingBalance;
-  final dynamic totalBalance;
+    final double? actualBalance;
+    final double? pendingBalance;
+    final double? totalBalance;
+    final int? totalFacilities;
+    final int? totalState;
+    final int? totalLga;
 
-  Balances({
-     this.actualBalance,
-     this.pendingBalance,
-     this.totalBalance,
-  });
+    Balances({
+        this.actualBalance,
+        this.pendingBalance,
+        this.totalBalance,
+        this.totalFacilities,
+        this.totalState,
+        this.totalLga,
+    });
 
-  // Convert JSON to Balances object
-  factory Balances.fromJson(Map<String, dynamic> json) {
-    return Balances(
-      actualBalance: json['actualBalance'],
-      pendingBalance: json['pendingBalance'],
-      totalBalance: json['totalBalance'],
+    factory Balances.fromJson(Map<String, dynamic> json) => Balances(
+        actualBalance: json["actualBalance"]?.toDouble(),
+        pendingBalance: json["pendingBalance"]?.toDouble(),
+        totalBalance: json["totalBalance"]?.toDouble(),
+        totalFacilities: json["totalFacilities"],
+        totalState: json["totalState"],
+        totalLga: json["totalLga"],
     );
-  }
 
-    // Convert Balances object to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'actualBalance': actualBalance,
-      'pendingBalance': pendingBalance,
-      'totalBalance': totalBalance,
+    Map<String, dynamic> toJson() => {
+        "actualBalance": actualBalance,
+        "pendingBalance": pendingBalance,
+        "totalBalance": totalBalance,
+        "totalFacilities": totalFacilities,
+        "totalState": totalState,
+        "totalLga": totalLga,
     };
-  }
 }

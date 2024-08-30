@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:isuna/features/home/home_viemodel.dart';
 import 'package:isuna/utils/string_utils.dart';
+import 'package:isuna/utils/utils.dart';
 import 'package:isuna/widget/shimmer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -144,6 +145,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                             itemBuilder: (context, index) {
                               final transaction =
                                   homeWatch.filteredTransactions![index];
+                              homeWatch.selectedTransaction = transaction;
+
                               final isIncome = transaction.income != null;
 
                               final date = isIncome
@@ -159,42 +162,121 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                   ? "Income"
                                   : transaction.expense?.category;
 
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 56.0,
-                                    height: 56.0,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xffF4F4F7),
+                              return InkWell(
+                                onTap: () {
+                                  Utils.showFlagTransactionBottomSheet(
+                                      context, homeWatch, homeRead);
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 56.0,
+                                      height: 56.0,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0xffF4F4F7),
+                                      ),
+                                      padding: const EdgeInsets.all(11),
+                                      margin: const EdgeInsets.only(right: 13),
+                                      child: SvgPicture.asset(
+                                        isIncome
+                                            ? 'assets/svg/direction_up.svg'
+                                            : 'assets/svg/direction_down.svg',
+                                        height: 19,
+                                      ),
                                     ),
-                                    padding: const EdgeInsets.all(11),
-                                    margin: const EdgeInsets.only(right: 13),
-                                    child: SvgPicture.asset(
-                                      isIncome
-                                          ? 'assets/svg/direction_up.svg'
-                                          : 'assets/svg/direction_down.svg',
-                                      height: 19,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          category ?? '--',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 17,
-                                            color: Color(0xff1B1C1E),
-                                            letterSpacing: -.5,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            category ?? '--',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 17,
+                                              color: Color(0xff1B1C1E),
+                                              letterSpacing: -.5,
+                                            ),
                                           ),
-                                        ),
+                                          const SizedBox(height: 3),
+                                          Text(
+                                            transaction.facility,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                              color: Color(0xffABB5BC),
+                                              letterSpacing: -.5,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        isIncome
+                                            ? Row(
+                                                children: [
+                                                  Text(
+                                                    '₦',
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 17,
+                                                      color: Color(0xff1B1C1E),
+                                                      fontFamily: 'AreaNeu',
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    StringUtils
+                                                        .currencyConverter(
+                                                            transaction
+                                                                .income!.amount
+                                                                .toInt()),
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 17,
+                                                      color: Color(0xff1B1C1E),
+                                                      letterSpacing: -.5,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : Row(
+                                                children: [
+                                                  const Text(
+                                                    '₦',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 17,
+                                                      color: Color(0xff1B1C1E),
+                                                      fontFamily: 'AreaNeu',
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    StringUtils
+                                                        .currencyConverter(
+                                                            transaction
+                                                                .expense!.amount
+                                                                .toInt()),
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 17,
+                                                      color: Color(0xff1B1C1E),
+                                                      letterSpacing: -.5,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                         const SizedBox(height: 3),
                                         Text(
-                                          transaction.facility,
+                                          date,
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
@@ -204,73 +286,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      isIncome
-                                          ? Row(
-                                              children: [
-                                                Text(
-                                                  '₦',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 17,
-                                                    color: Color(0xff1B1C1E),
-                                                    fontFamily: 'AreaNeu',
-                                                  ),
-                                                ),
-                                                Text(
-                                                  StringUtils.currencyConverter(
-                                                      transaction.income!.amount
-                                                          .toInt()),
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 17,
-                                                    color: Color(0xff1B1C1E),
-                                                    letterSpacing: -.5,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : Row(
-                                              children: [
-                                                const Text(
-                                                  '₦',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 17,
-                                                    color: Color(0xff1B1C1E),
-                                                    fontFamily: 'AreaNeu',
-                                                  ),
-                                                ),
-                                                Text(
-                                                  StringUtils.currencyConverter(
-                                                      transaction
-                                                          .expense!.amount
-                                                          .toInt()),
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 17,
-                                                    color: Color(0xff1B1C1E),
-                                                    letterSpacing: -.5,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                      const SizedBox(height: 3),
-                                      Text(
-                                        date,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 16,
-                                          color: Color(0xffABB5BC),
-                                          letterSpacing: -.5,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                  ],
+                                ),
                               );
                             },
                           ),
