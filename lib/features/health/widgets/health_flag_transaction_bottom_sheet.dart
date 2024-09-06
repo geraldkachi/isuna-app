@@ -4,23 +4,24 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:isuna/app/theme/colors.dart';
+import 'package:isuna/features/health/health_facilities_view_model.dart';
 import 'package:isuna/features/home/home_viemodel.dart';
 import 'package:isuna/utils/string_utils.dart';
 import 'package:isuna/utils/validator.dart';
 import 'package:isuna/widget/outline_textfield.dart';
 
-class FlagTransactionBottomSheet extends ConsumerStatefulWidget {
-  FlagTransactionBottomSheet({
+class HealthFlagTransactionBottomSheet extends ConsumerStatefulWidget {
+  HealthFlagTransactionBottomSheet({
     Key? key,
   }) : super(key: key);
 
   @override
-  ConsumerState<FlagTransactionBottomSheet> createState() =>
-      _FlagTransactionBottomSheetState();
+  ConsumerState<HealthFlagTransactionBottomSheet> createState() =>
+      _HealthFlagTransactionBottomSheetState();
 }
 
-class _FlagTransactionBottomSheetState
-    extends ConsumerState<FlagTransactionBottomSheet> {
+class _HealthFlagTransactionBottomSheetState
+    extends ConsumerState<HealthFlagTransactionBottomSheet> {
   @override
   void initState() {
     // TODO: implement initState
@@ -29,15 +30,15 @@ class _FlagTransactionBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    final homeWatch = ref.watch(homeViemodelProvider);
-    final homeRead = ref.read(homeViemodelProvider.notifier);
+    final facilitiesWatch = ref.watch(healthFacilitiesViemodelProvider);
+    final facilitiesRead = ref.read(healthFacilitiesViemodelProvider.notifier);
 
-    final income = homeWatch.selectedTransaction?.income;
-    final expense = homeWatch.selectedTransaction?.expense;
+    final income = facilitiesWatch.selectedTransaction?.income;
+    final expense = facilitiesWatch.selectedTransaction?.expense;
 
     final appSize = MediaQuery.of(context).size;
     return Container(
-      height: appSize.height * homeWatch.bottomSheetHeight,
+      height: appSize.height * facilitiesWatch.bottomSheetHeight,
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +48,7 @@ class _FlagTransactionBottomSheetState
             child: IconButton(
                 onPressed: () {
                   context.pop();
-                  homeRead.clearFlagBottomSheetFields();
+                  facilitiesRead.clearFlagBottomSheetFields();
                 },
                 icon: Icon(
                   Icons.close,
@@ -63,7 +64,7 @@ class _FlagTransactionBottomSheetState
               SizedBox(
                 width: 30.0,
               ),
-              Text('${homeWatch.selectedTransaction?.state}',
+              Text('${facilitiesWatch.selectedTransaction?.state}',
                   style:
                       TextStyle(fontWeight: FontWeight.w400, fontSize: 15.0)),
             ],
@@ -80,7 +81,7 @@ class _FlagTransactionBottomSheetState
               SizedBox(
                 width: 43.0,
               ),
-              Text('${homeWatch.selectedTransaction?.lga}',
+              Text('${facilitiesWatch.selectedTransaction?.lga}',
                   style:
                       TextStyle(fontWeight: FontWeight.w400, fontSize: 15.0)),
             ],
@@ -97,7 +98,7 @@ class _FlagTransactionBottomSheetState
               SizedBox(
                 width: 20.0,
               ),
-              Text('${homeWatch.selectedTransaction?.facility}',
+              Text('${facilitiesWatch.selectedTransaction?.facility}',
                   style:
                       TextStyle(fontWeight: FontWeight.w400, fontSize: 15.0)),
             ],
@@ -120,7 +121,7 @@ class _FlagTransactionBottomSheetState
                       style: TextStyle(
                           fontWeight: FontWeight.w600, fontSize: 15.0)),
                   Text(
-                      '${DateFormat("dd-MM-yyyy").format(homeWatch.selectedTransaction!.createdAt!)}',
+                      '${DateFormat("dd-MM-yyyy").format(facilitiesWatch.selectedTransaction!.createdAt!)}',
                       style: TextStyle(
                           fontWeight: FontWeight.w400, fontSize: 15.0))
                 ],
@@ -139,7 +140,7 @@ class _FlagTransactionBottomSheetState
                               fontSize: 15.0,
                               fontFamily: 'AreaNeu')),
                       Text(
-                          '${income?.amount != null ? StringUtils.currencyConverter(income?.amount is String ? income?.amount.toInt() : double.parse(income?.amount).toInt()) : StringUtils.currencyConverter(expense?.amount is String ? double.parse(expense?.amount).toInt() : expense?.amount.toInt())}',
+                          '${income?.amount != null ? StringUtils.currencyConverter(income?.amount is String ? int.parse(income?.amount) : double.parse(income?.amount).toInt()) : StringUtils.currencyConverter(expense?.amount is String ? double.parse(expense?.amount).toInt() : expense?.amount.toInt())}',
                           style: TextStyle(
                               fontWeight: FontWeight.w400, fontSize: 15.0)),
                     ],
@@ -162,16 +163,16 @@ class _FlagTransactionBottomSheetState
           SizedBox(
             height: 20.0,
           ),
-          homeWatch.isStatusWidget
+          facilitiesWatch.isStatusWidget
               ? Text(income?.status != null
-                  ? 'Transaction was ${homeWatch.isResolved ? 'resolved' : 'flagged'} by ${income?.log?[0].firstName} ${income?.log?[0].lastName} \n Reason: ${income?.reason}'
-                  : 'Transaction was ${homeWatch.isResolved ? 'resolved' : 'flagged'} by ${expense?.log?[0].firstName} ${expense?.log?[0].lastName} \n Reason: ${expense?.reason}')
+                  ? 'Transaction was ${facilitiesWatch.isResolved ? 'resolved' : 'flagged'} by ${income?.log?[0].firstName} ${income?.log?[0].lastName} \n Reason: ${income?.reason}'
+                  : 'Transaction was ${facilitiesWatch.isResolved ? 'resolved' : 'flagged'} by ${expense?.log?[0].firstName} ${expense?.log?[0].lastName} \n Reason: ${expense?.reason}')
               : SizedBox.shrink(),
           // statusDropdown!,
           const SizedBox(
             height: 10.0,
           ),
-          homeWatch.isReasonVisible
+          facilitiesWatch.isReasonVisible
               ? Row(
                   children: [
                     Text(
@@ -196,11 +197,11 @@ class _FlagTransactionBottomSheetState
                 )
               : SizedBox.shrink(),
           SizedBox(
-            height: homeWatch.isReasonVisible ? 7.0 : 0.0,
+            height: facilitiesWatch.isReasonVisible ? 7.0 : 0.0,
           ),
-          homeWatch.isReasonVisible
+          facilitiesWatch.isReasonVisible
               ? OutlineTextField(
-                  controller: homeWatch.reasonController,
+                  controller: facilitiesWatch.reasonController,
                   hintText: 'Reason',
                   maxLines: 4,
                   isNumeric: true)
@@ -209,23 +210,23 @@ class _FlagTransactionBottomSheetState
           SizedBox(
             height: 15.0,
           ),
-          homeWatch.isResolved
+          facilitiesWatch.isResolved
               ? SizedBox.shrink()
-              : !homeWatch.isStatusWidget
+              : !facilitiesWatch.isStatusWidget
                   ? FlagButtons(
-                      homeRead: homeRead,
-                      homeWatch: homeWatch,
+                      facilitiesRead: facilitiesRead,
+                      facilitiesWatch: facilitiesWatch,
                       flagLabel: 'Flag',
                       onStatusChange: () {
-                        homeRead.flagTransaction(context, 'flagged');
+                        facilitiesRead.flagTransaction(context, 'flagged');
                       },
                     )
                   : FlagButtons(
-                      homeRead: homeRead,
-                      homeWatch: homeWatch,
+                      facilitiesRead: facilitiesRead,
+                      facilitiesWatch: facilitiesWatch,
                       flagLabel: 'Resolve',
                       onStatusChange: () {
-                        homeRead.flagTransaction(context, 'resolved');
+                        facilitiesRead.flagTransaction(context, 'resolved');
                       },
                     ),
           const SizedBox(
@@ -236,7 +237,7 @@ class _FlagTransactionBottomSheetState
     );
   }
 
-  Column StatusDropdown(HomeViemodel homeWatch) {
+  Column StatusDropdown(HomeViemodel facilitiesWatch) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -253,7 +254,7 @@ class _FlagTransactionBottomSheetState
           height: 7,
         ),
         DropdownButtonFormField<String>(
-          value: homeWatch.statusValue?.toLowerCase(),
+          value: facilitiesWatch.statusValue?.toLowerCase(),
           validator: (value) => Validator.validateField(value),
           decoration: InputDecoration(
             hintText: 'Select status',
@@ -305,10 +306,10 @@ class _FlagTransactionBottomSheetState
           }).toList(),
           onChanged: (newValue) {
             setState(() {
-              homeWatch.statusValue = newValue!;
+              facilitiesWatch.statusValue = newValue!;
               newValue == 'flagged'
-                  ? homeWatch.isReasonVisible = true
-                  : homeWatch.isReasonVisible = false;
+                  ? facilitiesWatch.isReasonVisible = true
+                  : facilitiesWatch.isReasonVisible = false;
             });
           },
         ),
@@ -320,13 +321,13 @@ class _FlagTransactionBottomSheetState
 class FlagButtons extends StatelessWidget {
   const FlagButtons(
       {super.key,
-      required this.homeRead,
-      required this.homeWatch,
+      required this.facilitiesRead,
+      required this.facilitiesWatch,
       this.flagLabel,
       this.onStatusChange});
 
-  final HomeViemodel homeRead;
-  final HomeViemodel homeWatch;
+  final HealthFacilitiesViewModel facilitiesRead;
+  final HealthFacilitiesViewModel facilitiesWatch;
   final String? flagLabel;
   final VoidCallback? onStatusChange;
 
@@ -339,7 +340,7 @@ class FlagButtons extends StatelessWidget {
             height: 48.0,
             child: TextButton(
               onPressed: () {
-                homeRead.deleteTransaction(context);
+                facilitiesRead.deleteTransaction(context);
               },
               style: TextButton.styleFrom(
                 backgroundColor: red,
@@ -348,7 +349,7 @@ class FlagButtons extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.0), // border radius
                 ),
               ),
-              child: homeWatch.isDeleted
+              child: facilitiesWatch.isDeleted
                   ? SizedBox(
                       width: 20,
                       height: 20,
@@ -386,7 +387,7 @@ class FlagButtons extends StatelessWidget {
                     width: 1.5,
                   ),
                 ),
-                child: homeWatch.isStatus
+                child: facilitiesWatch.isStatus
                     ? const SizedBox(
                         width: 20,
                         height: 20,

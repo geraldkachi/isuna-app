@@ -12,7 +12,9 @@ import 'package:isuna/features/health/record_inflow_payment.dart';
 import 'package:isuna/features/home/homepage.dart';
 import 'package:isuna/features/main_screen/main_page.dart';
 import 'package:isuna/features/profile/change_password.dart';
+import 'package:isuna/features/profile/line_manager.dart';
 import 'package:isuna/features/profile/preferences.dart';
+import 'package:isuna/features/profile/privacy_policy.dart';
 import 'package:isuna/features/profile/profile_page.dart';
 
 final GoRouter router = GoRouter(routes: [
@@ -55,6 +57,14 @@ final GoRouter router = GoRouter(routes: [
         GoRoute(
           path: 'change_password',
           builder: (context, state) => ChangePassword(),
+        ),
+        GoRoute(
+          path: 'line_manager',
+          builder: (context, state) => LineManager(),
+        ),
+        GoRoute(
+          path: 'privacy_policy',
+          builder: (context, state) => PrivacyPolicy(),
         ),
       ]),
 ]);

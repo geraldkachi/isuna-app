@@ -8,6 +8,8 @@ import 'package:isuna/models/balance_expense_model.dart';
 import 'package:isuna/models/balance_income_model.dart';
 import 'package:isuna/models/categories_model.dart';
 import 'package:isuna/models/expense_category.dart';
+import 'package:isuna/models/expense_category_and%20_sub_category_model.dart';
+import 'package:isuna/models/expense_category_extract_model.dart';
 import 'package:isuna/models/expense_payment_model.dart';
 import 'package:isuna/models/facility_balances_model.dart';
 import 'package:isuna/models/audit_details.dart';
@@ -15,6 +17,7 @@ import 'package:isuna/models/facilities_model.dart';
 import 'package:isuna/models/income_analysis_model.dart';
 import 'package:isuna/models/inflow_payment_model.dart';
 import 'package:isuna/models/page_info_model.dart';
+import 'package:isuna/models/pie_chart_model.dart';
 import 'package:isuna/models/tranx_list_model.dart';
 import 'package:isuna/service/encryption_service.dart';
 import 'package:isuna/service/network_service.dart';
@@ -33,7 +36,9 @@ class HealthFacilitiesService {
   ExpenseCategoryModel? _expenseCategoryModel;
   PageInfoModel? _pageInfoModel;
   IncomeAnalysis? _incomeAnalysis;
+  List<CategoryData>? _categoryDataList = [];
 
+  ExpenseCategoryAndSubCategoryModel? _expenseCategoryAndSubCategoryModel;
   List<FacilitiesModel>? get facilitiesModel => _facilitiesModel;
   List<AuditTrailsModel>? get auditTrailsModel => _auditTrailsModel;
   FacilityBalancesModel? get facilityBalancesModel => _facilityBalances;
@@ -42,6 +47,9 @@ class HealthFacilitiesService {
   ExpenseCategoryModel? get expenseCategoryModel => _expenseCategoryModel;
   PageInfoModel? get pageInfoModel => _pageInfoModel;
   IncomeAnalysis? get incomeAnalysis => _incomeAnalysis;
+  ExpenseCategoryAndSubCategoryModel? get expenseCategoryAndSubCategoryModel =>
+      _expenseCategoryAndSubCategoryModel;
+  List<CategoryData>? get categoryDataList => _categoryDataList;
 
   TransactionList? get transactionList => _transactionList;
   List<CategoriesModel>? get categoriesModel => _categoriesModel;
@@ -311,11 +319,13 @@ class HealthFacilitiesService {
     String? state,
     String? lga,
     String? facility,
+    String? fromDate,
+    String? toDate
   }) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=expenseCategory',
+        '/wallet/v1/health-institute/overview?state=$state&lga=$lga&facility=$facility&section=expenseCategories&fromDate=$fromDate&toDate=$toDate',
       );
 
       final encryptedResponsePayload = response['data'];
@@ -323,8 +333,16 @@ class HealthFacilitiesService {
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
       debugPrint('decrypted response: ${decryptedResponsePayload}');
-      _expenseCategoryModel = ExpenseCategoryModel.fromJson(
-          json.decode(decryptedResponsePayload.toString())['expenseCategory']);
+      _expenseCategoryAndSubCategoryModel =
+          ExpenseCategoryAndSubCategoryModel.fromJson(
+              json.decode(decryptedResponsePayload)['expenseCategories']);
+      List expenseCatgegoryAndSubList = DataTransformer.transformData(
+          _expenseCategoryAndSubCategoryModel!.data!);
+      _categoryDataList = expenseCatgegoryAndSubList.map((value) {
+        log('value $value');
+        return CategoryData.fromMap(value);
+      }).toList();
+      log('categories ${DataTransformer.transformData(_expenseCategoryAndSubCategoryModel!.data!)}');
     } on MisauException {
       rethrow;
     } catch (e) {

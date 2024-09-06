@@ -61,7 +61,7 @@ class DashboardService {
       debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
-      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
+      log('decrypted response: ${decryptedResponsePayload.toString()}');
       _balances =
           Balances.fromJson(json.decode(decryptedResponsePayload)['balances']);
     } on MisauException {
@@ -140,18 +140,19 @@ class DashboardService {
       String? next,
       String? prev,
       String? limit,
+      String? showDeleted,
       String? toDate}) async {
     // Send the request to the backend
     try {
       final response = await _networkService.get(
-        '/wallet/v1/health-institute?state=$state&lga=$lga&facility=$facility&prev=$prev&next=$next&fromDate=$fromDate&toDate=$toDate&limit=$limit',
+        '/wallet/v1/health-institute?state=$state&lga=$lga&facility=$facility&prev=$prev&next=$next&fromDate=$fromDate&toDate=$toDate&limit=$limit&showDeleted=$showDeleted',
       );
 
       final encryptedResponsePayload = response['data'];
       debugPrint('encrypted response: $encryptedResponsePayload');
       final decryptedResponsePayload =
           _encryptionService.decrypt(encryptedResponsePayload);
-      debugPrint('decrypted response: ${decryptedResponsePayload.toString()}');
+      log('decrypted response: ${decryptedResponsePayload.toString()}');
       _transactionList =
           TransactionList.fromJson(json.decode(decryptedResponsePayload));
     } on MisauException {
@@ -160,6 +161,37 @@ class DashboardService {
       rethrow;
     }
   }
+
+
+  Future<void> fetchDeletedTranxList(
+      {String? state,
+      String? lga,
+      String? facility,
+      String? fromDate,
+      String? next,
+      String? prev,
+      String? limit,
+      String? toDate}) async {
+    // Send the request to the backend
+    try {
+      final response = await _networkService.get(
+        '/wallet/v1/health-institute?state=$state&lga=$lga&facility=$facility&prev=$prev&next=$next&fromDate=$fromDate&toDate=$toDate&limit=$limit&showDeleted=',
+      );
+
+      final encryptedResponsePayload = response['data'];
+      debugPrint('encrypted response: $encryptedResponsePayload');
+      final decryptedResponsePayload =
+          _encryptionService.decrypt(encryptedResponsePayload);
+      log('decrypted response: ${decryptedResponsePayload.toString()}');
+      _transactionList =
+          TransactionList.fromJson(json.decode(decryptedResponsePayload));
+    } on MisauException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 
   Future<void> fetchExpenseCategory(
       {String? state,

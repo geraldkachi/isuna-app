@@ -51,6 +51,10 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
 
   FacilitiesModel? selectedFacility;
 
+  List<CategoryData>? get categoryDataList =>
+      _healthFacilitiesService.categoryDataList;
+  CategoryData? selectedCategoryChart;
+
   List<AuditTrailsModel> get auditTrailsModel =>
       _healthFacilitiesService.auditTrailsModel ?? [];
 
@@ -101,6 +105,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
 
   String? expenseStatusValue;
   String? selectedCategory;
+
   String? selectedSubCategory;
   double? incomPercentageIncrease;
 
@@ -117,7 +122,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
 
   DateTime now = DateTime.now();
   String get threeMonthsAgo => DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-      .format(DateTime(now.year, now.month - 3, now.day));
+      .format(DateTime(now.year, now.month - 12, now.day));
 
   Future<void> onBuild(context) async {
     // getAuditTrails(context);
@@ -146,6 +151,11 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     inflowAmountContoller.text = '';
   }
 
+  void onCategoryTap(CategoryData category) {
+    selectedCategoryChart = category;
+    notifyListeners();
+  }
+
   void onRefreshFacility(context) async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
@@ -170,15 +180,29 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
   }
 
   void populateGraphChart() {
-    for (int i = 0; i < balanceIncomeModel.categories!.length; i++) {
-      String category = balanceIncomeModel.categories![i];
-      double income = balanceIncomeModel.data![i].toDouble();
-      double expense = balanceExpenseModel.data![i].toString() != "null"
-          ? double.parse(balanceExpenseModel.data![i])
-          : 0.0;
-
-      graphChartData.add(GraphChartData(category, income, expense));
+    graphChartData.clear();
+    double? expense;
+    String? category;
+    double? income;
+    if (balanceIncomeModel.categories!.isNotEmpty) {
+      for (int i = 0; i < balanceIncomeModel.categories!.length; i++) {
+        category = balanceIncomeModel.categories![i];
+        income = balanceIncomeModel.data![i].toDouble();
+      }
     }
+
+    if (balanceExpenseModel.categories!.isNotEmpty) {
+      for (int i = 0; i < balanceExpenseModel.categories!.length; i++) {
+        if (balanceExpenseModel.categories!.isNotEmpty) {
+          expense = balanceExpenseModel.data![i].toString() != "null"
+              ? double.parse(balanceExpenseModel.data![i])
+              : 0.0;
+        }
+      }
+    }
+
+    graphChartData
+        .add(GraphChartData(category ?? '', income ?? 0.0, expense ?? 0.0));
   }
 
   void onLoadingTransactions(context) async {
@@ -229,7 +253,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
               final category = transaction.income != null
                   ? 'Income'
                   : transaction.expense?.category ?? '';
-              final facility = transaction.facility.toLowerCase();
+              final facility = transaction.facility!.toLowerCase();
               final date = transaction.createdAt;
               final state = transaction.state;
               final amount = transaction.income?.amount == null
@@ -238,7 +262,7 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
               return category.toLowerCase().contains(query) ||
                   facility.contains(query) ||
                   date.toString().contains(query) ||
-                  state.contains(query) ||
+                  state!.contains(query) ||
                   amount.toString().contains(query);
             }).toList() ??
             [];
@@ -397,10 +421,11 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await _healthFacilitiesService.fetchExpenseCategory(
-        state: selectedFacility!.state,
-        lga: selectedFacility!.lga,
-        facility: selectedFacility!.name,
-      );
+          state: selectedFacility!.state,
+          lga: selectedFacility!.lga,
+          facility: selectedFacility!.name,
+          fromDate: threeMonthsAgo,
+          toDate: now.toUtc().toIso8601String());
       // pieChartModel = PieChartModel.fromExpenseCategoryModel(expenseCategory);
       // chartDataList = convertToChartData(pieChartModel!);
       isLoading = false;
@@ -663,11 +688,102 @@ class HealthFacilitiesViewModel extends ChangeNotifier {
     }
   }
 
-  // void getAuditTrails(){
+  Future<void> deleteTransaction(context) async {
+    try {
+      isDeleted = true;
+      notifyListeners();
+      await _healthFacilitiesService.deleteTransaction(
+          id: selectedTransaction?.id);
+      router.pop();
+      clearFlagBottomSheetFields();
+      fetchFacilityTransactionList(context);
+      isDeleted = false;
+      notifyListeners();
+    } on MisauException catch (e) {
+      router.pop();
 
-  //          Navigator.push(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => HealthDetails()),
-  //       );
-  // }
+      isDeleted = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e, stackTrace) {
+      router.pop();
+
+      isDeleted = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('delete transaction error $e/n$stackTrace');
+    }
+  }
+
+  bool isStatusWidget = false;
+  bool isResolved = false;
+  bool isStatusDropdown = false;
+  bool isStatus = false;
+  bool isDeleted = false;
+
+  TextEditingController reasonController = TextEditingController();
+
+  double bottomSheetHeight = 0.82;
+  Transaction? selectedTransaction;
+
+  void clearFlagBottomSheetFields() {
+    reasonController.text = '';
+  }
+
+  void updateStatus() {
+    if (selectedTransaction?.income?.status == null &&
+        selectedTransaction?.expense?.status == null) {
+      isStatusWidget = false;
+      isReasonVisible = true;
+      isResolved = false;
+      bottomSheetHeight = 0.72;
+    } else if (selectedTransaction?.income?.status == 'flagged') {
+      isStatusWidget = true;
+      bottomSheetHeight = 0.6;
+      isResolved = false;
+      isReasonVisible = false;
+    } else if (selectedTransaction?.expense?.status == 'flagged') {
+      isStatusWidget = true;
+      bottomSheetHeight = 0.6;
+      isReasonVisible = false;
+    } else {
+      isResolved = true;
+      isStatusWidget = true;
+      bottomSheetHeight = 0.5;
+      isReasonVisible = false;
+    }
+    notifyListeners();
+  }
+
+  Future<void> flagTransaction(context, String status) async {
+    try {
+      isStatus = true;
+      notifyListeners();
+      await _healthFacilitiesService.flagTransaction(
+          id: selectedTransaction?.id,
+          status: status,
+          reason: reasonController.text);
+      router.pop();
+      clearFlagBottomSheetFields();
+      fetchFacilityTransactionList(context);
+
+      isStatus = false;
+      notifyListeners();
+    } on MisauException catch (e) {
+      router.pop();
+      isStatus = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: e.message ?? '');
+    } catch (e, stackTrace) {
+      router.pop();
+      isStatus = false;
+      notifyListeners();
+      _toastService.showToast(context,
+          title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('delete transaction error $e/n$stackTrace');
+    }
+  }
 }

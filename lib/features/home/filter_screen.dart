@@ -250,7 +250,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen>
                       }
                     },
                     dropDownItemCount: 6,
-                    dropDownList: homeWatch.facilitiesList!.map((value) {
+                    dropDownList: homeWatch.balances.facilites!.map((value) {
                       return DropDownValueModel(name: value, value: value);
                     }).toList(),
                     onChanged: (val) {},
