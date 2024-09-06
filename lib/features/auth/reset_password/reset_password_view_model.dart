@@ -3,15 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isuna/app/locator.dart';
 import 'package:isuna/app/router.dart';
 import 'package:isuna/exceptions/misau_exception.dart';
+import 'package:isuna/features/auth/forgot_password/forgot_password_view_model.dart';
 import 'package:isuna/features/auth/login/login_view_model.dart';
 import 'package:isuna/service/auth_service.dart';
 import 'package:isuna/service/toast_service.dart';
 
 final resetPasswordViewModelProvider =
-    ChangeNotifierProvider.autoDispose<ResetPasswordViewModel>(
-        (ref) => ResetPasswordViewModel());
+    ChangeNotifierProvider.autoDispose<ResetPasswordViewModel>((ref) =>
+        ResetPasswordViewModel(
+            email: ref
+                .watch(forgotPasswordViewModelProvider)
+                .emailController
+                .text));
 
 class ResetPasswordViewModel extends ChangeNotifier {
+  ResetPasswordViewModel({this.email});
+
   final AuthService _authService = getIt<AuthService>();
   final ToastService _toastService = getIt<ToastService>();
 
@@ -22,6 +29,9 @@ class ResetPasswordViewModel extends ChangeNotifier {
 
   TextEditingController passwordController = TextEditingController();
   TextEditingController reenterPasswordController = TextEditingController();
+  TextEditingController otpController = TextEditingController();
+
+  String? email;
 
   void togglePassword() {
     isPasswordVisible = !isPasswordVisible;
@@ -40,8 +50,8 @@ class ResetPasswordViewModel extends ChangeNotifier {
         isLoading = true;
         notifyListeners();
         await _authService.resetPassword(
-            passwordController.text, reenterPasswordController.text);
-        router.go('/forgot_password/reset_password');
+            passwordController.text, otpController.text, email!);
+        router.go('/');
         isLoading = false;
         notifyListeners();
       }
@@ -50,11 +60,12 @@ class ResetPasswordViewModel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
-    } catch (e) {
+    } catch (e, stackTrace) {
       isLoading = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
+      debugPrint('reset password error $e\n$stackTrace');
     }
   }
 

@@ -8,6 +8,7 @@ import 'package:isuna/models/base_model.dart';
 import 'package:isuna/service/auth_service.dart';
 import 'package:isuna/service/profile_service.dart';
 import 'package:isuna/service/toast_service.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 final profileViewModelProvider =
     ChangeNotifierProvider.autoDispose<ProfileViewModel>(
@@ -110,4 +111,26 @@ class ProfileViewModel extends ChangeNotifier {
       debugPrint('update password error ${e.toString()}/n$stackTrace');
     }
   }
+
+  final WebViewController webViewController = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..setBackgroundColor(const Color(0x00000000))
+    ..setNavigationDelegate(
+      NavigationDelegate(
+        onProgress: (int progress) {
+          // Update loading bar.
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {},
+        onHttpError: (HttpResponseError error) {},
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          if (request.url.startsWith('https://Isunatech.org/private-policy')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ),
+    )
+    ..loadRequest(Uri.parse('https://Isunatech.org/private-policy'));
 }

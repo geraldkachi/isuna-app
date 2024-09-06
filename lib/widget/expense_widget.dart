@@ -151,22 +151,6 @@ class _ExpenseWidgetState extends ConsumerState<ExpenseWidget> {
               );
             },
           ),
-          // Legend
-          // ListView.builder(
-          //   shrinkWrap: true,
-          //   physics: NeverScrollableScrollPhysics(),
-          //   itemCount: homeWatch.chartDataList?.length,
-          //   itemBuilder: (context, index) {
-          //     final item = homeWatch.chartDataList![index];
-          //     double percentage = (item.y / total) * 100;
-          //     return LegendItem(
-          //       name: item.x,
-          //       percentage: percentage,
-          //       color: item.color,
-          //       amount: item.y,
-          //     );
-          //   },
-          // ) // Center(
         ],
       ),
     );

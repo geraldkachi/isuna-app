@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:isuna/features/health/faciliteies_filter_scren.dart';
+import 'package:isuna/features/health/widgets/health_flag_transaction_bottom_sheet.dart';
 import 'package:isuna/features/home/filter_screen.dart';
 import 'package:isuna/widget/flag_transaction_bottom_sheet.dart';
 import 'package:isuna/widget/loading_dialog.dart';
@@ -61,7 +62,23 @@ class Utils {
         ),
       ),
       builder: (context) {
-        return FlagTransactionBottomSheet(viewmodelWatch: viewModelWatch, viewModelRead: viewModelRead,);
+        return FlagTransactionBottomSheet();
+      },
+    );
+  }
+
+    static void showHealthFlagTransactionBottomSheet(BuildContext context,
+      [viewModelWatch, viewModelRead]) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
+      builder: (context) {
+        return HealthFlagTransactionBottomSheet();
       },
     );
   }

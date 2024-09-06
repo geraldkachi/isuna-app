@@ -319,6 +319,94 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                     const SizedBox(
                       height: 30,
                     ),
+                    InkWell(
+                      onTap: () => context.go('/main_screen/line_manager'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 35,
+                              height: 35,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffECF1F3),
+                              ),
+                              padding: const EdgeInsets.all(9),
+                              child: SvgPicture.asset(
+                                'assets/svg/telephone-stroke-rounded.svg',
+                                height: 24,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            const Text(
+                              "Line Manager",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17,
+                                color: Color(0xff1B1C1E),
+                                letterSpacing: -.5,
+                              ),
+                            ),
+                            const Spacer(),
+                            SvgPicture.asset(
+                              'assets/svg/arrow-right.svg',
+                              height: 20,
+                              color: const Color(0xffABB5BC),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    InkWell(
+                      onTap: () => context.go('/main_screen/privacy_policy'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 35,
+                              height: 35,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffECF1F3),
+                              ),
+                              padding: const EdgeInsets.all(9),
+                              child: SvgPicture.asset(
+                                'assets/svg/security-lock-stroke-rounded.svg',
+                                height: 24,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            const Text(
+                              "Privacy Policy",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17,
+                                color: Color(0xff1B1C1E),
+                                letterSpacing: -.5,
+                              ),
+                            ),
+                            const Spacer(),
+                            SvgPicture.asset(
+                              'assets/svg/arrow-right.svg',
+                              height: 20,
+                              color: const Color(0xffABB5BC),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
                   ]),
                 ),
               ],

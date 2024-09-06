@@ -30,9 +30,9 @@ class ForgotPasswordViewModel extends ChangeNotifier {
         isLoading = true;
         notifyListeners();
         await _authService.forgotPassword(emailController.text.toLowerCase());
-        emailController.clear();
+        // emailController.clear();
         router.go('/forgot_password/reset_password');
-        clearField();
+        // clearField();
         isLoading = false;
         notifyListeners();
       }

@@ -1,3 +1,4 @@
+import 'package:excel/excel.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +11,9 @@ import 'package:isuna/features/health/record_expense_payment.dart';
 import 'package:isuna/features/health/record_inflow_payment.dart';
 import 'package:isuna/models/Income_expense_chart_model.dart';
 import 'package:isuna/models/pie_chart_model.dart';
+import 'package:isuna/models/tranx_list_model.dart';
 import 'package:isuna/utils/string_utils.dart';
+import 'package:isuna/utils/utils.dart';
 import 'package:isuna/widget/custom_dropdown.dart';
 import 'package:isuna/widget/custom_pie_chart.dart';
 import 'package:isuna/widget/expense_widget.dart';
@@ -50,8 +53,20 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
   Widget build(BuildContext context) {
     final facilitiesWatch = ref.watch(healthFacilitiesViemodelProvider);
     final facilitiesRead = ref.read(healthFacilitiesViemodelProvider.notifier);
-    // double total =
-    //     facilitiesWatch.chartDataList!.fold(0, (sum, item) => sum + item.y);
+
+    double total = facilitiesWatch.categoryDataList!
+        .fold(0, (sum, item) => sum + item.totalAmount);
+
+    List<Color> mainColors =
+        generateDistinctColors(facilitiesWatch.categoryDataList!.length);
+    for (int i = 0; i < facilitiesWatch.categoryDataList!.length; i++) {
+      facilitiesWatch.categoryDataList![i].setColor(mainColors[i]);
+      // Generate and assign colors for subcategories
+      List<Color> subColors = generateDistinctColors(
+          facilitiesWatch.categoryDataList![i].subCategories.length);
+      facilitiesWatch.categoryDataList![i].setSubColors(subColors);
+    }
+
     final appSize = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color(0xffF4F4F7),
@@ -742,55 +757,146 @@ class _HealthDetailsState extends ConsumerState<HealthDetails>
                                             ],
                                           ),
                                           const SizedBox(height: 13),
-
-                                          // SfCircularChart(
-                                          //     series: <CircularSeries>[
-                                          //       // Render pie chart
-                                          //       PieSeries<ChartData, String>(
-                                          //           dataLabelSettings:
-                                          //               DataLabelSettings(
-                                          //             isVisible: true,
-                                          //             showCumulativeValues:
-                                          //                 true,
-                                          //           ),
-                                          //           dataLabelMapper:
-                                          //               (ChartData data, _) =>
-                                          //                   NumberFormat(
-                                          //                           '#,##0')
-                                          //                       .format(data.y),
-                                          //           explode: true,
-                                          //           dataSource: facilitiesWatch
-                                          //               .chartDataList,
-                                          //           pointColorMapper:
-                                          //               (ChartData data, _) =>
-                                          //                   data.color,
-                                          //           xValueMapper:
-                                          //               (ChartData data, _) =>
-                                          //                   data.x,
-                                          //           yValueMapper:
-                                          //               (ChartData data, _) =>
-                                          //                   data.y)
-                                          //     ]),
-                                          // // Legend
-                                          // ListView.builder(
-                                          //   shrinkWrap: true,
-                                          //   physics:
-                                          //       NeverScrollableScrollPhysics(),
-                                          //   itemCount: facilitiesWatch
-                                          //       .chartDataList?.length,
-                                          //   itemBuilder: (context, index) {
-                                          //     final item = facilitiesWatch
-                                          //         .chartDataList![index];
-                                          //     double percentage =
-                                          //         (item.y / total) * 100;
-                                          //     return LegendItem(
-                                          //       name: item.x,
-                                          //       percentage: percentage,
-                                          //       color: item.color,
-                                          //       amount: item.y,
-                                          //     );
-                                          //   },
-                                          // ) // Center(
+                                          SfCircularChart(
+                                              title: ChartTitle(
+                                                  text: facilitiesWatch
+                                                          .selectedCategoryChart
+                                                          ?.category ??
+                                                      'All Categories'),
+                                              legend: Legend(
+                                                  isVisible: true,
+                                                  position:
+                                                      LegendPosition.bottom),
+                                              series: <CircularSeries>[
+                                                // Render pie chart
+                                                PieSeries<dynamic, String>(
+                                                  dataLabelSettings:
+                                                      DataLabelSettings(
+                                                    isVisible: true,
+                                                    showCumulativeValues: true,
+                                                  ),
+                                                  dataLabelMapper: (dynamic
+                                                              data,
+                                                          _) =>
+                                                      NumberFormat('#,##0').format(data
+                                                              is CategoryData
+                                                          ? data.totalAmount
+                                                              .toDouble()
+                                                          : double.parse((data
+                                                                  as SubCategoryData)
+                                                              .amount)),
+                                                  explode: true,
+                                                  dataSource: facilitiesWatch
+                                                          .selectedCategoryChart
+                                                          ?.subCategories ??
+                                                      facilitiesWatch
+                                                          .categoryDataList,
+                                                  pointColorMapper:
+                                                      (dynamic data, _) =>
+                                                          data is CategoryData
+                                                              ? data.color
+                                                              : data.color,
+                                                  xValueMapper: (dynamic data,
+                                                          _) =>
+                                                      data is CategoryData
+                                                          ? data.category
+                                                          : (data as SubCategoryData)
+                                                              .name,
+                                                  yValueMapper: (dynamic
+                                                              data,
+                                                          _) =>
+                                                      data
+                                                              is CategoryData
+                                                          ? data.totalAmount
+                                                              .toInt()
+                                                          : double.parse((data
+                                                                  as SubCategoryData)
+                                                              .amount),
+                                                  onPointTap: (ChartPointDetails
+                                                      details) {
+                                                    if (facilitiesWatch
+                                                            .selectedCategory ==
+                                                        null) {
+                                                      setState(() {
+                                                        facilitiesRead.onCategoryTap(
+                                                            facilitiesWatch
+                                                                    .categoryDataList![
+                                                                details
+                                                                    .pointIndex!]);
+                                                      });
+                                                    }
+                                                  },
+                                                )
+                                              ]),
+                                          if (facilitiesWatch
+                                                  .selectedCategoryChart !=
+                                              null)
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: red),
+                                              child: Text(
+                                                'Reset',
+                                                style:
+                                                    TextStyle(color: white100),
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  facilitiesWatch
+                                                          .selectedCategoryChart =
+                                                      null;
+                                                });
+                                              },
+                                            ),
+                                          ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            itemCount: (facilitiesWatch
+                                                        .selectedCategoryChart
+                                                        ?.subCategories ??
+                                                    facilitiesWatch
+                                                        .categoryDataList)
+                                                ?.length,
+                                            itemBuilder: (context, index) {
+                                              final item = facilitiesWatch
+                                                      .selectedCategoryChart
+                                                      ?.subCategories[index] ??
+                                                  facilitiesWatch
+                                                      .categoryDataList?[index];
+                                              final name = item is CategoryData
+                                                  ? item.category
+                                                  : (item as SubCategoryData)
+                                                      .name;
+                                              final amount = item
+                                                      is CategoryData
+                                                  ? item.totalAmount
+                                                  : (item as SubCategoryData)
+                                                      .amount;
+                                              final color = item is CategoryData
+                                                  ? item.color
+                                                  : (item as SubCategoryData)
+                                                      .color;
+                                              double percentage = item
+                                                      is CategoryData
+                                                  ? (item.totalAmount / total) *
+                                                      100
+                                                  : (double.parse((item
+                                                                  as SubCategoryData)
+                                                              .amount) /
+                                                          total) *
+                                                      100;
+                                              return LegendItem(
+                                                onTap: item is CategoryData
+                                                    ? () => facilitiesRead
+                                                        .onCategoryTap(item)
+                                                    : null,
+                                                name: name,
+                                                percentage: percentage,
+                                                color: color!,
+                                                amount: amount,
+                                              );
+                                            },
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -992,11 +1098,11 @@ class TransactionTab extends ConsumerWidget {
                           //     : "-NGN${transaction.expense!.amount}";
                           final date = isIncome
                               ? transaction.income!.date
-                                  .toLocal()
+                                  ?.toLocal()
                                   .toString()
                                   .split(' ')[0]
                               : transaction.expense!.date
-                                  .toLocal()
+                                  ?.toLocal()
                                   .toString()
                                   .split(' ')[0];
                           final category = isIncome
@@ -1006,13 +1112,24 @@ class TransactionTab extends ConsumerWidget {
                           return AuditTransactionTile(
                             title: transaction.facility,
                             subTitle: category,
-                            amount: StringUtils.currencyConverter(isIncome
-                                ? transaction.income!.amount.toInt()
-                                : transaction.expense!.amount.toInt()),
+                            transaction: transaction,
+                            onTap: () {
+                              facilitiesWatch.selectedTransaction = transaction;
+                              facilitiesRead.updateStatus();
+                              Utils.showHealthFlagTransactionBottomSheet(
+                                  context);
+                            },
+                            amount: isIncome
+                                ? StringUtils.currencyConverter(
+                                    convertToInt(transaction.income!.amount) ??
+                                        0)
+                                : StringUtils.currencyConverter(
+                                    convertToInt(transaction.expense!.amount) ??
+                                        0),
                             date: date,
                             cashFlow: isIncome
-                                ? 'assets/svg/direction_up.svg'
-                                : 'assets/svg/direction_down.svg',
+                                ? 'assets/svg/direction_down.svg'
+                                : 'assets/svg/direction_up.svg',
                           );
                         }),
                   ),
@@ -1024,6 +1141,32 @@ class TransactionTab extends ConsumerWidget {
       ),
     );
   }
+
+  int? convertToInt(dynamic value) {
+    if (value is int) {
+      return value; // Already an integer
+    } else if (value is double) {
+      return value.toInt(); // Convert double to integer
+    } else if (value is String) {
+      // Try to parse the string to an integer
+      int? parsedInt = int.tryParse(value);
+      if (parsedInt != null) {
+        return parsedInt;
+      }
+
+      // If parsing to int fails, try parsing as double first and then convert
+      double? parsedDouble = double.tryParse(value);
+      if (parsedDouble != null) {
+        return parsedDouble.toInt();
+      }
+
+      // Return null if neither int nor double parsing succeeds
+      return null;
+    }
+
+    // Return null if value is of an unsupported type
+    return null;
+  }
 }
 
 class AuditTransactionTile extends StatelessWidget {
@@ -1032,81 +1175,46 @@ class AuditTransactionTile extends StatelessWidget {
   final String? amount;
   final String? date;
   final String? cashFlow;
+  final Transaction? transaction;
+  final VoidCallback? onTap;
+
   const AuditTransactionTile(
       {super.key,
       this.title,
       this.subTitle,
       this.amount,
       this.date,
-      this.cashFlow});
+      this.cashFlow,
+      this.transaction,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-            width: 56.0,
-            height: 56.0,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xffF4F4F7),
-            ),
-            padding: const EdgeInsets.all(11),
-            margin: const EdgeInsets.only(right: 13),
-            child: SvgPicture.asset(
-              cashFlow!,
-              height: 19,
-            )),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 100.0,
-              child: Text(
-                title ?? '',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: Color(0xff1B1C1E),
-                  letterSpacing: -.5,
-                ),
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              width: 56.0,
+              height: 56.0,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xffF4F4F7),
               ),
-            ),
-            SizedBox(
-              height: 3,
-            ),
-            SizedBox(
-              width: 100.0,
-              child: Text(
-                subTitle!,
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14,
-                  color: Color(0xffABB5BC),
-                  letterSpacing: -.5,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Row(
-              children: [
-                Text(
-                  '₦',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17,
-                    color: Color(0xff1B1C1E),
-                    fontFamily: 'AreaNeu',
-                  ),
-                ),
-                Text(
-                  amount ?? '',
+              padding: const EdgeInsets.all(11),
+              margin: const EdgeInsets.only(right: 13),
+              child: SvgPicture.asset(
+                cashFlow!,
+                height: 19,
+              )),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 100.0,
+                child: Text(
+                  title ?? '',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -1114,23 +1222,96 @@ class AuditTransactionTile extends StatelessWidget {
                     letterSpacing: -.5,
                   ),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 3,
-            ),
-            Text(
-              date ?? '',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-                color: Color(0xffABB5BC),
-                letterSpacing: -.5,
               ),
-            ),
-          ],
-        ),
-      ],
+              SizedBox(
+                height: 3,
+              ),
+              SizedBox(
+                width: 100.0,
+                child: Text(
+                  subTitle ?? '--',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    color: Color(0xffABB5BC),
+                    letterSpacing: -.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '₦',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                      color: Color(0xff1B1C1E),
+                      fontFamily: 'AreaNeu',
+                    ),
+                  ),
+                  Text(
+                    amount ?? '',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: Color(0xff1B1C1E),
+                      letterSpacing: -.5,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 3,
+              ),
+              Text(
+                date ?? '',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: Color(0xffABB5BC),
+                  letterSpacing: -.5,
+                ),
+              ),
+              const SizedBox(height: 7.0),
+              Container(
+                padding: EdgeInsets.all(5.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: transaction?.income != null
+                        ? transaction?.income?.status == null
+                            ? green400
+                            : transaction?.income?.status == 'flagged'
+                                ? red.withOpacity(0.8)
+                                : orange
+                        : transaction?.expense?.status == null
+                            ? green400
+                            : transaction?.expense?.status == 'flagged'
+                                ? red.withOpacity(0.8)
+                                : orange),
+                child: Text(
+                  transaction?.income != null
+                      ? '${transaction?.income?.status ?? 'Active'}'
+                      : '${transaction?.expense?.status ?? 'Active'}',
+                  style: TextStyle(
+                      color: transaction?.income != null
+                          ? transaction?.income?.status == null
+                              ? green200
+                              : white100
+                          : transaction?.expense?.status == null
+                              ? green200
+                              : white100),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -115,19 +115,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                   ),
                   Spacer(),
-                  // InkWell(
-                  //   onTap: () {
-                  //     context.go('/forgot_password');
-                  //   },
-                  //   child: Text(
-                  //     "Forgot Password?",
-                  //     style: TextStyle(
-                  //       color: Color(0xff31AF99),
-                  //       fontSize: 14,
-                  //       fontWeight: FontWeight.w700,
-                  //     ),
-                  //   ),
-                  // ),
+                  InkWell(
+                    onTap: () {
+                      context.go('/forgot_password');
+                    },
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(
+                        color: Color(0xff31AF99),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 7),

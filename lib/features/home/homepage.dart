@@ -114,9 +114,9 @@ class _HomePageState extends ConsumerState<HomePage>
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              homeWatch.isLoading
+                              homeWatch.isLoadingBooking
                                   ? const ShimmerScreenLoading(
-                                      height: 200.0,
+                                      height: 230.0,
                                       width: double.infinity,
                                       radius: 14.0,
                                     )
@@ -128,9 +128,9 @@ class _HomePageState extends ConsumerState<HomePage>
                                       pendingBalance: '0',
                                     ),
                               const SizedBox(height: 20),
-                              homeWatch.isLoading
+                              homeWatch.isLoadingIncomeAnalysis
                                   ? const ShimmerScreenLoading(
-                                      height: 200.0,
+                                      height: 400.0,
                                       width: double.infinity,
                                       radius: 14.0,
                                     )
@@ -142,9 +142,9 @@ class _HomePageState extends ConsumerState<HomePage>
                                       options: options,
                                     ),
                               const SizedBox(height: 20),
-                              homeWatch.isLoading
+                              homeWatch.isLoadingExpenseAnalysis
                                   ? const ShimmerScreenLoading(
-                                      height: 200.0,
+                                      height: 400.0,
                                       width: double.infinity,
                                       radius: 14.0,
                                     )
@@ -156,23 +156,18 @@ class _HomePageState extends ConsumerState<HomePage>
                                       options: options,
                                     ),
                               const SizedBox(height: 20),
-                              homeWatch.isLoading
+                              homeWatch.isLoadingExpenseCategory
                                   ? const ShimmerScreenLoading(
-                                      height: 350.0,
+                                      height: 450.0,
                                       width: double.infinity,
                                       radius: 14.0,
                                     )
                                   : ExpenseWidget(
                                       // expenseCategory:
                                       //     homeWatch.expenseCategory,
-                                    ),
+                                      ),
                               const SizedBox(height: 20),
-                              AccountsCard(
-                                managersCount:
-                                    homeWatch.summaryModel.admin.toString(),
-                                healthFacilitiesCount:
-                                    homeWatch.summaryModel.facility.toString(),
-                              ),
+                              AccountsCard(),
                               const SizedBox(height: 20),
                             ],
                           ),
@@ -200,13 +195,15 @@ class _HomePageState extends ConsumerState<HomePage>
 }
 
 class AccountsCard extends ConsumerWidget {
-  final String? managersCount;
-  final String? healthFacilitiesCount;
-  const AccountsCard(
-      {super.key, this.healthFacilitiesCount, this.managersCount});
+  const AccountsCard({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeWatch = ref.watch(homeViemodelProvider);
+    final homeRead = ref.read(homeViemodelProvider.notifier);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -239,18 +236,24 @@ class AccountsCard extends ConsumerWidget {
               AccountsConntainer(
                 title: 'Health Facilities',
                 IconUrl: 'assets/svg/hospital.svg',
-                subTitle: healthFacilitiesCount,
+                subTitle: homeWatch.balances.totalState == 1
+                    ? homeWatch.balances.totalFacilities.toString()
+                    : homeWatch.summaryModel.facility.toString(),
                 onTap: () =>
                     ref.read(homeViemodelProvider.notifier).navToFacilities(),
               ),
               Spacer(),
-              AccountsConntainer(
-                title: 'Managers',
-                IconUrl: 'assets/svg/people_icon.svg',
-                subTitle: managersCount,
-                // onTap: () =>
-                //     ref.read(homeViemodelProvider.notifier).navToAdmin(),
-              )
+              homeWatch.summaryModel.personal != null
+                  ? AccountsConntainer(
+                      title: 'Managers',
+                      IconUrl: 'assets/svg/people_icon.svg',
+                      subTitle: homeWatch.balances.totalState == 1
+                          ? '0'
+                          : homeWatch.summaryModel.admin.toString(),
+                      // onTap: () =>
+                      //     ref.read(homeViemodelProvider.notifier).navToAdmin(),
+                    )
+                  : SizedBox.shrink()
             ],
           ),
           SizedBox(

@@ -136,7 +136,7 @@ class TotalBalanceCard extends ConsumerWidget {
                                   fontFamily: 'AreaNeu'),
                             ),
                             Text(
-                              homeWatch.isLoading
+                              homeWatch.isLoadingBooking
                                   ? '0'
                                   : "${StringUtils.currencyConverter(actualBalance?.toInt() ?? 0)}",
                               style: const TextStyle(
@@ -240,7 +240,7 @@ class TotalBalanceCard extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    "${homeWatch.balances.totalState} ",
+                    "${homeWatch.balances.totalState == 1 ? homeWatch.balances.states![0] : homeWatch.balances.totalState} ",
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 20.0,

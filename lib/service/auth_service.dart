@@ -91,16 +91,11 @@ class AuthService {
     }
   }
 
-    Future<void> resetPassword(
-    String password,
-    String reenteredPassword
-  ) async {
+  Future<void> resetPassword(String password, String otp, String email) async {
     try {
       // Create the payload
-      final payload = jsonEncode({
-        'password': password.trim(),
-        're-enterPassword': reenteredPassword
-      });
+      final payload =
+          jsonEncode({'otp': otp, 'password': password.trim(), 'email': email});
 
       debugPrint('Raw payload $payload');
       // Encrypt the payload
@@ -108,7 +103,7 @@ class AuthService {
 
       // Send the encrypted payload to the backend
       final response = await _networkService.post(
-        '/user/v1/admin/forgot-password',
+        '/user/v1/admin/reset-password',
         data: {'payload': encryptedPayload},
       );
       final encryptedResponsePayload = response['data'];

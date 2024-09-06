@@ -28,8 +28,9 @@ class ExcelService {
         TextCellValue('${item.createdAt}'),
         TextCellValue('${item.facility}'),
         TextCellValue('${item.facility}'),
-        TextCellValue(
-            '₦${StringUtils.currencyConverter(item.income?.amount.toInt() ?? item.expense?.amount.toInt())}'),
+        TextCellValue(item.income?.amount == null
+            ? '₦${StringUtils.currencyConverter(double.parse(item.expense?.amount!).toInt())}'
+            : '₦${StringUtils.currencyConverter(double.parse(item.income?.amount!).toInt())}'),
         TextCellValue('${item.income == null ? 'expense' : 'income'}'),
         TextCellValue('Active'),
       ]);

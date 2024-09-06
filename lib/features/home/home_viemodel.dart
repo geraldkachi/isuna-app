@@ -117,13 +117,26 @@ class HomeViemodel extends ChangeNotifier {
   String? selectedExpenseChartType = 'Line';
   String? statusValue = '';
 
+  bool isStatusWidget = false;
+  bool isResolved = false;
+  bool isStatusDropdown = false;
+  double bottomSheetHeight = 0.82;
+
   DateTime? selectedFromDate;
   DateTime? selectedToDate;
   String? get selectedFacility => searchfacilityController.dropDownValue?.value;
 
-  bool isLoading = false;
+  bool isLoadingBooking = false;
+  bool isLoadingTransaction = false;
+  bool isLoadingIncomeAnalysis = false;
+  bool isLoadingExpenseAnalysis = false;
+  bool isLoadingExpenseCategory = false;
+  bool isLoadingSummary = false;
+  bool isLoadingFacilities = false;
+
   bool isShareLoading = false;
   bool isDeleted = false;
+  bool isShowDeleted = false;
   bool isStatus = false;
 
   bool onInit = false;
@@ -139,7 +152,7 @@ class HomeViemodel extends ChangeNotifier {
 
   DateTime now = DateTime.now();
   String get threeMonthsAgo => DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-      .format(DateTime(now.year, now.month - 3, now.day));
+      .format(DateTime(now.year, now.month - 12, now.day));
 
   Future<void> fetchWalletData(context,
       {String? state = '',
@@ -155,20 +168,21 @@ class HomeViemodel extends ChangeNotifier {
     });
 
     states = NigerianStatesAndLGA.allStates;
+    filteredTransactions?.clear();
 
-    await fetchBalances(context,
+    fetchBalances(context,
         state: state,
         lga: lga,
         facility: facilitys,
         fromDate: fromDate,
         toDate: toDate);
-    await fetchIncome(context,
+    fetchIncome(context,
         state: state,
         lga: lga,
         facility: facilitys,
         fromDate: fromDate!.isEmpty ? threeMonthsAgo : fromDate,
         toDate: toDate!.isEmpty ? now.toUtc().toIso8601String() : toDate);
-    await fetchTranxList(context,
+    fetchTranxList(context,
         state: state,
         lga: lga,
         facility: facilitys,
@@ -176,28 +190,32 @@ class HomeViemodel extends ChangeNotifier {
         prev: prev,
         next: next,
         limit: '10',
-        clearList: () => filteredTransactions?.clear(),
+        showDeleted: isShowDeleted ? 'yes' : '',
+        // clearList: () => filteredTransactions?.clear(),
         toDate: toDate);
-    await fetchExpenseAnalysis(context,
+    fetchExpenseAnalysis(context,
         state: state,
         lga: lga,
         facility: facilitys,
         fromDate: fromDate.isEmpty ? threeMonthsAgo : fromDate,
         toDate: toDate.isEmpty ? now.toUtc().toIso8601String() : toDate);
-    await fetchExpenseCategory(context,
+    fetchExpenseCategory(context,
         state: state,
         lga: lga,
         facility: facilitys,
         fromDate: fromDate.isEmpty ? threeMonthsAgo : fromDate,
         toDate: toDate.isEmpty ? now.toUtc().toIso8601String() : toDate);
-    await fetchExpenseCategoryAndSubCategory(context,
+    fetchExpenseCategoryAndSubCategory(context,
         state: state,
         lga: lga,
         facility: facilitys,
         fromDate: fromDate.isEmpty ? threeMonthsAgo : fromDate,
         toDate: toDate.isEmpty ? now.toUtc().toIso8601String() : toDate);
-    await fetchSummary(context);
-    await fetchFacilities(context);
+    balances.totalState != 1 ? fetchSummary(context) : null;
+    fetchFacilities(context);
+
+    states = NigerianStatesAndLGA.allStates;
+    lgaList = List<String>.unmodifiable(balances.lgas!);
 
     onInit = true;
   }
@@ -222,6 +240,7 @@ class HomeViemodel extends ChangeNotifier {
   }
 
   void onRefresh(context) {
+    isShowDeleted = false;
     fetchWalletData(context);
     refreshController.refreshCompleted();
     transactionRefreshController.refreshCompleted();
@@ -245,12 +264,12 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
     } on MisauException catch (e) {
       // TODO
-      isLoading = false;
+      isLoadingTransaction = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stackTrace) {
-      isLoading = false;
+      isLoadingTransaction = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'share error', subTitle: 'Something went wrong.');
@@ -267,6 +286,7 @@ class HomeViemodel extends ChangeNotifier {
         toDate: '',
         prev: '',
         limit: '10',
+        showDeleted: isShowDeleted ? 'yes' : '',
         next: transactionList.pageInfo.hasNextPage
             ? transactionList.pageInfo.endCursor
             : '');
@@ -305,13 +325,13 @@ class HomeViemodel extends ChangeNotifier {
               final category = transaction.income != null
                   ? 'Income'
                   : transaction.expense?.category ?? '';
-              final facility = transaction.facility.toLowerCase();
+              final facility = transaction.facility?.toLowerCase();
               final date = transaction.createdAt;
               final state = transaction.state;
               return category.toLowerCase().contains(query) ||
-                  facility.contains(query) ||
+                  facility!.contains(query) ||
                   date.toString().contains(query) ||
-                  state.contains(query);
+                  state!.contains(query);
             }).toList() ??
             [];
     notifyListeners();
@@ -324,22 +344,22 @@ class HomeViemodel extends ChangeNotifier {
       String? fromDate,
       String? toDate}) async {
     try {
-      isLoading = true;
+      isLoadingBooking = true;
       notifyListeners();
       await _dashboardService.fetchBalances(
         state: state,
         lga: lga,
         facility: facility,
       );
-      isLoading = false;
+      isLoadingBooking = false;
       notifyListeners();
     } on MisauException catch (e) {
-      isLoading = false;
+      isLoadingBooking = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stackTrace) {
-      isLoading = false;
+      isLoadingBooking = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
@@ -354,7 +374,7 @@ class HomeViemodel extends ChangeNotifier {
       String? fromDate,
       String? toDate}) async {
     try {
-      isLoading = true;
+      isLoadingIncomeAnalysis = true;
       notifyListeners();
       await _dashboardService.fetchIncome(
           state: state,
@@ -363,15 +383,15 @@ class HomeViemodel extends ChangeNotifier {
           fromDate: fromDate,
           toDate: toDate);
       incomePercentageIncrease = calculatePercentage(incomeAnalysis.incomeDiff);
-      isLoading = false;
+      isLoadingIncomeAnalysis = false;
       notifyListeners();
     } on MisauException catch (e) {
-      isLoading = false;
+      isLoadingIncomeAnalysis = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stackTrace) {
-      isLoading = false;
+      isLoadingIncomeAnalysis = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
@@ -387,10 +407,11 @@ class HomeViemodel extends ChangeNotifier {
       String? prev,
       String? next,
       String? limit,
-      VoidCallback? clearList,
+      // VoidCallback? clearList,
+      String? showDeleted,
       String? toDate}) async {
     try {
-      isLoading = true;
+      isLoadingTransaction = true;
       notifyListeners();
       await _dashboardService.fetchTranxList(
           state: state,
@@ -400,18 +421,19 @@ class HomeViemodel extends ChangeNotifier {
           prev: prev,
           next: next,
           limit: limit,
-          toDate: toDate);
-      clearList;
+          toDate: toDate,
+          showDeleted: showDeleted);
+      // clearList;
       filteredTransactions?.addAll(_dashboardService.transactionList!.edges);
-      isLoading = false;
+      isLoadingTransaction = false;
       notifyListeners();
     } on MisauException catch (e) {
-      isLoading = false;
+      isLoadingTransaction = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stackTrace) {
-      isLoading = false;
+      isLoadingTransaction = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
@@ -426,7 +448,7 @@ class HomeViemodel extends ChangeNotifier {
       String? fromDate,
       String? toDate}) async {
     try {
-      isLoading = true;
+      isLoadingExpenseAnalysis = true;
       notifyListeners();
       await _dashboardService.fetchExpenseAnalysis(
           state: state,
@@ -437,15 +459,15 @@ class HomeViemodel extends ChangeNotifier {
       expensePercentageDecrease =
           calculatePercentage(expenseAnalysis.expenseDiff);
 
-      isLoading = false;
+      isLoadingExpenseAnalysis = false;
       notifyListeners();
     } on MisauException catch (e) {
-      isLoading = false;
+      isLoadingExpenseAnalysis = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stackTrace) {
-      isLoading = false;
+      isLoadingExpenseAnalysis = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
@@ -460,7 +482,7 @@ class HomeViemodel extends ChangeNotifier {
       String? fromDate,
       String? toDate}) async {
     try {
-      isLoading = true;
+      isLoadingExpenseCategory = true;
       notifyListeners();
       await _dashboardService.fetchExpenseCategory(
           state: state,
@@ -468,17 +490,17 @@ class HomeViemodel extends ChangeNotifier {
           facility: facility,
           fromDate: fromDate,
           toDate: toDate);
-      isLoading = false;
+      isLoadingExpenseCategory = false;
       notifyListeners();
       // pieChartModel = PieChartModel.fromExpenseCategoryModel(expenseCategory);
       // chartDataList = convertToChartData(pieChartModel!);
     } on MisauException catch (e) {
-      isLoading = false;
+      isLoadingExpenseCategory = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stackTrace) {
-      isLoading = false;
+      isLoadingExpenseCategory = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
@@ -494,7 +516,7 @@ class HomeViemodel extends ChangeNotifier {
       String? fromDate,
       String? toDate}) async {
     try {
-      isLoading = true;
+      isLoadingExpenseCategory = true;
       notifyListeners();
       await _dashboardService.fetchExpenseCategoryAndSubCategory(
           state: state,
@@ -502,17 +524,17 @@ class HomeViemodel extends ChangeNotifier {
           facility: facility,
           fromDate: fromDate,
           toDate: toDate);
-      isLoading = false;
+      isLoadingExpenseCategory = false;
       notifyListeners();
       // pieChartModel = PieChartModel.fromExpenseCategoryModel(expenseCategory);
       // chartDataList = convertToChartData(pieChartModel!);
     } on MisauException catch (e) {
-      isLoading = false;
+      isLoadingExpenseCategory = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stackTrace) {
-      isLoading = false;
+      isLoadingExpenseCategory = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
@@ -557,20 +579,20 @@ class HomeViemodel extends ChangeNotifier {
 
   Future<void> fetchFacilities(context) async {
     try {
-      isLoading = true;
+      isLoadingFacilities = true;
       notifyListeners();
       await _healthFacilitiesService.fetchFacilities();
-      isLoading = false;
+      isLoadingFacilities = false;
       onInit = true;
       notifyListeners();
     } on MisauException catch (e) {
-      isLoading = false;
+      isLoadingFacilities = false;
       onInit = true;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stack) {
-      isLoading = false;
+      isLoadingFacilities = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
@@ -580,20 +602,20 @@ class HomeViemodel extends ChangeNotifier {
 
   Future<void> fetchSummary(context) async {
     try {
-      isLoading = true;
+      isLoadingSummary = true;
       notifyListeners();
       await _dashboardService.fetchSummary();
-      isLoading = false;
+      isLoadingSummary = false;
       onInit = true;
       notifyListeners();
     } on MisauException catch (e) {
-      isLoading = false;
+      isLoadingSummary = false;
       onInit = true;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: e.message ?? '');
     } catch (e, stackTrace) {
-      isLoading = false;
+      isLoadingSummary = false;
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Somethng went wrong.');
@@ -670,6 +692,9 @@ class HomeViemodel extends ChangeNotifier {
       await _healthFacilitiesService.deleteTransaction(
           id: selectedTransaction?.id);
       router.pop();
+      filteredTransactions?.clear();
+
+      clearFlagBottomSheetFields();
       fetchTranxList(context,
           state: '',
           lga: '',
@@ -678,6 +703,7 @@ class HomeViemodel extends ChangeNotifier {
           toDate: '',
           prev: '',
           limit: '10',
+          showDeleted: '',
           next: '');
       isDeleted = false;
       notifyListeners();
@@ -695,20 +721,50 @@ class HomeViemodel extends ChangeNotifier {
       notifyListeners();
       _toastService.showToast(context,
           title: 'Error', subTitle: 'Something went wrong.');
-      debugPrint('delet transaction error $e/n$stackTrace');
+      debugPrint('delete transaction error $e/n$stackTrace');
     }
   }
 
-  Future<void> flagTransaction(context) async {
+  void clearFlagBottomSheetFields() {
+    reasonController.text = '';
+  }
+
+  void updateStatus() {
+    if (selectedTransaction?.income?.status == null &&
+        selectedTransaction?.expense?.status == null) {
+      isStatusWidget = false;
+      isReasonVisible = true;
+      isResolved = false;
+      bottomSheetHeight = 0.72;
+    } else if (selectedTransaction?.income?.status == 'flagged') {
+      isStatusWidget = true;
+      bottomSheetHeight = 0.6;
+      isResolved = false;
+      isReasonVisible = false;
+    } else if (selectedTransaction?.expense?.status == 'flagged') {
+      isStatusWidget = true;
+      bottomSheetHeight = 0.6;
+      isReasonVisible = false;
+    } else {
+      isResolved = true;
+      isStatusWidget = true;
+      bottomSheetHeight = 0.5;
+      isReasonVisible = false;
+    }
+    notifyListeners();
+  }
+
+  Future<void> flagTransaction(context, String status) async {
     try {
       isStatus = true;
       notifyListeners();
       await _healthFacilitiesService.flagTransaction(
           id: selectedTransaction?.id,
-          status: statusValue,
+          status: status,
           reason: reasonController.text);
       router.pop();
-
+      clearFlagBottomSheetFields();
+      filteredTransactions?.clear();
       fetchTranxList(context,
           state: '',
           lga: '',
@@ -717,6 +773,7 @@ class HomeViemodel extends ChangeNotifier {
           toDate: '',
           prev: '',
           limit: '10',
+          showDeleted: '',
           next: '');
       isStatus = false;
       notifyListeners();

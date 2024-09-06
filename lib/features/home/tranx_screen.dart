@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:isuna/app/theme/colors.dart';
 import 'package:isuna/features/home/home_viemodel.dart';
 import 'package:isuna/utils/string_utils.dart';
 import 'package:isuna/utils/utils.dart';
@@ -120,7 +124,31 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
             SizedBox(
               height: 10.0,
             ),
-            homeWatch.isLoading
+            Align(
+              alignment: Alignment.bottomRight,
+              child: InkWell(
+                onTap: () {
+                  homeWatch.filteredTransactions?.clear();
+                  homeWatch.isShowDeleted = true;
+                  homeRead.fetchTranxList(context,
+                      state: '',
+                      lga: '',
+                      facility: '',
+                      fromDate: '',
+                      prev: '',
+                      next: '',
+                      limit: '10',
+                      showDeleted: 'yes',
+                      // clearList: () => homeWatch.filteredTransactions?.clear(),
+                      toDate: '');
+                },
+                child: Text(
+                  'Show deleted transactions',
+                  style: TextStyle(color: red, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+            homeWatch.isLoadingTransaction
                 ? const ShimmerScreenLoading(
                     height: 600.0,
                     width: double.infinity,
@@ -145,17 +173,16 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                             itemBuilder: (context, index) {
                               final transaction =
                                   homeWatch.filteredTransactions![index];
-                              homeWatch.selectedTransaction = transaction;
 
                               final isIncome = transaction.income != null;
 
                               final date = isIncome
                                   ? transaction.income!.date
-                                      .toLocal()
+                                      ?.toLocal()
                                       .toString()
                                       .split(' ')[0]
                                   : transaction.expense!.date
-                                      .toLocal()
+                                      ?.toLocal()
                                       .toString()
                                       .split(' ')[0];
                               final category = isIncome
@@ -164,6 +191,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 
                               return InkWell(
                                 onTap: () {
+                                  homeWatch.selectedTransaction = transaction;
+                                  homeRead.updateStatus();
                                   Utils.showFlagTransactionBottomSheet(
                                       context, homeWatch, homeRead);
                                 },
@@ -181,8 +210,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                       margin: const EdgeInsets.only(right: 13),
                                       child: SvgPicture.asset(
                                         isIncome
-                                            ? 'assets/svg/direction_up.svg'
-                                            : 'assets/svg/direction_down.svg',
+                                            ? 'assets/svg/direction_down.svg'
+                                            : 'assets/svg/direction_up.svg',
                                         height: 19,
                                       ),
                                     ),
@@ -202,7 +231,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                           ),
                                           const SizedBox(height: 3),
                                           Text(
-                                            transaction.facility,
+                                            transaction.facility ?? '--',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 16,
@@ -231,11 +260,20 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    StringUtils
-                                                        .currencyConverter(
-                                                            transaction
-                                                                .income!.amount
-                                                                .toInt()),
+                                                    transaction.income!.amount
+                                                            is String
+                                                        ? StringUtils.currencyConverter(
+                                                            double.parse(
+                                                                    transaction
+                                                                        .income!
+                                                                        .amount)
+                                                                .toInt())
+                                                        : StringUtils
+                                                            .currencyConverter(
+                                                                transaction
+                                                                    .income!
+                                                                    .amount
+                                                                    .toInt()),
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -259,11 +297,20 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    StringUtils
-                                                        .currencyConverter(
-                                                            transaction
-                                                                .expense!.amount
-                                                                .toInt()),
+                                                    transaction.expense!.amount
+                                                            is String
+                                                        ? StringUtils.currencyConverter(
+                                                            double.parse(
+                                                                    transaction
+                                                                        .expense!
+                                                                        .amount)
+                                                                .toInt())
+                                                        : StringUtils
+                                                            .currencyConverter(
+                                                                transaction
+                                                                    .expense!
+                                                                    .amount
+                                                                    .toInt()),
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -274,9 +321,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                                   ),
                                                 ],
                                               ),
-                                        const SizedBox(height: 3),
+                                        const SizedBox(height: 3.0),
                                         Text(
-                                          date,
+                                          date ?? '--',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
@@ -284,6 +331,59 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                             letterSpacing: -.5,
                                           ),
                                         ),
+                                        const SizedBox(height: 7.0),
+                                        Container(
+                                          padding: EdgeInsets.all(5.0),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                              color: transaction.deletedAt !=
+                                                      null
+                                                  ? red
+                                                  : isIncome
+                                                      ? transaction.income
+                                                                  ?.status ==
+                                                              null
+                                                          ? green400
+                                                          : transaction.income
+                                                                      ?.status ==
+                                                                  'flagged'
+                                                              ? red.withOpacity(
+                                                                  0.8)
+                                                              : orange
+                                                      : transaction.expense
+                                                                  ?.status ==
+                                                              null
+                                                          ? green400
+                                                          : transaction.expense
+                                                                      ?.status ==
+                                                                  'flagged'
+                                                              ? red.withOpacity(
+                                                                  0.8)
+                                                              : orange),
+                                          child: Text(
+                                            transaction.deletedAt != null
+                                                ? 'Deleted'
+                                                : isIncome
+                                                    ? '${transaction.income?.status ?? 'Active'}'
+                                                    : '${transaction.expense?.status ?? 'Active'}',
+                                            style: TextStyle(
+                                                color: transaction.deletedAt !=
+                                                        null
+                                                    ? white100
+                                                    : isIncome
+                                                        ? transaction.income
+                                                                    ?.status ==
+                                                                null
+                                                            ? green200
+                                                            : white100
+                                                        : transaction.expense
+                                                                    ?.status ==
+                                                                null
+                                                            ? green200
+                                                            : white100),
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ],
